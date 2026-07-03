@@ -17,6 +17,12 @@ export function saveCart(cart) {
   return cart;
 }
 
+function notify() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('cart-updated'));
+  }
+}
+
 export function addToCart(item) {
   const cart = loadCart();
   const existingIndex = cart.findIndex(
@@ -29,7 +35,9 @@ export function addToCart(item) {
     cart.push(item);
   }
 
-  return saveCart(cart);
+  saveCart(cart);
+  notify();
+  return cart;
 }
 
 export function updateCartItem(index, quantity) {
@@ -42,7 +50,9 @@ export function updateCartItem(index, quantity) {
     cart[index].quantity = quantity;
   }
 
-  return saveCart(cart);
+  saveCart(cart);
+  notify();
+  return cart;
 }
 
 export function removeCartItem(index) {
@@ -50,12 +60,15 @@ export function removeCartItem(index) {
   if (index < 0 || index >= cart.length) return cart;
 
   cart.splice(index, 1);
-  return saveCart(cart);
+  saveCart(cart);
+  notify();
+  return cart;
 }
 
 export function clearCart() {
   if (typeof window !== 'undefined') {
     window.localStorage.removeItem(CART_KEY);
   }
+  notify();
   return [];
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../src/lib/prisma';
+import prisma from '../../../src/lib/prisma';
 
 export async function POST(request) {
   const body = await request.json();
@@ -26,7 +26,6 @@ export async function POST(request) {
       paymentStatus: 'pending',
       details: {
         create: {
-          customerName: name,
           shippingAddress: address,
           billingAddress: address,
           phoneNumber: mobile,

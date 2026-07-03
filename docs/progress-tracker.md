@@ -2,7 +2,7 @@
 
 A living document tracking the status of all project tasks for the Cabinet Closet ecommerce application.
 
-**Last Updated:** 2026-07-03
+**Last Updated:** 2026-07-03 (Session 3)
 
 ## Project Phases
 
@@ -24,11 +24,11 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Prisma schema (Categories, Products, Variants, Orders) | ⏳ In Progress | See `schema.prisma`, aligned with `data-model.md` |
-| Database migrations | ⏳ In Progress | Using `prisma migrate` workflow |
-| Seed script (categories, products, variants) | ⏳ In Progress | Create realistic dummy data in `prisma/seed.js` |
-| Seed script (admin user) | ❌ Not Started | Auth scaffolding pending |
-| Seed script (sample orders) | ❌ Not Started | Order workflow pending |
+| Prisma schema (Categories, Products, Variants, Orders) | ✅ Done | See `schema.prisma`, aligned with `data-model.md` |
+| Database migrations | ✅ Done | Using `prisma migrate` workflow |
+| Seed script (categories, products, variants) | ✅ Done | 27 real products from Cabinet & Closet catalog in `prisma/seed.js` |
+| Seed script (admin user) | ✅ Done | Admin user seeded in `prisma/seed.js` |
+| Seed script (sample orders) | ✅ Done | 2 sample orders with items seeded |
 | PostgreSQL setup for development | ✅ Done | Local or cloud-based instance |
 | Prisma Client setup | ✅ Done | Wrapper in `src/lib/prisma.js` |
 
@@ -40,37 +40,37 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Page | Status | Notes |
 |------|--------|-------|
-| Home (`/(storefront)/page.jsx`) | ❌ Not Started | Feature listing, hero, categories |
-| Categories listing (`/(storefront)/categories/page.jsx`) | ❌ Not Started | Show all categories |
-| Category products (`/(storefront)/categories/[slug]/page.jsx`) | ❌ Not Started | Filter/paginate products by category |
-| Product detail (`/(storefront)/products/[slug]/page.jsx`) | ❌ Not Started | Image gallery, variant selector, pricing, add-to-cart |
-| Cart (`/(storefront)/cart/page.jsx`) | ❌ Not Started | Review items, quantities, totals |
-| Checkout (`/(storefront)/checkout/page.jsx`) | ❌ Not Started | Customer info, shipping, delivery charge, order summary |
-| Thank You (`/(storefront)/thankyou/page.jsx`) | ❌ Not Started | Order confirmation, details |
-| Storefront Layout (`/(storefront)/layout.jsx`) | ❌ Not Started | Header, footer, global styles |
+| Home (`/(storefront)/page.jsx`) | ✅ Done | Hero section with feature listing and CTA buttons |
+| Categories listing (`/(storefront)/categories/page.jsx`) | ✅ Done | Fetches from Prisma, links to category products |
+| Category products (`/(storefront)/categories/[slug]/page.jsx`) | ✅ Done | Server component with Prisma, product cards |
+| Product detail (`/(storefront)/products/[slug]/page.jsx`) | ✅ Done | Server-side fetch + ProductDetailClient component |
+| Cart (`/(storefront)/cart/page.jsx`) | ✅ Done | Real cart data from localStorage, qty controls, remove |
+| Checkout (`/(storefront)/checkout/page.jsx`) | ✅ Done | Name/mobile/address form, delivery charge, places order |
+| Thank You (`/(storefront)/thankyou/page.jsx`) | ✅ Done | Shows order number from query param |
+| Storefront Layout (`/(storefront)/layout.jsx`) | ✅ Done | Header, Footer, global layout with route groups |
 
 ### Components
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Header | ❌ Not Started | Logo, nav, search, cart icon |
-| Footer | ❌ Not Started | Links, contact, Bangladesh-specific info |
-| ProductCard | ❌ Not Started | Image, title, price, sale price, discount badge |
+| Header | ✅ Done | Logo, navigation, cart icon with proper links |
+| Footer | ✅ Done | Links, contact info, Bangladesh-specific branding |
+| ProductCard | ✅ Done | Used in category products page with image, title, price |
 | ProductGallery | ❌ Not Started | Image zoom, thumbnails, variant images |
-| VariantSelector | ❌ Not Started | Size/color selection, dynamic pricing |
+| VariantSelector | ✅ Done | Integrated into ProductDetailClient |
 | ProductGrid | ❌ Not Started | Responsive grid layout |
 | FilterSidebar | ❌ Not Started | Category, price, sort filters |
 | CartModal | ❌ Not Started | Mini-cart preview or drawer |
-| CheckoutForm | ❌ Not Started | Name, mobile, address, shipping_area, delivery charge |
+| CheckoutForm | ✅ Done | Built into checkout page with delivery charge selection |
 
 ### Features
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Cart state (Context + localStorage) | ❌ Not Started | See `src/lib/cartStorage.js` |
-| Variant pricing logic | ❌ Not Started | Base vs. variant prices |
-| Discount display (amount & %) | ❌ Not Started | Show original, sale, discount details |
-| Delivery charge selection | ❌ Not Started | Dhaka = 50 BDT, Outside = 120 BDT |
+| Cart state (Context + localStorage) | ✅ Done | See `src/lib/cartStorage.js` — add, remove, update, clear |
+| Variant pricing logic | ✅ Done | Integrated in ProductDetailClient |
+| Discount display (amount & %) | ✅ Done | Shown in ProductDetailClient |
+| Delivery charge selection | ✅ Done | Checkout page with Inside/Outside Dhaka options |
 | Image optimization (Next.js Image) | ❌ Not Started | Remote URLs for MVP |
 | SEO (meta tags, structured data) | ❌ Not Started | Use Next.js head, JSON-LD |
 
@@ -82,14 +82,14 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Page | Status | Notes |
 |------|--------|-------|
-| Admin Layout (`/(admin)/layout.jsx`) | ❌ Not Started | Sidebar, auth check |
-| Dashboard (`/(admin)/dashboard/page.jsx`) | ❌ Not Started | Stats, recent orders, quick actions |
-| Categories list (`/(admin)/categories/page.jsx`) | ❌ Not Started | Table with edit/delete |
-| Categories create/edit | ❌ Not Started | Form for category name, slug, image, description |
-| Products list (`/(admin)/products/page.jsx`) | ❌ Not Started | Table with filters, edit/delete |
-| Products create/edit | ❌ Not Started | Form with variants, images, pricing |
-| Orders list (`/(admin)/orders/page.jsx`) | ❌ Not Started | Table with status, totals |
-| Orders detail | ❌ Not Started | Order info, items, customer details, status updates |
+| Admin Layout (`/admin/layout.jsx`) | ✅ Done | Header nav, container |
+| Dashboard (`/admin/dashboard/page.jsx`) | ✅ Done | Links to categories, products, orders |
+| Categories list (`/admin/categories/page.jsx`) | ✅ Done | Table with edit/delete |
+| Categories create/edit | ✅ Done | Form for category name, slug, image, description |
+| Products list (`/admin/products/page.jsx`) | ✅ Done | Table with filters, edit/delete |
+| Products create/edit | ✅ Done | Form with pricing, categories, image, status |
+| Orders list (`/admin/orders/page.jsx`) | ✅ Done | List with expandable details |
+| Orders detail | ✅ Done | Order info, items, customer details, status updates |
 
 ### Components
 
@@ -109,10 +109,10 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 |---------|--------|-------|
 | Authentication (session-based) | ❌ Not Started | NextAuth or custom auth |
 | Role-based access control (admin/editor) | ❌ Not Started | Protect routes and API endpoints |
-| Category CRUD | ❌ Not Started | Create, read, update, delete |
-| Product CRUD with variants | ❌ Not Started | Multiple images, variant attributes |
-| Order status updates | ❌ Not Started | pending → processing → completed |
-| Payment status tracking | ❌ Not Started | unpaid → paid (or refund) |
+| Category CRUD | ✅ Done | Create, read, update, delete via API |
+| Product CRUD with variants | ✅ Done | Create, read, update, delete via API |
+| Order status updates | ✅ Done | pending → processing → completed → cancelled |
+| Payment status tracking | ✅ Done | unpaid → paid → refund |
 | Search & filters in lists | ❌ Not Started | Text search, category filter, status filter |
 
 ---
@@ -121,17 +121,17 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Endpoint/Action | Status | Notes |
 |-----------------|--------|-------|
-| `POST /api/checkout` | ❌ Not Started | Validate cart, create order |
-| `GET /api/categories` | ❌ Not Started | Fetch all categories (public) |
-| `GET /api/products/[slug]` | ❌ Not Started | Fetch product details (public) |
-| `POST /api/admin/categories` | ❌ Not Started | Create category (admin only) |
-| `PUT /api/admin/categories/[id]` | ❌ Not Started | Update category (admin only) |
-| `DELETE /api/admin/categories/[id]` | ❌ Not Started | Delete category (admin only) |
-| `POST /api/admin/products` | ❌ Not Started | Create product (admin only) |
-| `PUT /api/admin/products/[id]` | ❌ Not Started | Update product (admin only) |
-| `DELETE /api/admin/products/[id]` | ❌ Not Started | Delete product (admin only) |
-| `GET /api/admin/orders` | ❌ Not Started | Fetch orders (admin only) |
-| `PUT /api/admin/orders/[id]` | ❌ Not Started | Update order status (admin only) |
+| `POST /api/checkout` | ✅ Done | Validate cart items, create order with delivery charge |
+| `GET /api/admin/categories` | ✅ Done | Fetch all categories |
+| `POST /api/admin/categories` | ✅ Done | Create category |
+| `PUT /api/admin/categories/[id]` | ✅ Done | Update category |
+| `DELETE /api/admin/categories/[id]` | ✅ Done | Delete category |
+| `GET /api/admin/products` | ✅ Done | Fetch all products with images, variants, categories |
+| `POST /api/admin/products` | ✅ Done | Create product |
+| `PUT /api/admin/products/[id]` | ✅ Done | Update product |
+| `DELETE /api/admin/products/[id]` | ✅ Done | Delete product |
+| `GET /api/admin/orders` | ✅ Done | Fetch all orders with details and items |
+| `PUT /api/admin/orders/[id]` | ✅ Done | Update order status and payment status |
 
 ---
 
@@ -139,9 +139,9 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Tailwind CSS configuration | ❌ Not Started | Colors, fonts, spacing in `tailwind.config.js` |
-| Global styles (`app/globals.css`) | ❌ Not Started | CSS resets, base styles |
-| Responsive design (mobile, tablet, desktop) | ❌ Not Started | Mobile-first approach |
+| Tailwind CSS configuration | ✅ Done | Brand colors (#2f0f6b primary, #435165 secondary), Inter font |
+| Global styles (`app/globals.css`) | ✅ Done | CSS variables for brand, resets, base styles, container |
+| Responsive design (mobile, tablet, desktop) | ✅ Done | Mobile-first grid layouts throughout |
 | Dark mode support | ❌ Not Started | Theme toggle in settings |
 | ShadCN UI setup (admin only) | ❌ Not Started | Install and configure component library |
 | Component library reusability | ❌ Not Started | Atomic components, consistent patterns |
@@ -211,13 +211,14 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 ## Next Steps
 
 1. ✅ Create comprehensive project documentation
-2. ⏳ Set up Prisma schema and database migrations
-3. ⏳ Create seed script with dummy data
-4. ❌ Implement core storefront pages (home, categories, products)
-5. ❌ Implement core admin pages (categories, products, orders)
-6. ❌ Add checkout and order creation workflow
-7. ❌ Testing and QA
-8. ❌ Deployment
+2. ✅ Set up Prisma schema and database migrations
+3. ✅ Create seed script with dummy data
+4. ✅ Implement core storefront pages (home, categories, products, cart, checkout)
+5. ✅ Implement core admin pages (categories, products, orders)
+6. ✅ Add checkout and order creation workflow
+7. ❌ Add authentication (NextAuth or custom session)
+8. ❌ Testing and QA
+9. ❌ Deployment
 
 ---
 
@@ -232,8 +233,55 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 ## Session Log
 
-### Session 2026-07-03
+### Session 2026-07-03 (Initial)
 - Reviewed and rewrote 3 documentation files: `ai-workflow-rules.md`, `ui-context.md`, `progress-tracker.md`
 - Aligned all docs with core architecture and design principles
 - Created comprehensive task tracking and status overview
-- Next: Begin Prisma schema and database setup
+
+### Session 2026-07-03 (Development)
+- ✅ Verified database migrations and ran seed script (4 categories, 4 products with variants)
+- ✅ Reorganized app structure to use Next.js route groups: `(storefront)` for public routes
+- ✅ Created Header component with navigation (logo, shop link, cart icon) using Link component
+- ✅ Created Footer component with company info, links, support contact (Bangladesh-focused)
+- ✅ Set up jsconfig.json with `@` path alias for cleaner imports
+- ✅ Built storefront home page at localhost:3000/ (serving at 3001 due to port conflict)
+- ✅ Home page includes hero section, feature description, and CTA buttons linking to categories and cart
+- Updated progress tracker with completed database setup and storefront foundation tasks
+- Next: Build categories, product listing, product details, and cart pages
+
+### Session 2026-07-03 (Bug Fixes & Feature Completion)
+- ✅ Removed duplicate admin route structure (`app/admin/admin/`)
+- ✅ Fixed broken storefront links (`/storefront/` → `/`)
+- ✅ Rebuilt categories listing page with Prisma data
+- ✅ Built product detail page with server-side Prisma fetch + ProductDetailClient
+- ✅ Built cart page with real localStorage cart data, quantity controls, remove
+- ✅ Built checkout page with form validation, delivery charge, order submission
+- ✅ Built thankyou page with order number display
+- ✅ Created all admin API routes (categories, products, orders CRUD)
+- ✅ Built admin categories page with inline create/edit/delete
+- ✅ Built admin products page with create/edit/delete and category assignment
+- ✅ Built admin orders page with expandable details and status updates
+- ✅ Updated all progress tracker status fields
+
+### Session 2026-07-03 (Storefront Redesign)
+- ✅ Updated Tailwind config with brand colors (#2f0f6b primary, #435165 secondary) and Inter font
+- ✅ Added CSS variables for brand colors in globals.css
+- ✅ Added Inter font from Google Fonts in root layout
+- ✅ Redesigned Header: hotline bar (purple bg with phone/WhatsApp), search bar, brand-colored logo/nav
+- ✅ Redesigned Home page: banner, filter sidebar (categories + price range), product grid with aspect-square cards
+- ✅ Updated category listing with brand colors and hover effects
+- ✅ Updated category products page with 4-column grid and brand-colored prices
+- ✅ Updated ProductDetailClient with brand-colored prices, variant buttons, and CTA
+- ✅ Updated Cart page with brand colors and improved layout
+- ✅ Updated Checkout page with brand colors and improved form design
+- ✅ Updated Thank You page with brand-colored order number
+- ✅ Updated Footer with brand purple bg and reference site content
+- ✅ Updated Admin layout with brand colors
+
+### Session 2026-07-03 (Catalog & Seed Update)
+- ✅ Extracted full product catalog from reference site (27 products, 5 categories)
+- ✅ Updated seed file with real products, images, prices, and variants from Cabinet & Closet
+- ✅ Added real-time search API endpoint (`GET /api/search?q=...`)
+- ✅ Updated Header search overlay with debounced real-time results, keyboard navigation, loading spinner
+- ✅ Added "See all results" button in search overlay
+- ✅ Ran seed successfully — 5 categories, 27 products, 2 orders

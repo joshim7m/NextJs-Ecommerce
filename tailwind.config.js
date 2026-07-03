@@ -5,7 +5,20 @@ module.exports = {
     './src/**/*.{js,jsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        brand: {
+          primary: '#2f0f6b',
+          secondary: '#435165',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter Variable', 'Inter', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        '4xl': '1rem',
+      },
+    },
   },
   plugins: [],
 };

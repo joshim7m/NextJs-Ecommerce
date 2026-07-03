@@ -1,0 +1,37 @@
+import { NextResponse } from 'next/server';
+import prisma from '../../../../src/lib/prisma';
+
+export async function GET() {
+  const products = await prisma.product.findMany({
+    include: { images: true, variants: true, categories: true },
+    orderBy: { createdAt: 'desc' },
+  });
+  return NextResponse.json(products);
+}
+
+export async function POST(request) {
+  const body = await request.json();
+  const { title, slug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlugs, image } = body;
+
+  if (!title || !slug) {
+    return NextResponse.json({ error: 'Title and slug are required.' }, { status: 400 });
+  }
+
+  const product = await prisma.product.create({
+    data: {
+      title,
+      slug,
+      description,
+      unite_price: parseFloat(unite_price),
+      sale_price: sale_price ? parseFloat(sale_price) : null,
+      compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
+      inventoryQuantity: inventoryQuantity ? parseInt(inventoryQuantity) : null,
+      status: status || 'draft',
+      categories: categorySlugs?.length ? { connect: categorySlugs.map((slug) => ({ slug })) } : undefined,
+      images: image ? { create: { image_path: image, altText: title } } : undefined,
+    },
+    include: { images: true, variants: true, categories: true },
+  });
+
+  return NextResponse.json(product, { status: 201 });
+}
