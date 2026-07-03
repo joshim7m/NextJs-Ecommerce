@@ -11,7 +11,8 @@ export async function GET() {
 
 export async function POST(request) {
   const body = await request.json();
-  const { title, slug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlugs, image } = body;
+  const { title, slug: rawSlug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlug, imagePaths } = body;
+  const slug = rawSlug?.trim();
 
   if (!title || !slug) {
     return NextResponse.json({ error: 'Title and slug are required.' }, { status: 400 });
@@ -27,8 +28,8 @@ export async function POST(request) {
       compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
       inventoryQuantity: inventoryQuantity ? parseInt(inventoryQuantity) : null,
       status: status || 'draft',
-      categories: categorySlugs?.length ? { connect: categorySlugs.map((slug) => ({ slug })) } : undefined,
-      images: image ? { create: { image_path: image, altText: title } } : undefined,
+      categories: categorySlug ? { connect: { slug: categorySlug } } : undefined,
+      images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,
     },
     include: { images: true, variants: true, categories: true },
   });
