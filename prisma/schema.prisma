@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  image       String?
+  description String?
+  products    Product[] @relation("ProductCategories")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id                String          @id @default(uuid())
+  title             String
+  slug              String          @unique
+  description       String?
+  unite_price       Decimal
+  sale_price        Decimal?
+  compareAtPrice    Decimal?
+  inventoryQuantity Int?
+  status            String
+  categories        Category[]      @relation("ProductCategories")
+  images            ProductImage[]
+  variants          ProductVariant[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model ProductImage {
+  id         String           @id @default(uuid())
+  product    Product          @relation(fields: [productId], references: [id])
+  productId  String
+  image_path String
+  altText    String?
+  variants   ProductVariant[]
+}
+
+model ProductVariant {
+  id                String         @id @default(uuid())
+  product           Product        @relation(fields: [productId], references: [id])
+  productId         String
+  sku               String?
+  size              String?
+  color             String?
+  price             Decimal?
+  sale_price        Decimal?
+  image             ProductImage?  @relation(fields: [imageId], references: [id])
+  imageId           String?
+  inventoryQuantity Int
+  isDefault         Boolean        @default(false)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          String
+  details       UserDetails?
+  orders        Order[]
+  orderDetails  OrderDetails[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model UserDetails {
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String   @unique
+  shippingAddress String
+  billingAddress  String?
+  phoneNumber     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Order {
+  id            String       @id @default(uuid())
+  orderNo       String       @unique
+  user          User?        @relation(fields: [userId], references: [id])
+  userId        String?
+  total         Decimal
+  orderStatus   String
+  paymentStatus String
+  details       OrderDetails?
+  items         OrderItem[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model OrderDetails {
+  id              String   @id @default(uuid())
+  order           Order    @relation(fields: [orderId], references: [id])
+  orderId         String   @unique
+  user            User?    @relation(fields: [userId], references: [id])
+  userId          String?
+  shippingAddress String
+  billingAddress  String?
+  phoneNumber     String?
+  shippingArea    String
+  deliveryCharge  Decimal
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model OrderItem {
+  id            String   @id @default(uuid())
+  order         Order    @relation(fields: [orderId], references: [id])
+  orderId       String
+  productTitle  String
+  itemImagePath String
+  purchasePrice Decimal
+  quantity      Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
