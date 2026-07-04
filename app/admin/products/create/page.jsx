@@ -28,6 +28,14 @@ export default function CreateProductPage() {
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const generateSlug = () => {
+    const slug = form.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+    setForm((prev) => ({ ...prev, slug }));
+  };
+
   const handleFileSelect = (e) => {
     const selected = Array.from(e.target.files || []);
     setFiles((prev) => [...prev, ...selected]);
@@ -75,7 +83,10 @@ export default function CreateProductPage() {
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Slug</label>
-            <input name="slug" value={form.slug} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <div className="mt-1 flex gap-2">
+              <input name="slug" value={form.slug} onChange={handleChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+              <button type="button" onClick={generateSlug} disabled={!form.title.trim()} className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40">Generate</button>
+            </div>
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Description</label>

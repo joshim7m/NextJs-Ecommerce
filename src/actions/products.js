@@ -47,20 +47,19 @@ export async function createProduct(data) {
 }
 
 export async function updateProduct(id, data) {
-  const { title, slug: rawSlug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlug, imagePaths, removeImageIds, variants } = data;
+  const { title, slug: rawSlug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlug, imagePaths, removeImageIds, variants, removedVariantIds } = data;
   const slug = rawSlug?.trim();
 
   if (removeImageIds?.length) {
     await prisma.productImage.deleteMany({ where: { id: { in: removeImageIds }, productId: id } });
   }
 
-  if (variants) {
-    const toDelete = variants.filter((v) => v._delete && v.id && !v.id.toString().startsWith('new_'));
-    if (toDelete.length) {
-      await prisma.productVariant.deleteMany({ where: { id: { in: toDelete.map((v) => v.id) }, productId: id } });
-    }
+  if (removedVariantIds?.length) {
+    await prisma.productVariant.deleteMany({ where: { id: { in: removedVariantIds }, productId: id } });
+  }
 
-    const toCreate = variants.filter((v) => !v._delete && (!v.id || v.id.toString().startsWith('new_')));
+  if (variants) {
+    const toCreate = variants.filter((v) => !v.id);
     for (const v of toCreate) {
       await prisma.productVariant.create({
         data: {
@@ -77,7 +76,7 @@ export async function updateProduct(id, data) {
       });
     }
 
-    const toUpdate = variants.filter((v) => !v._delete && v.id && !v.id.toString().startsWith('new_'));
+    const toUpdate = variants.filter((v) => v.id);
     for (const v of toUpdate) {
       await prisma.productVariant.update({
         where: { id: v.id },

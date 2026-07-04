@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { getProducts, getCategories, deleteProduct } from '../../../src/actions/products';
 import ConfirmDialog from '../../../src/components/ConfirmDialog';
@@ -10,9 +10,24 @@ export default function AdminProductsPage() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(null);
+  const menuRef = useRef(null);
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+  const [page, setPage] = useState(1);
+  const PER_PAGE = 20;
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   useEffect(() => {
     Promise.all([getProducts(), getCategories()]).then(([p, c]) => {
@@ -33,6 +48,11 @@ export default function AdminProductsPage() {
     return list;
   }, [products, search, filterStatus, filterCategory]);
 
+  const totalPages = Math.ceil(filtered.length / PER_PAGE) || 1;
+  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+
+  useEffect(() => { setPage(1); }, [search, filterStatus, filterCategory]);
+
   const refetch = () => Promise.all([getProducts(), getCategories()]).then(([p, c]) => { setProducts(p); setCategories(c); });
 
   const handleDelete = async () => {
@@ -49,7 +69,7 @@ export default function AdminProductsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Products</h1>
-          <p className="mt-0.5 text-sm text-slate-500">{products.length} {products.length === 1 ? 'product' : 'products'}</p>
+          <p className="mt-0.5 text-sm text-slate-500">{filtered.length} {filtered.length === 1 ? 'product' : 'products'} {filtered.length > PER_PAGE ? `(page ${page} of ${totalPages})` : ''}</p>
         </div>
         <Link href="/admin/products/create" className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">+ New Product</Link>
       </div>
@@ -89,7 +109,7 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {filtered.map((p) => (
+            {paginated.map((p) => (
               <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="px-4 py-2">
                   {p.images?.[0]?.image_path ? (
@@ -102,7 +122,9 @@ export default function AdminProductsPage() {
                     </div>
                   )}
                 </td>
-                <td className="px-4 py-3 font-medium text-slate-900 max-w-[200px] truncate">{p.title}</td>
+                <td className="px-4 py-3 max-w-[200px] truncate">
+                  <Link href={`/admin/products/edit?id=${p.id}`} className="font-medium text-slate-900 hover:text-[#2f0f6b] transition">{p.title}</Link>
+                </td>
                 <td className="px-4 py-3">
                   <span className="font-medium text-slate-900">৳{Number(p.sale_price || p.unite_price).toLocaleString()}</span>
                   {p.sale_price ? <span className="ml-1.5 text-xs text-slate-400 line-through">৳{Number(p.unite_price).toLocaleString()}</span> : null}
@@ -117,18 +139,98 @@ export default function AdminProductsPage() {
                 <td className="px-4 py-3 text-center">
                   <span className={`text-sm font-medium ${(p.inventoryQuantity ?? 0) > 0 ? 'text-slate-900' : 'text-red-400'}`}>{p.inventoryQuantity ?? '—'}</span>
                 </td>
-                <td className="px-4 py-3 text-right whitespace-nowrap">
-                  <Link href={`/admin/products/edit?id=${p.id}`} className="text-sm font-medium text-slate-600 hover:text-[#2f0f6b] transition mr-3">Edit</Link>
-                  <button onClick={() => setDeleteTarget(p.id)} className="text-sm font-medium text-red-400 hover:text-red-600 transition">Delete</button>
+                <td className="px-4 py-3 text-right">
+                  <div className="relative inline-block">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        if (menuOpen === p.id) { setMenuOpen(null); return; }
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        setMenuPos({ top: rect.top - 8, left: rect.left + rect.width - 144 });
+                        setMenuOpen(p.id);
+                      }}
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
+                    >
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="5" r="1.5" />
+                        <circle cx="12" cy="12" r="1.5" />
+                        <circle cx="12" cy="19" r="1.5" />
+                      </svg>
+                    </button>
+                    {menuOpen === p.id && (
+                      <div ref={menuRef} className="fixed z-50 w-36 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg" style={{ top: menuPos.top, left: menuPos.left }}>
+                        <Link
+                          href={`/admin/products/edit?id=${p.id}`}
+                          onClick={() => setMenuOpen(null)}
+                          className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 transition"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => { setDeleteTarget(p.id); setMenuOpen(null); }}
+                          className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
-            {filtered.length === 0 ? (
+            {paginated.length === 0 ? (
               <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-400">{search || filterStatus !== 'all' || filterCategory !== 'all' ? 'No products match your filters.' : 'No products yet.'}</td></tr>
             ) : null}
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <button
+            type="button"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition disabled:opacity-30"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setPage(n)}
+              className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium transition ${
+                page === n
+                  ? 'bg-[#2f0f6b] text-white'
+                  : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+          <button
+            type="button"
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition disabled:opacity-30"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       <ConfirmDialog
         open={!!deleteTarget}
         title="Delete Product"

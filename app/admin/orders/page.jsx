@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo, Fragment } from 'react';
+import Link from 'next/link';
 import { getOrders, updateOrderStatus } from '../../../src/actions/orders';
 
 const orderStatuses = ['pending', 'processing', 'completed', 'cancelled'];
@@ -96,7 +97,9 @@ export default function AdminOrdersPage() {
             {filtered.map((order) => (
               <Fragment key={order.id}>
                 <tr className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-slate-900">{order.orderNo}</td>
+                  <td className="px-4 py-3">
+                    <Link href={`/admin/orders/${order.orderNo}`} className="font-medium text-[#2f0f6b] hover:underline">{order.orderNo}</Link>
+                  </td>
                   <td className="px-4 py-3 text-slate-600">{order.details?.phoneNumber || order.user?.name || '—'}</td>
                   <td className="px-4 py-3 text-center text-slate-600">{order.items?.length ?? 0}</td>
                   <td className="px-4 py-3 font-medium text-slate-900">৳{Number(order.total).toLocaleString()}</td>

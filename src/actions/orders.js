@@ -15,6 +15,14 @@ export async function getOrders() {
   return serialize(orders);
 }
 
+export async function getOrderByOrderNo(orderNo) {
+  const order = await prisma.order.findUnique({
+    where: { orderNo },
+    include: { details: true, items: true, user: true },
+  });
+  return serialize(order);
+}
+
 export async function updateOrderStatus(id, data) {
   const order = await prisma.order.update({
     where: { id },

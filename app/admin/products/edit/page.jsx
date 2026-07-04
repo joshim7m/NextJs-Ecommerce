@@ -1,26 +1,19 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { getProduct, getCategories, updateProduct } from '../../../../src/actions/products';
+import ProductInfo from './partials/product-info';
+import VariantGenerator from './partials/variant-generator';
+import ManageVariant from './partials/manage-variant';
 
 const emptyForm = {
   title: '', slug: '', description: '', unite_price: '', sale_price: '', compareAtPrice: '',
   inventoryQuantity: '', status: 'draft', categorySlug: '',
 };
 
-let variantCounter = 0;
-
-function emptyVariant() {
-  return {
-    _key: `new_${++variantCounter}`,
-    id: null,
-    sku: '', size: '', color: '', price: '', sale_price: '',
-    inventoryQuantity: '', imageId: '', isDefault: false,
-    _delete: false,
-  };
-}
+let variantKeyCounter = 0;
 
 function EditProductForm() {
   const router = useRouter();
@@ -35,9 +28,12 @@ function EditProductForm() {
   const [removeImageIds, setRemoveImageIds] = useState([]);
   const [hasVariants, setHasVariants] = useState(false);
   const [variants, setVariants] = useState([]);
+  const [optionLabels, setOptionLabels] = useState([]);
+  const [removedVariantIds, setRemovedVariantIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notFound, setNotFound] = useState(false);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     if (!id) {
@@ -64,12 +60,12 @@ function EditProductForm() {
       });
       setExistingImages(product.images || []);
       setCategories(cats);
+
       const loaded = (product.variants || []).map((v) => ({
-        _key: v.id,
+        _key: `existing_${++variantKeyCounter}`,
         id: v.id,
+        optionValues: [v.size || '', v.color || ''].filter(Boolean),
         sku: v.sku || '',
-        size: v.size || '',
-        color: v.color || '',
         price: v.price?.toString() || '',
         sale_price: v.sale_price?.toString() || '',
         inventoryQuantity: v.inventoryQuantity?.toString() || '',
@@ -77,6 +73,12 @@ function EditProductForm() {
         isDefault: v.isDefault,
         _delete: false,
       }));
+
+      const optionLabels = loaded.some((v) => v.optionValues.length > 0)
+        ? ['Size', 'Color'].slice(0, loaded[0]?.optionValues?.length || 1)
+        : [];
+      setOptionLabels(optionLabels);
+
       setVariants(loaded);
       setHasVariants(loaded.length > 0);
       setLoading(false);
@@ -88,6 +90,14 @@ function EditProductForm() {
   }, [newPreviews]);
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const generateSlug = () => {
+    const slug = form.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+    setForm((prev) => ({ ...prev, slug }));
+  };
 
   const handleFileSelect = (e) => {
     const selected = Array.from(e.target.files || []);
@@ -109,20 +119,17 @@ function EditProductForm() {
   };
 
   const handleVariantChange = (key, field, value) => {
-    setVariants((prev) => prev.map((v) => v._key === key ? { ...v, [field]: value } : v));
-  };
-
-  const addVariant = () => {
-    const newV = emptyVariant();
-    if (variants.length === 0) newV.isDefault = true;
-    setVariants((prev) => [...prev, newV]);
+    setVariants((prev) => prev.map((v) => (v._key === key ? { ...v, [field]: value } : v)));
   };
 
   const removeVariant = (key) => {
     setVariants((prev) => {
-      const updated = prev.map((v) => v._key === key ? { ...v, _delete: true } : v);
-      const remaining = updated.filter((v) => !v._delete);
-      if (remaining.length && remaining.every((v) => !v.isDefault)) {
+      const removed = prev.find((v) => v._key === key);
+      if (removed?.id) {
+        setRemovedVariantIds((r) => [...r, removed.id]);
+      }
+      const remaining = prev.filter((v) => v._key !== key);
+      if (remaining.length > 0 && remaining.every((v) => !v.isDefault)) {
         remaining[0].isDefault = true;
       }
       return remaining;
@@ -133,25 +140,86 @@ function EditProductForm() {
     setVariants((prev) => prev.map((v) => ({ ...v, isDefault: v._key === key })));
   };
 
+  const handleGenerate = (parsed, combinations) => {
+    const labels = parsed.map((o) => o.name);
+    const generated = combinations.map((combo) => ({
+      _key: `gen_${++variantKeyCounter}`,
+      id: null,
+      optionValues: combo.optionValues,
+      sku: '',
+      price: form.unite_price,
+      sale_price: form.sale_price,
+      inventoryQuantity: form.inventoryQuantity,
+      imageId: '',
+      isDefault: false,
+      _delete: false,
+    }));
+
+    if (generated.length > 0) generated[0].isDefault = true;
+
+    setOptionLabels(labels);
+    setVariants(generated);
+  };
+
+  const existingOptions = (() => {
+    if (variants.length === 0) return [];
+    const sample = variants[0];
+    const vals0 = [...new Set(variants.map((v) => v.optionValues?.[0]).filter(Boolean))];
+    const vals1 = [...new Set(variants.map((v) => v.optionValues?.[1]).filter(Boolean))];
+    const result = [];
+    if (optionLabels[0]) result.push({ name: optionLabels[0], values: vals0.join(', ') });
+    if (optionLabels[1]) result.push({ name: optionLabels[1], values: vals1.join(', ') });
+    return result.length ? result : [];
+  })();
+
+  const clearToast = useCallback(() => setToast(null), []);
+
+  useEffect(() => {
+    if (toast) {
+      const t = setTimeout(clearToast, 3000);
+      return () => clearTimeout(t);
+    }
+  }, [toast, clearToast]);
+
   const handleSave = async () => {
     if (!form.title || !form.slug || !id) return;
     setSaving(true);
+    setToast(null);
     try {
       let imagePaths = [];
       if (newFiles.length) {
         const uploadForm = new FormData();
         newFiles.forEach((f) => uploadForm.append('images', f));
         const uploadRes = await fetch('/api/admin/upload', { method: 'POST', body: uploadForm });
+        if (!uploadRes.ok) throw new Error('Image upload failed');
         const uploadData = await uploadRes.json();
         imagePaths = uploadData.urls;
       }
-      if (!hasVariants) {
-        await updateProduct(id, { ...form, imagePaths, removeImageIds, variants: [] });
-      } else {
-        await updateProduct(id, { ...form, imagePaths, removeImageIds, variants });
-      }
-      router.push('/admin/products');
+
+      const variantPayload = variants.map((v) => ({
+        id: v.id,
+        sku: v.sku,
+        size: v.optionValues?.[0] || '',
+        color: v.optionValues?.[1] || '',
+        price: v.price,
+        sale_price: v.sale_price,
+        inventoryQuantity: v.inventoryQuantity ? parseInt(v.inventoryQuantity) : 0,
+        imageId: v.imageId,
+        isDefault: v.isDefault,
+      }));
+
+      await updateProduct(id, {
+        ...form,
+        imagePaths,
+        removeImageIds,
+        variants: variantPayload,
+        removedVariantIds,
+      });
+      setToast({ type: 'success', message: 'Product saved successfully.' });
+      router.refresh();
     } catch {
+      setToast({ type: 'error', message: 'Something went wrong. Please try again.' });
+    } finally {
       setSaving(false);
     }
   };
@@ -177,146 +245,79 @@ function EditProductForm() {
 
   return (
     <section className="space-y-6">
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium shadow-lg transition-all ${
+            toast.type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'
+          }`}
+        >
+          {toast.type === 'success' ? (
+            <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          )}
+          {toast.message}
+          <button type="button" onClick={clearToast} className="ml-2 opacity-70 hover:opacity-100">&times;</button>
+        </div>
+      )}
+
       <div>
         <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition">&larr; Back to Products</Link>
         <h1 className="mt-2 text-2xl font-bold text-slate-900">Edit Product</h1>
       </div>
 
+      <ProductInfo
+        form={form}
+        onChange={handleChange}
+        onGenerateSlug={generateSlug}
+        categories={categories}
+        existingImages={existingImages}
+        newPreviews={newPreviews}
+        onRemoveExisting={removeExistingImage}
+        onRemoveNew={removeNewImage}
+        onAdd={handleFileSelect}
+      />
+
+      {/* Variants section */}
       <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Title</label>
-            <input name="title" value={form.title} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Slug</label>
-            <input name="slug" value={form.slug} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Description</label>
-            <textarea name="description" value={form.description} onChange={handleChange} rows={2} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Price (৳)</label>
-            <input name="unite_price" type="number" step="0.01" value={form.unite_price} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Sale Price (৳)</label>
-            <input name="sale_price" type="number" step="0.01" value={form.sale_price} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Compare At (৳)</label>
-            <input name="compareAtPrice" type="number" step="0.01" value={form.compareAtPrice} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</label>
-            <input name="inventoryQuantity" type="number" value={form.inventoryQuantity} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Status</label>
-            <select name="status" value={form.status} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-              <option value="draft">Draft</option>
-              <option value="publish">Published</option>
-            </select>
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Images</label>
-            <div className="mt-1 flex flex-wrap gap-3">
-              {existingImages.map((img) => (
-                <div key={img.id} className="relative group">
-                  <img src={img.image_path} alt="" className="h-20 w-20 rounded-lg border border-slate-200 object-cover" />
-                  <button type="button" onClick={() => removeExistingImage(img.id)} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition hover:bg-red-600">✕</button>
-                </div>
-              ))}
-              {newPreviews.map((src, i) => (
-                <div key={`new-${i}`} className="relative group">
-                  <img src={src} alt="" className="h-20 w-20 rounded-lg border-2 border-dashed border-[#2f0f6b] object-cover" />
-                  <button type="button" onClick={() => removeNewImage(i)} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition hover:bg-red-600">✕</button>
-                </div>
-              ))}
-              <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b] transition">
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
-                </svg>
-                <input type="file" multiple accept="image/*" onChange={handleFileSelect} className="hidden" />
-              </label>
-            </div>
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Category</label>
-            <select name="categorySlug" value={form.categorySlug} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-              <option value="">Select a category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.slug}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
+        <label className="flex items-center gap-3 cursor-pointer mb-5">
+          <input
+            type="checkbox"
+            checked={hasVariants}
+            onChange={(e) => {
+              setHasVariants(e.target.checked);
+              if (!e.target.checked) { setVariants([]); setOptionLabels([]); }
+            }}
+            className="h-4 w-4 rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b]"
+          />
+          <span className="text-sm font-medium text-slate-900">This product has variants (size, color, etc.)</span>
+        </label>
 
-          <div className="sm:col-span-2 border-t border-slate-200 pt-4 mt-2">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" checked={hasVariants} onChange={(e) => { setHasVariants(e.target.checked); if (!e.target.checked) setVariants([]); }} className="h-4 w-4 rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b]" />
-              <span className="text-sm font-medium text-slate-900">This product has variants (size, color, etc.)</span>
-            </label>
-
-            {hasVariants && (
-              <div className="mt-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Variants</span>
-                  <button type="button" onClick={addVariant} className="text-sm font-medium text-[#2f0f6b] hover:text-[#2f0f6b]/80 transition">+ Add Variant</button>
-                </div>
-                {variants.length === 0 && (
-                  <p className="text-sm text-slate-400 py-4 text-center">No variants yet. Click &quot;+ Add Variant&quot; to create one.</p>
-                )}
-                {variants.map((v) => (
-                  <div key={v._key} className="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
-                    <div className="grid gap-3 sm:grid-cols-8 items-end">
-                      <div>
-                        <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-0.5">Size</label>
-                        <input value={v.size} onChange={(e) => handleVariantChange(v._key, 'size', e.target.value)} placeholder="M" className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-0.5">Color</label>
-                        <input value={v.color} onChange={(e) => handleVariantChange(v._key, 'color', e.target.value)} placeholder="Black" className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-0.5">Price</label>
-                        <input type="number" step="0.01" value={v.price} onChange={(e) => handleVariantChange(v._key, 'price', e.target.value)} placeholder="0" className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-0.5">Sale Price</label>
-                        <input type="number" step="0.01" value={v.sale_price} onChange={(e) => handleVariantChange(v._key, 'sale_price', e.target.value)} placeholder="0" className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-0.5">Stock</label>
-                        <input type="number" value={v.inventoryQuantity} onChange={(e) => handleVariantChange(v._key, 'inventoryQuantity', e.target.value)} placeholder="0" className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-0.5">Image</label>
-                        <select value={v.imageId} onChange={(e) => handleVariantChange(v._key, 'imageId', e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-                          <option value="">None</option>
-                          {allImages.map((img) => (
-                            <option key={img.id} value={img.id}>{img.url.split('/').pop()}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="flex items-center gap-2 pb-1">
-                        <label className="flex items-center gap-1.5 cursor-pointer text-xs text-slate-500">
-                          <input type="radio" name="default_variant" checked={v.isDefault} onChange={() => toggleDefault(v._key)} className="h-3.5 w-3.5 border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b]" />
-                          Default
-                        </label>
-                        <button type="button" onClick={() => removeVariant(v._key)} className="text-xs font-medium text-red-400 hover:text-red-600 transition ml-1">Remove</button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+        {hasVariants && (
+          <div className="space-y-6">
+            <VariantGenerator onGenerate={handleGenerate} existingOptions={existingOptions} />
+            <ManageVariant
+              variants={variants}
+              optionLabels={optionLabels}
+              allImages={allImages}
+              onChange={handleVariantChange}
+              onRemove={removeVariant}
+              onToggleDefault={toggleDefault}
+            />
           </div>
-        </div>
-        <div className="mt-5 flex gap-3">
-          <button onClick={handleSave} disabled={saving} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition disabled:opacity-50">{saving ? 'Saving…' : 'Save'}</button>
-          <Link href="/admin/products" className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</Link>
-        </div>
+        )}
+      </div>
+
+      <div className="flex gap-3">
+        <button onClick={handleSave} disabled={saving} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition disabled:opacity-50">
+          {saving ? 'Saving\u2026' : 'Save'}
+        </button>
+        <Link href="/admin/products" className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</Link>
       </div>
     </section>
   );
