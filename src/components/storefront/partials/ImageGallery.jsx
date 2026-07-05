@@ -29,7 +29,7 @@ export default function ImageGallery({ images, title, variantImageIndex }) {
               type="button"
               onClick={() => { setSelected(i); setLoaded(false); setError(false); }}
               className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition sm:h-16 sm:w-16 ${
-                i === selected ? 'border-[#2f0f6b]' : 'border-slate-200 hover:border-slate-300'
+                i === selected ? 'border-[#2f0f6b] dark:border-[#a78bfa]' : 'border-slate-200 hover:border-slate-300 dark:border-slate-600 dark:hover:border-slate-500'
               }`}
             >
               <img
@@ -43,10 +43,10 @@ export default function ImageGallery({ images, title, variantImageIndex }) {
         </div>
       )}
 
-      <div className="relative flex-1 overflow-hidden rounded-xl bg-slate-100">
+      <div className="relative flex-1 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700">
         <div className="aspect-square w-full sm:h-[32rem]">
           {!loaded && !error && (
-            <div className="absolute inset-0 animate-pulse bg-slate-200" />
+            <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-600" />
           )}
           {active && !error ? (
             <img
@@ -59,7 +59,7 @@ export default function ImageGallery({ images, title, variantImageIndex }) {
               onError={() => setError(true)}
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-slate-400">
+            <div className="flex h-full items-center justify-center text-slate-400 dark:text-slate-500">
               <svg className="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>

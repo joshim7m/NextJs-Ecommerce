@@ -46,10 +46,10 @@ export default function FilterSidebar({ categories }) {
   const clearAll = () => router.push('/');
 
   const filterPanel = (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="space-y-6">
         <div>
-          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500">
+          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Categories
           </h4>
           <div className="space-y-1">
@@ -58,8 +58,8 @@ export default function FilterSidebar({ categories }) {
               onClick={() => handleCategoryChange(null)}
               className={`block w-full rounded-lg px-3 py-2 text-left text-sm transition ${
                 !selectedCategory
-                  ? 'bg-[#2f0f6b] text-white'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900'
+                  : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700'
               }`}
             >
               All
@@ -71,8 +71,8 @@ export default function FilterSidebar({ categories }) {
                 onClick={() => handleCategoryChange(cat.slug)}
                 className={`block w-full rounded-lg px-3 py-2 text-left text-sm transition ${
                   selectedCategory === cat.slug
-                    ? 'bg-[#2f0f6b] text-white'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900'
+                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700'
                 }`}
               >
                 {cat.name}
@@ -82,7 +82,7 @@ export default function FilterSidebar({ categories }) {
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500">
+          <h4 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Price Range
           </h4>
           <div className="space-y-3">
@@ -93,16 +93,16 @@ export default function FilterSidebar({ categories }) {
               step="100"
               value={localRange[1]}
               onChange={(e) => setLocalRange([0, Number(e.target.value)])}
-              className="w-full accent-[#2f0f6b]"
+              className="w-full accent-[#2f0f6b] dark:accent-[#a78bfa]"
             />
-            <div className="flex items-center justify-between text-sm text-slate-600">
+            <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-300">
               <span>৳0</span>
               <span>৳{localRange[1].toLocaleString()}</span>
             </div>
             <button
               type="button"
               onClick={applyPrice}
-              className="w-full rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm text-white transition hover:bg-[#2f0f6b]/90"
+              className="w-full rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm text-white transition hover:bg-[#2f0f6b]/90 dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90"
             >
               Apply
             </button>
@@ -119,7 +119,7 @@ export default function FilterSidebar({ categories }) {
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex flex-1 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm"
+          className="flex flex-1 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
         >
           <span className="flex items-center gap-2">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,7 +135,7 @@ export default function FilterSidebar({ categories }) {
           <button
             type="button"
             onClick={clearAll}
-            className="shrink-0 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm"
+            className="shrink-0 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500 shadow-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400"
           >
             Clear
           </button>
@@ -149,8 +149,8 @@ export default function FilterSidebar({ categories }) {
           onClick={() => handleCategoryChange(null)}
           className={`shrink-0 rounded-full px-4 py-2 text-xs font-medium whitespace-nowrap transition ${
             !selectedCategory
-              ? 'bg-[#2f0f6b] text-white'
-              : 'border border-slate-200 bg-white text-slate-600'
+              ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900'
+              : 'border border-slate-200 bg-white text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300'
           }`}
         >
           All
@@ -162,8 +162,8 @@ export default function FilterSidebar({ categories }) {
             onClick={() => handleCategoryChange(cat.slug)}
             className={`shrink-0 rounded-full px-4 py-2 text-xs font-medium whitespace-nowrap transition ${
               selectedCategory === cat.slug
-                ? 'bg-[#2f0f6b] text-white'
-                : 'border border-slate-200 bg-white text-slate-600'
+                ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900'
+                : 'border border-slate-200 bg-white text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300'
             }`}
           >
             {cat.name}

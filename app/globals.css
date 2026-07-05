@@ -9,6 +9,12 @@
   color-scheme: light;
 }
 
+.dark {
+  color-scheme: dark;
+  --primary: #a78bfa;
+  --secondary: #94a3b8;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -18,6 +24,12 @@ body {
   font-family: 'Inter Variable', Inter, system-ui, sans-serif;
   background: #f8fafc;
   color: #0f172a;
+}
+
+.dark body,
+body.dark {
+  background: #0f172a;
+  color: #e2e8f0;
 }
 
 a {

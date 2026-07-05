@@ -39,6 +39,8 @@ export async function POST(request) {
           itemImagePath: item.image || '',
           purchasePrice: Number(item.salePrice ?? item.price ?? 0),
           quantity: Number(item.quantity ?? 0),
+          variantName: item.variantName || null,
+          variantId: item.variantId || null,
         })),
       },
     },

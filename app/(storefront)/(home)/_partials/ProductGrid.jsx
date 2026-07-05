@@ -56,11 +56,11 @@ function ProductCard({ product, index }) {
 
   return (
     <div
-      className="group relative rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg overflow-hidden"
+      className="group relative rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg overflow-hidden dark:border-slate-700 dark:bg-slate-800"
       style={{ animationDelay: `${(index % 12) * 60}ms` }}
     >
       <Link href={`/products/${product.slug}`} className="block">
-        <div className="aspect-square w-full overflow-hidden bg-slate-100">
+        <div className="aspect-square w-full overflow-hidden bg-slate-100 dark:bg-slate-700">
           {firstImage ? (
             <img
               ref={imgRef}
@@ -73,7 +73,7 @@ function ProductCard({ product, index }) {
               onLoad={() => setLoaded(true)}
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-slate-400">
+            <div className="flex h-full items-center justify-center text-slate-400 dark:text-slate-500">
               <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
@@ -86,7 +86,7 @@ function ProductCard({ product, index }) {
       <button
         type="button"
         onClick={handleWishlist}
-        className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-sm shadow-sm backdrop-blur-sm transition-all hover:bg-white hover:scale-110 sm:opacity-0 sm:group-hover:opacity-100"
+        className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-sm shadow-sm backdrop-blur-sm transition-all hover:bg-white hover:scale-110 dark:bg-slate-800/80 dark:hover:bg-slate-700 sm:opacity-0 sm:group-hover:opacity-100"
         aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
       >
         {wishlisted ? (
@@ -94,7 +94,7 @@ function ProductCard({ product, index }) {
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
         ) : (
-          <svg className="h-4 w-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-4 w-4 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         )}
@@ -102,16 +102,16 @@ function ProductCard({ product, index }) {
 
       <div className="flex flex-col gap-1 p-2 sm:p-3">
         <Link href={`/products/${product.slug}`}>
-          <h3 className="text-xs font-medium text-slate-900 line-clamp-2 sm:text-sm hover:text-[#2f0f6b] transition-colors">
+          <h3 className="text-xs font-medium text-slate-900 line-clamp-2 sm:text-sm hover:text-[#2f0f6b] transition-colors dark:text-slate-100 dark:hover:text-[#a78bfa]">
             {product.title}
           </h3>
         </Link>
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-semibold text-[#2f0f6b] sm:text-lg">
+          <span className="text-sm font-semibold text-[#2f0f6b] dark:text-[#a78bfa] sm:text-lg">
             ৳{price.toLocaleString()}
           </span>
           {originalPrice ? (
-            <span className="text-xs text-slate-400 line-through sm:text-sm">
+            <span className="text-xs text-slate-400 line-through sm:text-sm dark:text-slate-500">
               ৳{originalPrice.toLocaleString()}
             </span>
           ) : null}
@@ -120,11 +120,11 @@ function ProductCard({ product, index }) {
           type="button"
           onClick={handleAddToCart}
           disabled={!variant}
-          className={`mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-95 sm:text-sm ${
-            added
-              ? 'border-green-500 bg-green-50 text-green-700'
-              : 'border-[#2f0f6b] bg-white text-[#2f0f6b] hover:bg-[#2f0f6b] hover:text-white'
-          } ${!variant ? 'cursor-not-allowed opacity-50' : ''}`}
+           className={`mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-95 sm:text-sm ${
+             added
+               ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+               : 'border-[#2f0f6b] bg-white text-[#2f0f6b] hover:bg-[#2f0f6b] hover:text-white dark:border-[#a78bfa] dark:bg-slate-800 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900'
+           } ${!variant ? 'cursor-not-allowed opacity-50' : ''}`}
         >
           {added ? (
             <>
@@ -169,7 +169,7 @@ function LoadMoreButton({ onClick, remaining }) {
       <button
         type="button"
         onClick={onClick}
-        className={`w-full rounded-xl border-2 border-[#2f0f6b] bg-white px-6 py-3 text-sm font-semibold text-[#2f0f6b] transition-all hover:bg-[#2f0f6b] hover:text-white active:scale-95 sm:w-auto sm:px-10 sm:py-3.5 ${
+        className={`w-full rounded-xl border-2 border-[#2f0f6b] bg-white px-6 py-3 text-sm font-semibold text-[#2f0f6b] transition-all hover:bg-[#2f0f6b] hover:text-white active:scale-95 dark:border-[#a78bfa] dark:bg-slate-800 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900 sm:w-auto sm:px-10 sm:py-3.5 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
@@ -192,12 +192,12 @@ export default function ProductGrid({ products }) {
 
   if (!totalCount) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-16 text-center">
-        <svg className="mb-4 h-12 w-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-800">
+        <svg className="mb-4 h-12 w-12 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
-        <p className="text-slate-500">No products match your filters.</p>
-        <Link href="/" className="mt-3 text-sm font-medium text-[#2f0f6b] hover:underline">
+        <p className="text-slate-500 dark:text-slate-400">No products match your filters.</p>
+        <Link href="/" className="mt-3 text-sm font-medium text-[#2f0f6b] hover:underline dark:text-[#a78bfa]">
           Clear all filters
         </Link>
       </div>
@@ -219,7 +219,7 @@ export default function ProductGrid({ products }) {
       )}
 
       {!hasMore && totalCount > PAGE_SIZE && (
-        <p className="mt-6 text-center text-xs text-slate-400 sm:mt-8 sm:text-sm">
+        <p className="mt-6 text-center text-xs text-slate-400 sm:mt-8 sm:text-sm dark:text-slate-500">
           Showing all {totalCount} products
         </p>
       )}

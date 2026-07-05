@@ -5,9 +5,10 @@ import path from 'path';
 export async function POST(request) {
   const formData = await request.formData();
   const files = formData.getAll('images');
+  const folder = formData.get('folder') || 'products';
   const uploaded = [];
 
-  const uploadDir = path.join(process.cwd(), 'public/uploads/products');
+  const uploadDir = path.join(process.cwd(), 'public/uploads', folder);
   await mkdir(uploadDir, { recursive: true });
 
   for (const file of files) {
@@ -16,7 +17,7 @@ export async function POST(request) {
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
     const filepath = path.join(uploadDir, filename);
     await writeFile(filepath, buffer);
-    uploaded.push(`/uploads/products/${filename}`);
+    uploaded.push(`/uploads/${folder}/${filename}`);
   }
 
   return NextResponse.json({ urls: uploaded });

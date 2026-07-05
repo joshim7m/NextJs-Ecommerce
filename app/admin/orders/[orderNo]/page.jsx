@@ -9,17 +9,27 @@ const orderStatuses = ['pending', 'processing', 'completed', 'cancelled'];
 const paymentStatuses = ['unpaid', 'paid', 'refund'];
 
 const orderStatusColors = {
-  pending: 'bg-amber-50 text-amber-700',
-  processing: 'bg-blue-50 text-blue-700',
-  completed: 'bg-emerald-50 text-emerald-700',
-  cancelled: 'bg-red-50 text-red-700',
+  pending: { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-400' },
+  processing: { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
+  completed: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  cancelled: { bg: 'bg-red-50', text: 'text-red-700', dot: 'bg-red-500' },
 };
 
 const paymentStatusColors = {
-  unpaid: 'bg-slate-100 text-slate-600',
-  paid: 'bg-emerald-50 text-emerald-700',
-  refund: 'bg-red-50 text-red-700',
+  unpaid: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' },
+  paid: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
+  refund: { bg: 'bg-red-50', text: 'text-red-700', dot: 'bg-red-500' },
 };
+
+function StatCard({ label, value, sub }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+      <p className="text-xs font-medium uppercase tracking-wider text-slate-500">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
+      {sub && <p className="mt-0.5 text-xs text-slate-400">{sub}</p>}
+    </div>
+  );
+}
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -27,6 +37,7 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     getOrderByOrderNo(params.orderNo).then((data) => {
@@ -38,17 +49,20 @@ export default function OrderDetailPage() {
   const handleStatusUpdate = async (field, value) => {
     if (!order) return;
     setSaving(true);
+    setSaved(false);
     try {
       await updateOrderStatus(order.id, { [field]: value });
       const updated = await getOrderByOrderNo(params.orderNo);
       setOrder(updated);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
     } catch {}
     setSaving(false);
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className="flex items-center justify-center py-24">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-[#2f0f6b]" />
       </div>
     );
@@ -56,128 +70,347 @@ export default function OrderDetailPage() {
 
   if (!order) {
     return (
-      <div className="py-20 text-center">
+      <div className="py-24 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+          <svg className="h-8 w-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
         <p className="text-lg font-semibold text-slate-900">Order not found</p>
         <p className="mt-1 text-sm text-slate-500">No order matches &ldquo;{params.orderNo}&rdquo;</p>
-        <Link href="/admin/orders" className="mt-4 inline-block text-sm font-medium text-[#2f0f6b] hover:underline">&larr; Back to orders</Link>
+        <Link href="/admin/orders" className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">&larr; Back to orders</Link>
       </div>
     );
   }
 
   const subtotal = order.items.reduce((sum, item) => sum + Number(item.purchasePrice) * item.quantity, 0);
   const deliveryCharge = Number(order.details?.deliveryCharge || 0);
+  const itemCount = order.items.reduce((sum, i) => sum + i.quantity, 0);
+  const osColor = orderStatusColors[order.orderStatus] || { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' };
+  const psColor = paymentStatusColors[order.paymentStatus] || { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <Link href="/admin/orders" className="text-sm text-slate-400 hover:text-slate-600 transition">&larr; Orders</Link>
-          <h1 className="mt-1 text-2xl font-bold text-slate-900">{order.orderNo}</h1>
-          <p className="text-sm text-slate-500">Placed on {new Date(order.createdAt).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+      {/* ── Header ── */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <Link
+            href="/admin/orders"
+            className="mt-1 flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700 transition shadow-sm"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">{order.orderNo}</h1>
+            <p className="mt-0.5 text-sm text-slate-500">
+              Placed{' '}
+              <span className="font-medium text-slate-600">
+                {new Date(order.createdAt).toLocaleDateString('en-US', {
+                  weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+                })}
+              </span>
+              {' at '}
+              {new Date(order.createdAt).toLocaleTimeString('en-US', {
+                hour: '2-digit', minute: '2-digit',
+              })}
+            </p>
+          </div>
         </div>
-        <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${orderStatusColors[order.orderStatus] || 'bg-slate-100 text-slate-600'}`}>
-          {order.orderStatus}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold ${osColor.bg} ${osColor.text}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${osColor.dot}`} />
+            {order.orderStatus}
+          </span>
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold ${psColor.bg} ${psColor.text}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${psColor.dot}`} />
+            {order.paymentStatus}
+          </span>
+        </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left column */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Items */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">Order Items</h2>
-            <div className="divide-y divide-slate-100">
-              {order.items.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
-                  {item.itemImagePath && (
-                    <img src={item.itemImagePath} alt={item.productTitle} className="h-14 w-14 rounded-lg border border-slate-100 object-cover" />
-                  )}
+      {/* ── Stat cards ── */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <StatCard label="Items" value={itemCount} sub={`${order.items.length} line items`} />
+        <StatCard label="Subtotal" value={`৳${subtotal.toLocaleString()}`} />
+        <StatCard label="Delivery" value={deliveryCharge > 0 ? `৳${deliveryCharge.toLocaleString()}` : 'Free'} />
+        <StatCard
+          label="Total"
+          value={`৳${Number(order.total).toLocaleString()}`}
+          sub="Including delivery"
+        />
+      </div>
+
+      {/* ── Main grid ── */}
+      <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+        {/* ── Left: Order items ── */}
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="border-b border-slate-100 bg-slate-50/80 px-6 py-4">
+            <h2 className="text-sm font-semibold text-slate-900">Order Items</h2>
+          </div>
+          <ul className="divide-y divide-slate-100">
+            {order.items.map((item) => {
+              const lineTotal = Number(item.purchasePrice) * item.quantity;
+              return (
+                <li key={item.id} className="flex items-start gap-4 px-6 py-4 hover:bg-slate-50/50 transition-colors">
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-slate-100 bg-slate-50">
+                    {item.itemImagePath ? (
+                      <img src={item.itemImagePath} alt={item.productTitle} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-slate-300">
+                        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900 truncate">{item.productTitle}</p>
-                    <p className="text-xs text-slate-400">Qty: {item.quantity} &times; ৳{Number(item.purchasePrice).toLocaleString()}</p>
+                    {item.variantName && (
+                      <span className="mt-0.5 inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+                        <svg className="h-3 w-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        {item.variantName}
+                      </span>
+                    )}
+                    <div className="mt-1">
+                      <span className="font-medium text-slate-900">৳{Number(item.purchasePrice).toLocaleString()}</span>
+                      <span className="text-slate-400"> × {item.quantity}</span>
+                    </div>
                   </div>
-                  <p className="text-sm font-semibold text-slate-900">৳{(Number(item.purchasePrice) * item.quantity).toLocaleString()}</p>
-                </div>
-              ))}
-            </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-semibold text-slate-900">৳{lineTotal.toLocaleString()}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
 
-            <div className="mt-4 border-t border-slate-100 pt-4 space-y-1.5 text-sm">
-              <div className="flex justify-between text-slate-500">
-                <span>Subtotal</span>
-                <span>৳{subtotal.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-slate-500">
-                <span>Delivery</span>
-                <span>{deliveryCharge > 0 ? `৳${deliveryCharge.toLocaleString()}` : 'Free'}</span>
-              </div>
-              <div className="flex justify-between border-t border-slate-100 pt-1.5 text-base font-bold text-slate-900">
-                <span>Total</span>
-                <span>৳{Number(order.total).toLocaleString()}</span>
-              </div>
+          {/* Totals */}
+          <div className="border-t border-slate-100 bg-slate-50/50 px-6 py-4 space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-500">Subtotal</span>
+              <span className="font-medium text-slate-900">৳{subtotal.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-500">Delivery</span>
+              <span className="font-medium text-slate-900">
+                {deliveryCharge > 0 ? `৳${deliveryCharge.toLocaleString()}` : 'Free'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-base">
+              <span className="font-semibold text-slate-900">Total</span>
+              <span className="text-lg font-bold text-[#2f0f6b]">৳{Number(order.total).toLocaleString()}</span>
             </div>
           </div>
         </div>
 
-        {/* Right column */}
+        {/* ── Right sidebar ── */}
         <div className="space-y-6">
           {/* Status management */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">Status</h2>
-            <div className="space-y-4">
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+              <h2 className="text-sm font-semibold text-slate-900">Status</h2>
+            </div>
+            <div className="p-5 space-y-5">
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1">Order Status</label>
-                <select
-                  value={order.orderStatus}
-                  onChange={(e) => handleStatusUpdate('orderStatus', e.target.value)}
-                  disabled={saving}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] disabled:opacity-50"
-                >
-                  {orderStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Order Status
+                </label>
+                <div className="relative">
+                  <select
+                    value={order.orderStatus}
+                    onChange={(e) => handleStatusUpdate('orderStatus', e.target.value)}
+                    disabled={saving}
+                    className="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-900 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] disabled:opacity-50 transition"
+                  >
+                    {orderStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <svg className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1">Payment Status</label>
-                <select
-                  value={order.paymentStatus}
-                  onChange={(e) => handleStatusUpdate('paymentStatus', e.target.value)}
-                  disabled={saving}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] disabled:opacity-50"
-                >
-                  {paymentStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Payment Status
+                </label>
+                <div className="relative">
+                  <select
+                    value={order.paymentStatus}
+                    onChange={(e) => handleStatusUpdate('paymentStatus', e.target.value)}
+                    disabled={saving}
+                    className="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-900 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] disabled:opacity-50 transition"
+                  >
+                    {paymentStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <svg className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
-              {saving && <p className="text-xs text-slate-400">Updating...</p>}
+              <div className="flex items-center gap-2 text-xs">
+                {saving && (
+                  <span className="flex items-center gap-1.5 text-slate-400">
+                    <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Saving…
+                  </span>
+                )}
+                {saved && (
+                  <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
+                    <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Saved
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Customer details */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">Customer</h2>
-            {order.details ? (
-              <div className="space-y-2 text-sm">
-                <div>
-                  <p className="text-xs text-slate-400">Phone</p>
-                  <p className="text-slate-900">{order.details.phoneNumber || '—'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400">Shipping Area</p>
-                  <p className="text-slate-900">{order.details.shippingArea}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400">Address</p>
-                  <p className="text-slate-900">{order.details.shippingAddress}</p>
-                </div>
-                {order.details.billingAddress && (
-                  <div>
-                    <p className="text-xs text-slate-400">Billing Address</p>
-                    <p className="text-slate-900">{order.details.billingAddress}</p>
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+              <h2 className="text-sm font-semibold text-slate-900">Customer</h2>
+            </div>
+            <div className="p-5">
+              {order.details ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 rounded-lg border border-slate-100 bg-slate-50/50 p-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2f0f6b]/10 text-[#2f0f6b]">
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900">{order.details.phoneNumber || 'Unknown'}</p>
+                      <p className="text-xs text-slate-500">{order.details.shippingArea}</p>
+                    </div>
                   </div>
-                )}
+
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wider text-slate-500 mb-0.5">Phone</p>
+                      <p className="text-sm text-slate-900 font-medium">{order.details.phoneNumber || '—'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wider text-slate-500 mb-0.5">Shipping Area</p>
+                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                        {order.details.shippingArea}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wider text-slate-500 mb-0.5">Shipping Address</p>
+                      <p className="text-sm text-slate-900 bg-slate-50 rounded-lg p-3 border border-slate-100">
+                        {order.details.shippingAddress}
+                      </p>
+                    </div>
+                    {order.details.billingAddress && order.details.billingAddress !== order.details.shippingAddress && (
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-wider text-slate-500 mb-0.5">Billing Address</p>
+                        <p className="text-sm text-slate-900">{order.details.billingAddress}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center py-6 text-center text-sm text-slate-400">
+                  <svg className="mb-2 h-8 w-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  No details available
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Order timeline */}
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+              <h2 className="text-sm font-semibold text-slate-900">Timeline</h2>
+            </div>
+            <div className="p-5">
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <div className="mt-1 w-px flex-1 bg-slate-200" />
+                  </div>
+                  <div className="pb-5">
+                    <p className="text-sm font-medium text-slate-900">Order placed</p>
+                    <p className="text-xs text-slate-500">{new Date(order.createdAt).toLocaleString()}</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex flex-col items-center">
+                    <span className={`flex h-6 w-6 items-center justify-center rounded-full ${
+                      order.orderStatus === 'processing' || order.orderStatus === 'completed'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-slate-100 text-slate-400'
+                    }`}>
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                      </svg>
+                    </span>
+                    {order.orderStatus !== 'completed' && order.orderStatus !== 'cancelled' && <div className="mt-1 w-px flex-1 bg-slate-200" />}
+                  </div>
+                  <div className={order.orderStatus !== 'completed' && order.orderStatus !== 'cancelled' ? 'pb-5' : ''}>
+                    <p className={`text-sm font-medium ${order.orderStatus === 'processing' || order.orderStatus === 'completed' ? 'text-slate-900' : 'text-slate-400'}`}>
+                      Processing
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      {order.orderStatus === 'processing' || order.orderStatus === 'completed'
+                        ? 'In progress'
+                        : 'Pending'}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <span className={`flex h-6 w-6 items-center justify-center rounded-full ${
+                    order.orderStatus === 'completed'
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : order.orderStatus === 'cancelled'
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-slate-100 text-slate-400'
+                  }`}>
+                    {order.orderStatus === 'cancelled' ? (
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    ) : (
+                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </span>
+                  <div>
+                    <p className={`text-sm font-medium ${
+                      order.orderStatus === 'completed' || order.orderStatus === 'cancelled'
+                        ? 'text-slate-900'
+                        : 'text-slate-400'
+                    }`}>
+                      {order.orderStatus === 'cancelled' ? 'Cancelled' : 'Completed'}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      {order.orderStatus === 'completed'
+                        ? 'Delivered'
+                        : order.orderStatus === 'cancelled'
+                        ? 'Order cancelled'
+                        : 'Awaiting'}
+                    </p>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <p className="text-sm text-slate-400 italic">No details available</p>
-            )}
+            </div>
           </div>
         </div>
       </div>

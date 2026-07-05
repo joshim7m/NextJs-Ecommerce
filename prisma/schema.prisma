@@ -114,6 +114,19 @@ model OrderDetails {
   updatedAt       DateTime @updatedAt
 }
 
+model SiteSetting {
+  id            String   @id @default("singleton")
+  siteName      String?
+  logo          String?
+  favicon       String?
+  mobile        String?
+  email         String?
+  address       String?
+  copyrightText String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 model OrderItem {
   id            String   @id @default(uuid())
   order         Order    @relation(fields: [orderId], references: [id])
@@ -122,6 +135,8 @@ model OrderItem {
   itemImagePath String
   purchasePrice Decimal
   quantity      Int
+  variantName   String?
+  variantId     String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
