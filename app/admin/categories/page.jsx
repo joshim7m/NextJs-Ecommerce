@@ -3,12 +3,15 @@
 import { useEffect, useState, useMemo } from 'react';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../../../src/actions/categories';
 
+const PER_PAGE = 10;
+
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: '', slug: '', image: '', description: '' });
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     getCategories().then((data) => { setCategories(data); setLoading(false); });
@@ -19,6 +22,10 @@ export default function AdminCategoriesPage() {
     const q = search.toLowerCase();
     return categories.filter((c) => c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q));
   }, [categories, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const safePage = Math.min(page, totalPages - 1);
+  const paginated = filtered.slice(safePage * PER_PAGE, (safePage + 1) * PER_PAGE);
 
   const resetForm = () => setForm({ name: '', slug: '', image: '', description: '' });
   const openCreate = () => { setEditing('new'); resetForm(); };
@@ -66,7 +73,7 @@ export default function AdminCategoriesPage() {
         <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <input type="text" placeholder="Search categories…" value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+        <input type="text" placeholder="Search categories…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
       </div>
 
       {editing ? (
@@ -103,17 +110,17 @@ export default function AdminCategoriesPage() {
             <tr className="border-b border-slate-100 bg-slate-50/80">
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Name</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Slug</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Description</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Parent</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-center">Products</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {filtered.map((cat) => (
+            {paginated.map((cat) => (
               <tr key={cat.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="px-4 py-3 font-medium text-slate-900">{cat.name}</td>
                 <td className="px-4 py-3 text-slate-500">{cat.slug}</td>
-                <td className="px-4 py-3 text-slate-500 max-w-[200px] truncate">{cat.description || '—'}</td>
+                <td className="px-4 py-3 text-slate-500">{cat.parent?.name || <span className="text-slate-300">none</span>}</td>
                 <td className="px-4 py-3 text-center">
                   <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-medium text-slate-600">{cat._count?.products ?? 0}</span>
                 </td>
@@ -123,12 +130,44 @@ export default function AdminCategoriesPage() {
                 </td>
               </tr>
             ))}
-            {filtered.length === 0 ? (
+            {paginated.length === 0 ? (
               <tr><td colSpan={5} className="px-4 py-10 text-center text-sm text-slate-400">{search ? 'No categories match your search.' : 'No categories yet.'}</td></tr>
             ) : null}
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 ? (
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={safePage === 0}
+            className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setPage(i)}
+              className={`h-8 w-8 rounded-lg text-sm font-medium transition ${
+                i === safePage
+                  ? 'bg-[#2f0f6b] text-white'
+                  : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            disabled={safePage === totalPages - 1}
+            className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { addToCart } from '../../../../src/lib/cartStorage';
 import { toggleWishlist, loadWishlist } from '../../../../src/lib/wishlistStorage';
 
-const PAGE_SIZE = 12;
-
 function ProductCard({ product, index }) {
   const [loaded, setLoaded] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
@@ -179,16 +177,16 @@ function LoadMoreButton({ onClick, remaining }) {
   );
 }
 
-export default function ProductGrid({ products }) {
-  const [visible, setVisible] = useState(PAGE_SIZE);
+export default function ProductGrid({ products, pageSize = 12 }) {
+  const [visible, setVisible] = useState(pageSize);
 
   const totalCount = products.length;
   const displayed = products.slice(0, visible);
   const hasMore = visible < totalCount;
 
   const handleLoadMore = useCallback(() => {
-    setVisible((v) => Math.min(v + PAGE_SIZE, totalCount));
-  }, [totalCount]);
+    setVisible((v) => Math.min(v + pageSize, totalCount));
+  }, [pageSize, totalCount]);
 
   if (!totalCount) {
     return (
@@ -218,7 +216,7 @@ export default function ProductGrid({ products }) {
         <LoadMoreButton onClick={handleLoadMore} remaining={totalCount - visible} />
       )}
 
-      {!hasMore && totalCount > PAGE_SIZE && (
+      {!hasMore && totalCount > pageSize && (
         <p className="mt-6 text-center text-xs text-slate-400 sm:mt-8 sm:text-sm dark:text-slate-500">
           Showing all {totalCount} products
         </p>

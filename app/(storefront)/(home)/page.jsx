@@ -8,7 +8,16 @@ export default async function HomePage({ searchParams }) {
   const categorySlug = params.category || null;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : null;
 
-  const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } });
+  const [categories, heroSlides] = await Promise.all([
+    prisma.category.findMany({
+      include: { _count: { select: { products: true } }, children: { include: { _count: { select: { products: true } } } } },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.heroSlider.findMany({
+      where: { isActive: true },
+      orderBy: { order: 'asc' },
+    }),
+  ]);
 
   const where = { status: 'publish' };
   if (categorySlug) {
@@ -28,7 +37,7 @@ export default async function HomePage({ searchParams }) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 sm:py-6">
-      <Hero />
+      <Hero slides={heroSlides} />
 
       <div className="mt-4 flex flex-col gap-4 sm:mt-8 sm:gap-6 lg:flex-row">
         <FilterSidebar categories={categories} />

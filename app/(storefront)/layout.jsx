@@ -16,7 +16,13 @@ async function getSiteSettings() {
 }
 
 export default async function StorefrontLayout({ children }) {
-  const settings = await getSiteSettings();
+  const [settings, socialLinks] = await Promise.all([
+    getSiteSettings(),
+    prisma.socialLink.findMany({
+      where: { isActive: true },
+      orderBy: { order: 'asc' },
+    }).catch(() => []),
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -24,6 +30,7 @@ export default async function StorefrontLayout({ children }) {
         siteName={settings.siteName}
         logo={settings.logo}
         mobile={settings.mobile}
+        announcementText={settings.announcementText}
       />
       <main className="flex-1">{children}</main>
       <Footer
@@ -32,6 +39,7 @@ export default async function StorefrontLayout({ children }) {
         email={settings.email}
         address={settings.address}
         copyrightText={settings.copyrightText}
+        socialLinks={socialLinks}
       />
     </div>
   );

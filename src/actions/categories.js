@@ -5,7 +5,7 @@ import prisma from '../lib/prisma';
 
 export async function getCategories() {
   return prisma.category.findMany({
-    include: { _count: { select: { products: true } } },
+    include: { _count: { select: { products: true } }, parent: true },
     orderBy: { name: 'asc' },
   });
 }

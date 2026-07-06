@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const navItems = [
@@ -122,9 +122,17 @@ function CollapsibleGroup({ label, icon, children, defaultOpen }) {
 }
 
 export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout, loggingOut }) {
+  const [settings, setSettings] = useState({ logo: '', siteName: '' });
   const [settingsOpen, setSettingsOpen] = useState(
     pathname.startsWith('/admin/settings')
   );
+
+  useEffect(() => {
+    fetch('/api/admin/settings/site')
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setSettings({ logo: data.logo || '', siteName: data.siteName || '' }); })
+      .catch(() => {});
+  }, []);
 
   return (
     <>
@@ -142,8 +150,11 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
       >
         <div className="flex h-16 items-center gap-3 border-b border-slate-100 px-5">
           <Link href="/admin/dashboard" className="flex items-center gap-3" onClick={onClose}>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2f0f6b] text-sm font-bold text-white">C</div>
-            <span className="text-sm font-semibold text-slate-900">Cabinet &amp; Closet</span>
+            {settings.logo ? (
+              <img src={settings.logo} alt={settings.siteName || 'Logo'} className="h-8 w-auto object-contain" />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2f0f6b] text-sm font-bold text-white">R</div>
+            )}
           </Link>
         </div>
 

@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { loadCart } from '../../lib/cartStorage';
 import CartDrawer from './CartDrawer';
+import AnnouncementBar from './AnnouncementBar';
 
 const DEBOUNCE_MS = 300;
 
-export default function Header({ siteName, logo, mobile }) {
+export default function Header({ siteName, logo, mobile, announcementText }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -135,13 +136,7 @@ export default function Header({ siteName, logo, mobile }) {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm dark:bg-slate-900">
-      {/* Hotline bar */}
-      <div className="bg-[#2f0f6b] text-[hsla(0,0%,98.5%,0.8)] dark:bg-[#1a0a3d]">
-        <div className="mx-auto flex max-w-7xl items-center justify-center gap-1 px-4 py-1.5 text-xs sm:py-2 sm:text-sm">
-          <span className="truncate">Call or WhatsApp us to order:</span>
-          <a href={`tel:${mobile}`} className="shrink-0 font-semibold text-white hover:underline">{mobile || 'N/A'}</a>
-        </div>
-      </div>
+      <AnnouncementBar text={announcementText} mobile={mobile} />
 
       {/* Main header */}
       <div className="border-b border-slate-200/50 dark:border-slate-700/50">
