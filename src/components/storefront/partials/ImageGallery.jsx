@@ -20,31 +20,9 @@ export default function ImageGallery({ images, title, variantImageIndex }) {
   const active = items[selected] || null;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-      {items.length > 1 && (
-        <div className="flex gap-2 sm:flex-col">
-          {items.map((img, i) => (
-            <button
-              key={img.id}
-              type="button"
-              onClick={() => { setSelected(i); setLoaded(false); setError(false); }}
-              className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition sm:h-16 sm:w-16 ${
-                i === selected ? 'border-[#2f0f6b] dark:border-[#a78bfa]' : 'border-slate-200 hover:border-slate-300 dark:border-slate-600 dark:hover:border-slate-500'
-              }`}
-            >
-              <img
-                src={img.image_path}
-                alt={img.altText || ''}
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div className="relative flex-1 overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700">
-        <div className="aspect-square w-full sm:h-[32rem]">
+    <div className="flex flex-col gap-3 sm:flex-row-reverse sm:gap-4">
+      <div className="relative flex-1 overflow-hidden rounded-xl bg-slate-100 sm:rounded-2xl dark:bg-slate-700">
+        <div className="aspect-square w-full sm:aspect-auto sm:h-[36rem]">
           {!loaded && !error && (
             <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-600" />
           )}
@@ -67,6 +45,28 @@ export default function ImageGallery({ images, title, variantImageIndex }) {
           )}
         </div>
       </div>
+
+      {items.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-col sm:overflow-x-visible scrollbar-none">
+          {items.map((img, i) => (
+            <button
+              key={img.id}
+              type="button"
+              onClick={() => { setSelected(i); setLoaded(false); setError(false); }}
+              className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition sm:h-16 sm:w-16 ${
+                i === selected ? 'border-[#2f0f6b] dark:border-[#a78bfa]' : 'border-slate-200 hover:border-slate-300 dark:border-slate-600 dark:hover:border-slate-500'
+              }`}
+            >
+              <img
+                src={img.image_path}
+                alt={img.altText || ''}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

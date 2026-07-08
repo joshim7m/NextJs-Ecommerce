@@ -151,7 +151,7 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
         <div className="flex h-16 items-center gap-3 border-b border-slate-100 px-5">
           <Link href="/admin/dashboard" className="flex items-center gap-3" onClick={onClose}>
             {settings.logo ? (
-              <img src={settings.logo} alt={settings.siteName || 'Logo'} className="h-8 w-auto object-contain" />
+              <img src={settings.logo} alt={settings.siteName || 'Logo'} className="h-12 w-auto object-contain" />
             ) : (
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2f0f6b] text-sm font-bold text-white">R</div>
             )}

@@ -1,6 +1,7 @@
 import prisma from '../../../src/lib/prisma';
 import Hero from './_partials/Hero';
 import FilterSidebar from './_partials/FilterSidebar';
+import MobileCategoryChips from './_partials/MobileCategoryChips';
 import ProductGrid from './_partials/ProductGrid';
 
 export default async function HomePage({ searchParams }) {
@@ -33,11 +34,14 @@ export default async function HomePage({ searchParams }) {
     orderBy: { createdAt: 'desc' },
   });
 
+  const parentCats = categories.filter((c) => !c.parentId);
   const serialized = JSON.parse(JSON.stringify(products));
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 sm:py-6">
       <Hero slides={heroSlides} />
+
+      <MobileCategoryChips parentCats={parentCats} />
 
       <div className="mt-4 flex flex-col gap-4 sm:mt-8 sm:gap-6 lg:flex-row">
         <FilterSidebar categories={categories} />

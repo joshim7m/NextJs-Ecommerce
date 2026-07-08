@@ -26,6 +26,7 @@ function ProductCard({ product, index }) {
   const originalPrice = product.sale_price ? Number(product.unite_price) : null;
   const firstImage = product.images?.[0]?.image_path;
   const variant = product.variants?.[0];
+  const hasVariants = product.variants && product.variants.length > 0;
 
   const handleWishlist = (e) => {
     e.preventDefault();
@@ -36,14 +37,13 @@ function ProductCard({ product, index }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!variant) return;
     addToCart({
       productId: product.id,
       productSlug: product.slug,
       title: product.title,
       image: firstImage || '',
-      variantId: variant.id,
-      variantName: variant.variant_name || 'Default',
+      variantId: variant ? variant.id : 'default',
+      variantName: variant ? (variant.variant_name || 'Default') : 'Default',
       price: String(price),
       salePrice: product.sale_price ? String(product.sale_price) : null,
       quantity: 1,
@@ -117,12 +117,11 @@ function ProductCard({ product, index }) {
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={!variant}
            className={`mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-95 sm:text-sm ${
              added
                ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                : 'border-[#2f0f6b] bg-white text-[#2f0f6b] hover:bg-[#2f0f6b] hover:text-white dark:border-[#a78bfa] dark:bg-slate-800 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900'
-           } ${!variant ? 'cursor-not-allowed opacity-50' : ''}`}
+           }`}
         >
           {added ? (
             <>

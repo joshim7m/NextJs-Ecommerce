@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getOrderByOrderNo, updateOrderStatus } from '../../../../src/actions/orders';
+import { getOrderByOrderNo, updateOrderStatus, updateOrderDetails } from '../../../../src/actions/orders';
 
 const orderStatuses = ['pending', 'processing', 'completed', 'cancelled'];
 const paymentStatuses = ['unpaid', 'paid', 'refund'];
@@ -38,10 +38,12 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [deliveryInput, setDeliveryInput] = useState('');
 
   useEffect(() => {
     getOrderByOrderNo(params.orderNo).then((data) => {
       setOrder(data);
+      setDeliveryInput(data.details ? String(Number(data.details.deliveryCharge)) : '0');
       setLoading(false);
     });
   }, [params.orderNo]);
@@ -52,6 +54,21 @@ export default function OrderDetailPage() {
     setSaved(false);
     try {
       await updateOrderStatus(order.id, { [field]: value });
+      const updated = await getOrderByOrderNo(params.orderNo);
+      setOrder(updated);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {}
+    setSaving(false);
+  };
+
+  const handleDeliveryChargeUpdate = async () => {
+    const val = parseFloat(deliveryInput);
+    if (isNaN(val) || val < 0 || !order) return;
+    setSaving(true);
+    setSaved(false);
+    try {
+      await updateOrderDetails(order.id, { deliveryCharge: val });
       const updated = await getOrderByOrderNo(params.orderNo);
       setOrder(updated);
       setSaved(true);
@@ -134,7 +151,65 @@ export default function OrderDetailPage() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <StatCard label="Items" value={itemCount} sub={`${order.items.length} line items`} />
         <StatCard label="Subtotal" value={`৳${subtotal.toLocaleString()}`} />
-        <StatCard label="Delivery" value={deliveryCharge > 0 ? `৳${deliveryCharge.toLocaleString()}` : 'Free'} />
+        <div className="rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Delivery Charge</p>
+          {order.orderStatus === 'completed' || order.orderStatus === 'cancelled' || order.paymentStatus === 'paid' || order.paymentStatus === 'refund' ? (
+            <div className="mt-2">
+              <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2.5 text-sm">
+                <span className="text-slate-900 font-medium">৳{deliveryCharge > 0 ? deliveryCharge.toLocaleString() : '0'}</span>
+                <span className="inline-flex items-center gap-1 rounded-md bg-slate-200/60 px-2 py-0.5 text-xs text-slate-500">
+                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Locked
+                </span>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="mt-2 flex items-center gap-2">
+                <div className="relative flex-1">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">৳</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={deliveryInput}
+                    onChange={(e) => setDeliveryInput(e.target.value)}
+                    className="w-full rounded-lg border border-slate-200 py-2 pl-7 pr-3 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+                    placeholder="0.00"
+                  />
+                </div>
+                <button
+                  onClick={handleDeliveryChargeUpdate}
+                  disabled={saving}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition disabled:opacity-50"
+                >
+                  {saving ? (
+                    <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : (
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                  {saving ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+              <p className="mt-1.5 text-xs text-slate-400">Updating delivery charge will recalculate the total.</p>
+              {saved && (
+                <p className="mt-1 flex items-center gap-1 text-xs font-medium text-emerald-600">
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Updated
+                </p>
+              )}
+            </>
+          )}
+        </div>
         <StatCard
           label="Total"
           value={`৳${Number(order.total).toLocaleString()}`}
@@ -289,7 +364,7 @@ export default function OrderDetailPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-slate-900">{order.details.phoneNumber || 'Unknown'}</p>
-                      <p className="text-xs text-slate-500">{order.details.shippingArea}</p>
+                      <p className="text-xs text-slate-500">{order.details.customerName}</p>
                     </div>
                   </div>
 
@@ -310,12 +385,7 @@ export default function OrderDetailPage() {
                         {order.details.shippingAddress}
                       </p>
                     </div>
-                    {order.details.billingAddress && order.details.billingAddress !== order.details.shippingAddress && (
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wider text-slate-500 mb-0.5">Billing Address</p>
-                        <p className="text-sm text-slate-900">{order.details.billingAddress}</p>
-                      </div>
-                    )}
+
                   </div>
                 </div>
               ) : (

@@ -9,9 +9,9 @@ export default function ProductTabs({ product, selectedVariant }) {
 
   const tabs = {
     Description: (
-      <div className="prose prose-sm max-w-none text-slate-600 dark:text-slate-300">
+      <div className="prose prose-sm max-w-none text-slate-600 dark:text-slate-300 ">
         {product.description ? (
-          <p>{product.description}</p>
+          <p className='overflow-x-hidden'>{product.description}</p>
         ) : (
           <p className="text-slate-400 italic dark:text-slate-500">No description available.</p>
         )}

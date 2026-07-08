@@ -18,21 +18,17 @@ export default function ProductDetailClient({ product, related }) {
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-[1.3fr_0.9fr] overflow-hidden max-w-full">
-        <div className="order-1">
-          <ImageGallery images={product.images} title={product.title} variantImageIndex={variantImageIndex} />
-        </div>
-        <div className="order-2">
-          <ProductInfo
-            product={product}
-            selectedVariant={selectedVariant}
-            variantIndex={variantIndex}
-            onVariantChange={setVariantIndex}
-          />
-        </div>
+      <div className="grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
+        <ImageGallery images={product.images} title={product.title} variantImageIndex={variantImageIndex} />
+        <ProductInfo
+          product={product}
+          selectedVariant={selectedVariant}
+          variantIndex={variantIndex}
+          onVariantChange={setVariantIndex}
+        />
       </div>
 
-      <div className="order-3 mt-10 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 dark:border-slate-700 dark:bg-slate-800">
+      <div className="mt-10 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 dark:border-slate-700 dark:bg-slate-800">
         <ProductTabs product={product} selectedVariant={selectedVariant} />
       </div>
 

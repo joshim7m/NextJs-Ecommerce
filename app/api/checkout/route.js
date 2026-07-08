@@ -5,6 +5,12 @@ export async function POST(request) {
   const body = await request.json();
   const { name, mobile, address, shippingArea, items } = body;
 
+  const ipAddress =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    request.headers.get('x-real-ip') ||
+    request.headers.get('cf-connecting-ip') ||
+    null;
+
   if (!name || !mobile || !address || !shippingArea || !items?.length) {
     return NextResponse.json({ error: 'Missing required checkout fields.' }, { status: 400 });
   }
@@ -16,7 +22,7 @@ export async function POST(request) {
     return sum + price * quantity;
   }, 0);
   const total = subtotal + deliveryCharge;
-  const orderNo = `ORDER-${Date.now()}`;
+  const orderNo = String(Math.floor(100000 + Math.random() * 900000));
 
   const order = await prisma.order.create({
     data: {
@@ -26,11 +32,12 @@ export async function POST(request) {
       paymentStatus: 'pending',
       details: {
         create: {
+          customerName: name,
           shippingAddress: address,
-          billingAddress: address,
           phoneNumber: mobile,
           shippingArea,
           deliveryCharge,
+          ipAddress,
         },
       },
       items: {

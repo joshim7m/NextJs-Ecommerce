@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { loadCart } from '../../lib/cartStorage';
 import CartDrawer from './CartDrawer';
 import AnnouncementBar from './AnnouncementBar';
+import MobileFilter from './MobileFilter';
 
 const DEBOUNCE_MS = 300;
 
@@ -16,6 +17,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [recentProducts, setRecentProducts] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [dark, setDark] = useState(false);
@@ -62,13 +64,18 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
   }, []);
 
   useEffect(() => {
-    if (searchOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
+    if (searchOpen) {
+      searchInputRef.current?.focus();
+      fetch('/api/products/recent')
+        .then((r) => r.json())
+        .then(setRecentProducts)
+        .catch(() => {});
     }
     if (!searchOpen) {
       setSearchQuery('');
       setResults([]);
       setSelectedIndex(-1);
+      setRecentProducts([]);
     }
   }, [searchOpen]);
 
@@ -229,17 +236,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
       {/* Mobile menu */}
       {mobileMenuOpen ? (
         <div className="border-b border-slate-200 bg-white md:hidden dark:border-slate-700 dark:bg-slate-900">
-          <div className="space-y-1 px-4 py-4">
-            <Link href="/categories" onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
-              Shop
-            </Link>
-            <Link href="/categories" onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
-              Categories
-            </Link>
-            <Link href="/cart" onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">
-              Cart
-            </Link>
-          </div>
+          <MobileFilter onClose={() => setMobileMenuOpen(false)} />
         </div>
       ) : null}
 
@@ -251,29 +248,42 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
           onClick={() => setSearchOpen(false)}
         >
           <div
-            className="flex h-full w-full flex-col bg-white sm:h-auto sm:max-w-lg sm:rounded-xl sm:shadow-xl dark:bg-slate-900"
+            className="flex h-full w-full flex-col bg-white animate-in slide-in-from-top duration-300 sm:h-auto sm:max-w-lg sm:rounded-xl sm:shadow-xl sm:animate-none dark:bg-slate-900"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Search header on mobile */}
-            <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3 sm:hidden dark:border-slate-700">
-              <svg className="h-5 w-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-4.34-4.34" />
-                <circle cx="11" cy="11" r="8" />
-              </svg>
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Search for products in the store"
-                className="flex-1 border-0 bg-transparent py-3 text-sm outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                autoComplete="off"
-              />
+            <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-4 sm:hidden dark:border-slate-700">
+              <div className="flex flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 focus-within:border-[#2f0f6b] focus-within:ring-1 focus-within:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-800 dark:focus-within:border-[#a78bfa] dark:focus-within:ring-[#a78bfa]">
+                <svg className="h-5 w-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-4.34-4.34" />
+                  <circle cx="11" cy="11" r="8" />
+                </svg>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Search products..."
+                  className="flex-1 border-0 bg-transparent text-base outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                  autoComplete="off"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="shrink-0 rounded-full p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
-                className="shrink-0 text-sm font-medium text-[#2f0f6b] dark:text-[#a78bfa]"
+                className="shrink-0 text-sm font-semibold text-[#2f0f6b] dark:text-[#a78bfa]"
               >
                 Cancel
               </button>
@@ -316,6 +326,35 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
                 </div>
               ) : searchQuery.trim() && results.length === 0 ? (
                 <p className="py-8 text-center text-sm text-slate-500 dark:text-slate-400">No products found.</p>
+              ) : !searchQuery.trim() && recentProducts.length > 0 ? (
+                <div>
+                  <p className="px-1 pt-4 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Recent Products
+                  </p>
+                  <ul className="space-y-1">
+                    {recentProducts.map((product) => (
+                      <li key={product.id}>
+                        <button
+                          type="button"
+                          onClick={() => goToProduct(product.slug)}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+                        >
+                          {product.image ? (
+                            <img src={product.image} alt="" className="h-12 w-12 flex-shrink-0 rounded object-cover sm:h-10 sm:w-10" />
+                          ) : (
+                            <div className="h-12 w-12 flex-shrink-0 rounded bg-slate-100 dark:bg-slate-700 sm:h-10 sm:w-10" />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate font-medium">{product.title}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              ৳{Number(product.unite_price).toLocaleString()}
+                            </p>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ) : results.length > 0 ? (
                 <ul className="space-y-1">
                   {results.map((product, i) => (

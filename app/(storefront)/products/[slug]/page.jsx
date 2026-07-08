@@ -45,7 +45,7 @@ export default async function ProductPage({ params }) {
             </svg>
           </>
         ) : null}
-        <span className="text-slate-600 truncate max-w-[200px] sm:max-w-xs dark:text-slate-300">{product.title}</span>
+        <span className="text-slate-600 truncate max-w-[160px] sm:max-w-xs dark:text-slate-300">{product.title}</span>
       </nav>
 
       <ProductDetailClient

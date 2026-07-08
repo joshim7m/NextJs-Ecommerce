@@ -410,7 +410,7 @@ export default function ProductInfo({ product, selectedVariant, variantIndex, on
             type="button"
             onClick={handleAddToCart}
             disabled={!inStock}
-            className={`flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-bold transition active:scale-[0.97] shadow-sm ${
+            className={`flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3.5 text-sm font-bold transition active:scale-[0.97] shadow-sm ${
               inStock
                 ? 'bg-[#2f0f6b] text-white hover:bg-[#2f0f6b]/90 hover:shadow-md dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90'
                 : 'cursor-not-allowed bg-slate-200 text-slate-400 dark:bg-slate-700 dark:text-slate-500'
@@ -432,7 +432,7 @@ export default function ProductInfo({ product, selectedVariant, variantIndex, on
             type="button"
             onClick={handleBuyNow}
             disabled={!inStock}
-            className={`flex w-full items-center justify-center gap-2 rounded-lg border-2 px-5 py-3 text-sm font-bold transition active:scale-[0.97] ${
+            className={`flex w-full items-center justify-center gap-2 rounded-lg border-2 px-5 py-3.5 text-sm font-bold transition active:scale-[0.97] ${
               inStock
                 ? 'border-[#2f0f6b] text-[#2f0f6b] hover:bg-[#2f0f6b] hover:text-white hover:shadow-md dark:border-[#a78bfa] dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900'
                 : 'cursor-not-allowed border-slate-200 text-slate-400 dark:border-slate-700 dark:text-slate-500'
@@ -444,10 +444,9 @@ export default function ProductInfo({ product, selectedVariant, variantIndex, on
             Buy Now
           </button>
         </div>
-      </div>
 
-      {/* ── Social share tray ── */}
-      <div className="rounded-xl border border-slate-200 bg-white px-5 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        {divider}
+
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-slate-400 uppercase tracking-wider dark:text-slate-500">Share</span>
           <ShareButtons url={shareUrl} title={product.title} />

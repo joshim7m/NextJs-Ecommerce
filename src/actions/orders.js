@@ -31,3 +31,23 @@ export async function updateOrderStatus(id, data) {
   revalidatePath('/admin/orders');
   return serialize(order);
 }
+
+export async function updateOrderDetails(orderId, data) {
+  const details = await prisma.orderDetails.update({
+    where: { orderId },
+    data,
+    include: { order: { include: { items: true } } },
+  });
+  if (data.deliveryCharge !== undefined) {
+    const subtotal = details.order.items.reduce(
+      (s, i) => s + Number(i.purchasePrice) * i.quantity, 0
+    );
+    const newTotal = subtotal + Number(data.deliveryCharge);
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { total: newTotal },
+    });
+  }
+  revalidatePath('/admin/orders');
+  return serialize(details);
+}
