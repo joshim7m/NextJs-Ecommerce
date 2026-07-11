@@ -75,25 +75,25 @@ export default function AdminCategoriesPage() {
   if (loading) return <div className="p-8 text-slate-500">Loading...</div>;
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Categories</h1>
-          <p className="mt-0.5 text-sm text-slate-500">{categories.length} {categories.length === 1 ? 'category' : 'categories'}</p>
+    <section className="space-y-4 sm:space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Categories</h1>
+          <p className="mt-0.5 text-xs sm:text-sm text-slate-500">{categories.length} {categories.length === 1 ? 'category' : 'categories'}</p>
         </div>
-        <button onClick={openCreate} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">+ New Category</button>
+        <button onClick={openCreate} className="shrink-0 rounded-lg bg-[#2f0f6b] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">+ New</button>
       </div>
 
-      <div className="relative max-w-xs">
+      <div className="relative max-w-full sm:max-w-xs">
         <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <input type="text" placeholder="Search categories…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+        <input type="text" placeholder="Search..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
       </div>
 
       {editing ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">{editing === 'new' ? 'Create Category' : 'Edit Category'}</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm">
+          <h2 className="mb-4 text-base sm:text-lg font-semibold text-slate-900">{editing === 'new' ? 'Create Category' : 'Edit Category'}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Name</label>
@@ -101,8 +101,8 @@ export default function AdminCategoriesPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Slug</label>
-              <div className="mt-1 flex gap-2">
-                <input name="slug" value={form.slug} onChange={handleChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+              <div className="mt-1 flex">
+                <input name="slug" value={form.slug} onChange={handleChange} className="flex-1 rounded-l-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
                 <button
                   type="button"
                   onClick={() => {
@@ -113,7 +113,7 @@ export default function AdminCategoriesPage() {
                     setForm((prev) => ({ ...prev, slug }));
                   }}
                   disabled={!form.name.trim()}
-                  className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40"
+                  className="shrink-0 rounded-r-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40"
                 >
                   Generate
                 </button>
@@ -124,17 +124,17 @@ export default function AdminCategoriesPage() {
               <div className="flex flex-wrap items-center gap-3">
                 {form.image ? (
                   <div className="group relative">
-                    <img src={form.image} alt="Category" className="h-20 w-20 rounded-lg border border-slate-200 object-cover" />
+                    <img src={form.image} alt="Category" className="h-16 w-16 sm:h-20 sm:w-20 rounded-lg border border-slate-200 object-cover" />
                     <button
                       type="button"
                       onClick={() => setForm((prev) => ({ ...prev, image: '' }))}
                       className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white opacity-0 transition hover:bg-red-600 group-hover:opacity-100"
                     >
-                      ✕
+                      &#10005;
                     </button>
                   </div>
                 ) : null}
-                <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 transition hover:border-[#2f0f6b] hover:text-[#2f0f6b]">
+                <label className="flex h-16 w-16 sm:h-20 sm:w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 transition hover:border-[#2f0f6b] hover:text-[#2f0f6b]">
                   <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
                   </svg>
@@ -147,22 +147,22 @@ export default function AdminCategoriesPage() {
               <input name="description" value={form.description} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
             </div>
           </div>
-          <div className="mt-5 flex gap-3">
-            <button onClick={handleSave} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">Save</button>
-            <button onClick={() => { setEditing(null); resetForm(); }} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</button>
+          <div className="mt-4 sm:mt-5 flex gap-3">
+            <button onClick={handleSave} className="flex-1 sm:flex-none rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">Save</button>
+            <button onClick={() => { setEditing(null); resetForm(); }} className="flex-1 sm:flex-none rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</button>
           </div>
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
+
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+        <table className="w-full min-w-[600px] text-left text-sm">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/80">
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Image</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Name</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Slug</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Parent</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-center">Products</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</th>
             </tr>
           </thead>
@@ -178,35 +178,19 @@ export default function AdminCategoriesPage() {
                     </div>
                   )}
                 </td>
-                <td className="px-4 py-3 font-medium text-slate-900">{cat.name}</td>
+                <td className="px-4 py-3 font-medium text-slate-900">
+                  <span>{cat.name} - </span>
+                  <span className='text-xs'>({cat._count?.products ?? 0})</span>
+                  </td>
                 <td className="px-4 py-3 text-slate-500">{cat.slug}</td>
                 <td className="px-4 py-3 text-slate-500">{cat.parent?.name || <span className="text-slate-300">none</span>}</td>
-                <td className="px-4 py-3 text-center">
-                  <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-medium text-slate-600">{cat._count?.products ?? 0}</span>
-                </td>
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex items-center gap-1">
-                    <button
-                      onClick={() => openEdit(cat)}
-                      className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-[#2f0f6b]"
-                      title="Edit category"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                      </svg>
+                    <button onClick={() => openEdit(cat)} className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-[#2f0f6b]" title="Edit category">
+                      <svg className="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                     </button>
-                    <button
-                      onClick={() => handleDelete(cat.id)}
-                      className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-500"
-                      title="Delete category"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3 6 5 6 21 6" />
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                        <line x1="10" y1="11" x2="10" y2="17" />
-                        <line x1="14" y1="11" x2="14" y2="17" />
-                      </svg>
+                    <button onClick={() => handleDelete(cat.id)} className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-500" title="Delete category">
+                      <svg className="h-4 w-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>
                     </button>
                   </div>
                 </td>

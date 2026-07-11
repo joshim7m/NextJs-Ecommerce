@@ -7,6 +7,30 @@ function serialize(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
+export async function getRecentOrders(limit = 5) {
+  const orders = await prisma.order.findMany({
+    take: limit,
+    include: { details: true },
+    orderBy: { createdAt: 'desc' },
+  });
+  return serialize(orders);
+}
+
+export async function getDashboardStats() {
+  const [productCount, categoryCount, orderCount, revenueResult] = await Promise.all([
+    prisma.product.count(),
+    prisma.category.count(),
+    prisma.order.count(),
+    prisma.order.aggregate({ _sum: { total: true }, where: { paymentStatus: { not: 'unpaid' } } }),
+  ]);
+  return serialize({
+    products: productCount,
+    categories: categoryCount,
+    orders: orderCount,
+    revenue: revenueResult._sum.total ? Number(revenueResult._sum.total) : 0,
+  });
+}
+
 export async function getOrders() {
   const orders = await prisma.order.findMany({
     include: { details: true, items: true, user: true },

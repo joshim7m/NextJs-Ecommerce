@@ -5,6 +5,16 @@ import Link from 'next/link';
 import { getProducts, getCategories, deleteProduct } from '../../../src/actions/products';
 import ConfirmDialog from '../../../src/components/ConfirmDialog';
 
+function StatusBadge({ status }) {
+  const isPublished = status === 'publish';
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${isPublished ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${isPublished ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+      {isPublished ? 'Published' : 'Draft'}
+    </span>
+  );
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -65,38 +75,40 @@ export default function AdminProductsPage() {
   if (loading) return <div className="p-8 text-slate-500">Loading...</div>;
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Products</h1>
-          <p className="mt-0.5 text-sm text-slate-500">{filtered.length} {filtered.length === 1 ? 'product' : 'products'} {filtered.length > PER_PAGE ? `(page ${page} of ${totalPages})` : ''}</p>
+    <section className="space-y-4 sm:space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Products</h1>
+          <p className="mt-0.5 text-xs sm:text-sm text-slate-500">{filtered.length} {filtered.length === 1 ? 'product' : 'products'} {filtered.length > PER_PAGE ? `(page ${page} of ${totalPages})` : ''}</p>
         </div>
-        <Link href="/admin/products/create" className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">+ New Product</Link>
+        <Link href="/admin/products/create" className="shrink-0 rounded-lg bg-[#2f0f6b] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition">+ New</Link>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px] max-w-xs">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="relative w-full sm:w-auto sm:flex-1 sm:min-w-[200px] sm:max-w-xs">
           <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <input type="text" placeholder="Search products…" value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+          <input type="text" placeholder="Search products\u2026" value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
         </div>
-        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-          <option value="all">All Status</option>
-          <option value="publish">Published</option>
-          <option value="draft">Draft</option>
-        </select>
-        <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-          <option value="all">All Categories</option>
-          {categories.map((c) => <option key={c.id} value={c.slug}>{c.name}</option>)}
-        </select>
-        {(filterStatus !== 'all' || filterCategory !== 'all' || search) && (
-          <button onClick={() => { setFilterStatus('all'); setFilterCategory('all'); setSearch(''); }} className="text-sm text-slate-500 hover:text-slate-700 transition">Clear</button>
-        )}
+        <div className="flex items-center gap-2 w-full sm:w-auto order-last sm:order-none">
+          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="flex-1 sm:flex-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
+            <option value="all">Status</option>
+            <option value="publish">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+          <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} className="flex-1 sm:flex-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
+            <option value="all">Category</option>
+            {categories.map((c) => <option key={c.id} value={c.slug}>{c.name}</option>)}
+          </select>
+          {(filterStatus !== 'all' || filterCategory !== 'all' || search) && (
+            <button onClick={() => { setFilterStatus('all'); setFilterCategory('all'); setSearch(''); }} className="shrink-0 px-2 text-sm text-slate-500 hover:text-slate-700 transition">Clear</button>
+          )}
+        </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+        <table className="w-full min-w-[700px] text-left text-sm">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/80">
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 w-12"></th>
@@ -111,11 +123,13 @@ export default function AdminProductsPage() {
           <tbody className="divide-y divide-slate-100">
             {paginated.map((p) => (
               <tr key={p.id} className="hover:bg-slate-50/50 transition-colors">
-                <td className="px-4 py-2">
+                <td className="w-[88px] px-4 py-2">
                   {p.images?.[0]?.image_path ? (
-                    <img src={p.images[0].image_path} alt="" className="h-10 w-10 rounded-lg object-cover border border-slate-200" />
+                    <div className="aspect-video w-12 overflow-hidden rounded-lg border border-slate-200">
+                      <img src={p.images[0].image_path} alt="" className="h-full w-full object-cover" />
+                    </div>
                   ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-300 border border-slate-200">
+                    <div className="flex aspect-video w-12 items-center justify-center rounded-lg bg-slate-100 text-slate-300 border border-slate-200">
                       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
@@ -125,19 +139,14 @@ export default function AdminProductsPage() {
                 <td className="px-4 py-3 max-w-[200px] truncate">
                   <Link href={`/admin/products/edit?id=${p.id}`} className="font-medium text-slate-900 hover:text-[#2f0f6b] transition">{p.title}</Link>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <span className="font-medium text-slate-900">৳{Number(p.sale_price || p.unite_price).toLocaleString()}</span>
                   {p.sale_price ? <span className="ml-1.5 text-xs text-slate-400 line-through">৳{Number(p.unite_price).toLocaleString()}</span> : null}
                 </td>
-                <td className="px-4 py-3">
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${p.status === 'publish' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
-                    <span className={`h-1.5 w-1.5 rounded-full ${p.status === 'publish' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                    {p.status === 'publish' ? 'Published' : 'Draft'}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-slate-500 max-w-[150px] truncate">{p.categories?.map((c) => c.name).join(', ') || '—'}</td>
+                <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
+                <td className="px-4 py-3 text-slate-500 max-w-[150px] truncate">{p.categories?.map((c) => c.name).join(', ') || '\u2014'}</td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`text-sm font-medium ${(p.inventoryQuantity ?? 0) > 0 ? 'text-slate-900' : 'text-red-400'}`}>{p.inventoryQuantity ?? '—'}</span>
+                  <span className={`text-sm font-medium ${(p.inventoryQuantity ?? 0) > 0 ? 'text-slate-900' : 'text-red-400'}`}>{p.inventoryQuantity ?? '\u2014'}</span>
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="relative inline-block">
@@ -146,7 +155,9 @@ export default function AdminProductsPage() {
                       onClick={(e) => {
                         if (menuOpen === p.id) { setMenuOpen(null); return; }
                         const rect = e.currentTarget.getBoundingClientRect();
-                        setMenuPos({ top: rect.top - 8, left: rect.left + rect.width - 144 });
+                        const menuWidth = 144;
+                        const left = Math.min(rect.left + rect.width - menuWidth, window.innerWidth - menuWidth - 8);
+                        setMenuPos({ top: rect.top - 8, left: Math.max(8, left) });
                         setMenuOpen(p.id);
                       }}
                       className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
@@ -204,20 +215,33 @@ export default function AdminProductsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => setPage(n)}
-              className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium transition ${
-                page === n
-                  ? 'bg-[#2f0f6b] text-white'
-                  : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {n}
-            </button>
-          ))}
+          {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+            let n;
+            if (totalPages <= 5) {
+              n = i + 1;
+            } else if (page <= 3) {
+              n = i + 1;
+            } else if (page >= totalPages - 2) {
+              n = totalPages - 4 + i;
+            } else {
+              n = page - 2 + i;
+            }
+            return (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setPage(n)}
+                className={`hidden sm:flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium transition ${
+                  page === n
+                    ? 'bg-[#2f0f6b] text-white'
+                    : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                {n}
+              </button>
+            );
+          })}
+          <span className="text-xs text-slate-400 sm:hidden">{page} / {totalPages}</span>
           <button
             type="button"
             disabled={page >= totalPages}

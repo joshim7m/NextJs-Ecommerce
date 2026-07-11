@@ -3,11 +3,28 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+const iconColors = {
+  dashboard: { bg: 'bg-indigo-100', text: 'text-indigo-600', darkBg: 'dark:bg-indigo-900/30', darkText: 'dark:text-indigo-400' },
+  categories: { bg: 'bg-emerald-100', text: 'text-emerald-600', darkBg: 'dark:bg-emerald-900/30', darkText: 'dark:text-emerald-400' },
+  products: { bg: 'bg-blue-100', text: 'text-blue-600', darkBg: 'dark:bg-blue-900/30', darkText: 'dark:text-blue-400' },
+  orders: { bg: 'bg-amber-100', text: 'text-amber-600', darkBg: 'dark:bg-amber-900/30', darkText: 'dark:text-amber-400' },
+  home: { bg: 'bg-slate-100', text: 'text-slate-600', darkBg: 'dark:bg-slate-800', darkText: 'dark:text-slate-400' },
+  site: { bg: 'bg-sky-100', text: 'text-sky-600', darkBg: 'dark:bg-sky-900/30', darkText: 'dark:text-sky-400' },
+  sliders: { bg: 'bg-purple-100', text: 'text-purple-600', darkBg: 'dark:bg-purple-900/30', darkText: 'dark:text-purple-400' },
+  social: { bg: 'bg-rose-100', text: 'text-rose-600', darkBg: 'dark:bg-rose-900/30', darkText: 'dark:text-rose-400' },
+};
+
 const navItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: 'dashboard' },
   { label: 'Categories', href: '/admin/categories', icon: 'categories' },
   { label: 'Products', href: '/admin/products', icon: 'products' },
   { label: 'Orders', href: '/admin/orders', icon: 'orders' },
+];
+
+const blogSubItems = [
+  { label: 'Categories', href: '/admin/blog/categories', icon: 'categories' },
+  { label: 'Posts', href: '/admin/blog/posts', icon: 'products' },
+  { label: 'Advertisements', href: '/admin/blog/advertisements', icon: 'site' },
 ];
 
 const settingsSubItems = [
@@ -16,8 +33,9 @@ const settingsSubItems = [
   { label: 'Social Media', href: '/admin/settings/social', icon: 'social' },
 ];
 
-function NavIcon({ icon }) {
-  const cls = 'h-5 w-5';
+function NavIcon({ icon, colorize }) {
+  const cls = `h-4 w-4`;
+  const c = iconColors[icon] || iconColors.home;
   switch (icon) {
     case 'dashboard':
       return (
@@ -73,51 +91,31 @@ function NavIcon({ icon }) {
   }
 }
 
+function ColorIcon({ icon }) {
+  const c = iconColors[icon] || iconColors.home;
+  return (
+    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${c.bg} ${c.text}`}>
+      <NavIcon icon={icon} />
+    </div>
+  );
+}
+
 function NavLink({ item, pathname, onClose }) {
   const active = pathname === item.href || (item.href !== '/admin/dashboard' && pathname.startsWith(item.href));
   return (
     <Link
       href={item.href}
       onClick={onClose}
-      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+      className={`group relative flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
         active
-          ? 'bg-[#2f0f6b]/10 text-[#2f0f6b]'
-          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+          ? 'bg-[#2f0f6b]/5 text-[#2f0f6b]'
+          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
       }`}
     >
-      <NavIcon icon={item.icon} />
+      {active && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b]" />}
+      <ColorIcon icon={item.icon} />
       {item.label}
     </Link>
-  );
-}
-
-function CollapsibleGroup({ label, icon, children, defaultOpen }) {
-  const [open, setOpen] = useState(defaultOpen);
-
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
-      >
-        <NavIcon icon={icon} />
-        <span className="flex-1 text-left">{label}</span>
-        <svg
-          className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      <div className={`overflow-hidden transition-all duration-200 ${open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="ml-2 mt-1 space-y-1 border-l-2 border-slate-100 pl-3">
-          {children}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -138,46 +136,60 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
     <>
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-white border-r border-slate-200 shadow-sm transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-white border-r border-slate-200 shadow-lg transition-transform duration-300 lg:shadow-none lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-16 items-center gap-3 border-b border-slate-100 px-5">
-          <Link href="/admin/dashboard" className="flex items-center gap-3" onClick={onClose}>
+        <div className="flex h-14 items-center gap-3 border-b border-slate-100 px-4">
+          <Link href="/admin/dashboard" className="flex items-center gap-2.5" onClick={onClose}>
             {settings.logo ? (
-              <img src={settings.logo} alt={settings.siteName || 'Logo'} className="h-12 w-auto object-contain" />
+              <img src={settings.logo} alt={settings.siteName || 'Logo'} className="h-10 w-auto object-contain" />
             ) : (
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2f0f6b] text-sm font-bold text-white">R</div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#2f0f6b] to-[#6d28d9] text-xs font-bold text-white shadow-sm">R</div>
             )}
           </Link>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-3">
           {navItems.map((item) => (
             <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
           ))}
 
           <div className="my-3 border-t border-slate-100" />
 
-          <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Settings</p>
+          <div className="mb-1.5 flex items-center gap-2 px-3">
+            <div className="h-1 w-1 rounded-full bg-rose-400" />
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Blog</p>
+          </div>
 
-          {/* Home Setting — collapsible parent */}
+          {blogSubItems.map((item) => (
+            <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
+          ))}
+
+          <div className="my-3 border-t border-slate-100" />
+
+          <div className="mb-1.5 flex items-center gap-2 px-3">
+            <div className="h-1 w-1 rounded-full bg-slate-400" />
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Settings</p>
+          </div>
+
           <button
             type="button"
             onClick={() => setSettingsOpen(!settingsOpen)}
-            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+            className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
               pathname.startsWith('/admin/settings')
-                ? 'bg-[#2f0f6b]/10 text-[#2f0f6b]'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                ? 'bg-[#2f0f6b]/5 text-[#2f0f6b]'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <NavIcon icon="home" />
+            {pathname.startsWith('/admin/settings') && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b]" />}
+            <ColorIcon icon="home" />
             <span className="flex-1 text-left">Home Setting</span>
             <svg
               className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${settingsOpen ? 'rotate-180' : ''}`}
@@ -194,7 +206,7 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
               settingsOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            <div className="ml-2 mt-1 space-y-1 border-l-2 border-slate-100 pl-3">
+            <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-100 pl-3">
               {settingsSubItems.map((item) => {
                 const active = pathname.startsWith(item.href);
                 return (
@@ -202,13 +214,15 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
                     key={item.href}
                     href={item.href}
                     onClick={onClose}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                    className={`group flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
                       active
-                        ? 'bg-[#2f0f6b]/10 text-[#2f0f6b]'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                        ? 'bg-[#2f0f6b]/5 text-[#2f0f6b]'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
-                    <NavIcon icon={item.icon} />
+                    <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${iconColors[item.icon]?.bg || 'bg-slate-100'} ${iconColors[item.icon]?.text || 'text-slate-500'}`}>
+                      <NavIcon icon={item.icon} />
+                    </div>
                     {item.label}
                   </Link>
                 );
@@ -217,17 +231,19 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
           </div>
         </nav>
 
-        <div className="border-t border-slate-100 px-3 py-3">
+        <div className="border-t border-slate-100 px-3 py-2">
           <button
             type="button"
             onClick={onLogout}
             disabled={loggingOut}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition disabled:opacity-50"
+            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-all hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
           >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            {loggingOut ? 'Logging out\u2026' : 'Logout'}
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-500">
+              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </div>
+            {loggingOut ? 'Logging out...' : 'Logout'}
           </button>
         </div>
       </aside>

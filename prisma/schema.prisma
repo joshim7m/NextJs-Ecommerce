@@ -166,3 +166,52 @@ model HeroSlider {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+model BlogCategory {
+  id        String     @id @default(uuid())
+  title     String
+  slug      String     @unique
+  image     String?
+  authorName String?
+  status    String     @default("draft")
+  posts     BlogPost[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model BlogPost {
+  id              String                   @id @default(uuid())
+  title           String
+  slug            String                   @unique
+  content         String
+  bannerImage     String?
+  category        BlogCategory             @relation(fields: [categoryId], references: [id])
+  categoryId      String
+  tags            String?
+  metaDescription String?
+  status          String                   @default("draft")
+  advertisements  BlogPostAdvertisement[]
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+}
+
+model Advertisement {
+  id        String                   @id @default(uuid())
+  title     String
+  image     String?
+  text      String?
+  price     Decimal?
+  productLink String?
+  blogPosts BlogPostAdvertisement[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+}
+
+model BlogPostAdvertisement {
+  blogPostId      String
+  blogPost        BlogPost       @relation(fields: [blogPostId], references: [id])
+  advertisementId String
+  advertisement   Advertisement  @relation(fields: [advertisementId], references: [id])
+
+  @@id([blogPostId, advertisementId])
+}

@@ -62,6 +62,7 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
             <ul className="space-y-3 text-sm">
               <li><Link href="/categories" className="transition hover:text-white">All Categories</Link></li>
               <li><Link href="/products" className="transition hover:text-white">All Products</Link></li>
+              <li><Link href="/blog" className="transition hover:text-white">Blog</Link></li>
             </ul>
           </div>
 

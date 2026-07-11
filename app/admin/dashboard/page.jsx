@@ -1,13 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-
-const stats = [
-  { label: 'Total Products', value: '—', href: '/admin/products', icon: 'products', color: 'text-blue-600', bg: 'bg-blue-50' },
-  { label: 'Categories', value: '—', href: '/admin/categories', icon: 'categories', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { label: 'Orders', value: '—', href: '/admin/orders', icon: 'orders', color: 'text-amber-600', bg: 'bg-amber-50' },
-  { label: 'Revenue', value: '—', href: '/admin/orders', icon: 'revenue', color: 'text-violet-600', bg: 'bg-violet-50' },
-];
+import { getDashboardStats, getRecentOrders } from '../../../src/actions/orders';
 
 function StatIcon({ icon }) {
   const cls = 'h-5 w-5';
@@ -23,52 +18,63 @@ function StatIcon({ icon }) {
   }
 }
 
-const quickActions = [
-  { label: 'Add Product', href: '/admin/products/create', desc: 'Create a new product listing' },
-  { label: 'Manage Categories', href: '/admin/categories', desc: 'Organize your catalog' },
-  { label: 'View Orders', href: '/admin/orders', desc: 'Track and fulfill orders' },
-];
-
-const recentOrders = [
-  { id: '#1001', customer: 'Alice Johnson', status: 'Shipped', total: '$249.99', date: '2 hours ago' },
-  { id: '#1002', customer: 'Bob Smith', status: 'Processing', total: '$89.00', date: '5 hours ago' },
-  { id: '#1003', customer: 'Carol White', status: 'Pending', total: '$159.99', date: '1 day ago' },
-  { id: '#1004', customer: 'David Brown', status: 'Shipped', total: '$399.00', date: '2 days ago' },
-];
-
 function StatusBadge({ status }) {
   const colors = {
     Shipped: 'bg-blue-50 text-blue-700',
-    Processing: 'bg-amber-50 text-amber-700',
-    Pending: 'bg-slate-50 text-slate-600',
+    Processed: 'bg-blue-50 text-blue-700',
+    completed: 'bg-emerald-50 text-emerald-700',
+    processing: 'bg-blue-50 text-blue-700',
+    pending: 'bg-slate-50 text-slate-600',
+    cancelled: 'bg-red-50 text-red-700',
   };
   return (
-    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${colors[status] || colors.Pending}`}>
+    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${colors[status] || colors.pending}`}>
       {status}
     </span>
   );
 }
 
 export default function AdminDashboardPage() {
+  const [stats, setStats] = useState({ products: '\u2014', categories: '\u2014', orders: '\u2014', revenue: '\u2014' });
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    getDashboardStats().then(setStats);
+    getRecentOrders(5).then(setOrders);
+  }, []);
+
+  const statCards = [
+    { label: 'Total Products', value: stats.products, href: '/admin/products', icon: 'products', color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Categories', value: stats.categories, href: '/admin/categories', icon: 'categories', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Orders', value: stats.orders, href: '/admin/orders', icon: 'orders', color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Revenue', value: stats.revenue !== '\u2014' ? `$${Number(stats.revenue).toLocaleString()}` : '\u2014', href: '/admin/orders', icon: 'revenue', color: 'text-violet-600', bg: 'bg-violet-50' },
+  ];
+
+  const quickActions = [
+    { label: 'Add Product', href: '/admin/products/create', desc: 'Create a new product listing' },
+    { label: 'Manage Categories', href: '/admin/categories', desc: 'Organize your catalog' },
+    { label: 'View Orders', href: '/admin/orders', desc: 'Track and fulfill orders' },
+  ];
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Stat cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => (
-          <Link key={s.label} href={s.href} className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        {statCards.map((s) => (
+          <Link key={s.label} href={s.href} className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm transition hover:shadow-md">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-slate-500">{s.label}</p>
-              <div className={`rounded-lg ${s.bg} p-2 ${s.color}`}>
+              <p className="text-xs sm:text-sm font-medium text-slate-500">{s.label}</p>
+              <div className={"rounded-lg " + s.bg + " p-1.5 sm:p-2 " + s.color}>
                 <StatIcon icon={s.icon} />
               </div>
             </div>
-            <p className="mt-3 text-2xl font-bold text-slate-900">{s.value}</p>
+            <p className="mt-2 sm:mt-3 text-xl sm:text-2xl font-bold text-slate-900">{s.value}</p>
           </Link>
         ))}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Recent orders */}
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-3">
+        {/* Recent Orders */}
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-base font-semibold text-slate-900">Recent Orders</h2>
@@ -76,7 +82,9 @@ export default function AdminDashboardPage() {
               View all
             </Link>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Desktop table */}
+          <div className="hidden md:block">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-100 text-xs font-medium text-slate-400 uppercase tracking-wider">
@@ -88,21 +96,54 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {recentOrders.map((o) => (
-                  <tr key={o.id} className="border-b border-slate-50 last:border-0">
-                    <td className="py-3 pr-4 font-medium text-slate-900">{o.id}</td>
-                    <td className="py-3 pr-4 text-slate-600">{o.customer}</td>
-                    <td className="py-3 pr-4"><StatusBadge status={o.status} /></td>
-                    <td className="py-3 pr-4 text-slate-900">{o.total}</td>
-                    <td className="py-3 text-slate-400">{o.date}</td>
+                {orders.map((o) => (
+                  <tr
+                    key={o.id}
+                    className="border-b border-slate-50 last:border-0 cursor-pointer transition hover:bg-slate-50/50"
+                    onClick={() => window.location.href = "/admin/orders/" + o.orderNo}
+                  >
+                    <td className="py-3 pr-4 font-medium text-[#2f0f6b]">{o.orderNo}</td>
+                    <td className="py-3 pr-4 text-slate-600">{o.details?.customerName || o.user?.name || '\u2014'}</td>
+                    <td className="py-3 pr-4"><StatusBadge status={o.orderStatus} /></td>
+                    <td className="py-3 pr-4 text-slate-900">${Number(o.total).toLocaleString()}</td>
+                    <td className="py-3 text-slate-400">{o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : '\u2014'}</td>
                   </tr>
                 ))}
+                {orders.length === 0 && (
+                  <tr><td colSpan={5} className="py-8 text-center text-sm text-slate-400">No orders yet</td></tr>
+                )}
               </tbody>
             </table>
           </div>
+
+          {/* Mobile cards */}
+          <div className="space-y-3 md:hidden">
+            {orders.map((o) => (
+              <Link
+                key={o.id}
+                href={"/admin/orders/" + o.orderNo}
+                className="block rounded-lg border border-slate-100 p-3 transition hover:border-[#2f0f6b]/20 hover:bg-[#2f0f6b]/5"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-[#2f0f6b]">{o.orderNo}</span>
+                  <span className={"inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium " + ({pending: "bg-slate-50 text-slate-600",processing: "bg-blue-50 text-blue-700",completed: "bg-emerald-50 text-emerald-700",cancelled: "bg-red-50 text-red-700"}[o.orderStatus] || "bg-slate-50 text-slate-600")}>
+                    {o.orderStatus}
+                  </span>
+                </div>
+                <p className="text-sm font-medium text-slate-900">{o.details?.customerName || o.user?.name || "\u2014"}</p>
+                <div className="mt-1 flex items-center justify-between text-xs text-slate-400">
+                  <span>${Number(o.total).toLocaleString()}</span>
+                  <span>{o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "\u2014"}</span>
+                </div>
+              </Link>
+            ))}
+            {orders.length === 0 && (
+              <p className="py-6 text-center text-sm text-slate-400">No orders yet</p>
+            )}
+          </div>
         </div>
 
-        {/* Quick actions */}
+        {/* Quick Actions */}
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="mb-4 text-base font-semibold text-slate-900">Quick Actions</h2>
           <div className="space-y-3">
@@ -113,7 +154,6 @@ export default function AdminDashboardPage() {
                 className="block rounded-lg border border-slate-100 p-3 transition hover:border-[#2f0f6b]/20 hover:bg-[#2f0f6b]/5"
               >
                 <p className="text-sm font-medium text-slate-900">{a.label}</p>
-                <p className="mt-0.5 text-xs text-slate-400">{a.desc}</p>
               </Link>
             ))}
           </div>
