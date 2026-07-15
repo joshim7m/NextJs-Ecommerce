@@ -100,7 +100,7 @@ export default function AdminHeader({ onMenuToggle, currentTitle, onLogout, logg
                 className="flex items-center justify-between px-4 py-3 text-sm transition hover:bg-slate-50"
               >
                 <span className="font-medium text-[#2f0f6b]">{o.orderNo}</span>
-                <span className="text-xs text-slate-400">${Number(o.total).toFixed(2)}</span>
+                <span className="text-xs text-slate-400">{'\u09F3'}{Number(o.total).toLocaleString()}</span>
               </Link>
             ))}
           </div>

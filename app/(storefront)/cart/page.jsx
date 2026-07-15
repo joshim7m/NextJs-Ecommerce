@@ -57,6 +57,9 @@ export default function CartPage() {
                     <Link href={`/products/${item.productSlug}`} className="font-medium text-slate-900 hover:text-[#2f0f6b] transition dark:text-slate-100 dark:hover:text-[#a78bfa]">
                       {item.title}
                     </Link>
+                    {item.sku ? (
+                      <p className="text-xs text-slate-400 font-mono dark:text-slate-500">SKU: {item.sku}</p>
+                    ) : null}
                     {item.variantName ? (
                       <p className="text-sm text-slate-500 dark:text-slate-400">{item.variantName}</p>
                     ) : null}

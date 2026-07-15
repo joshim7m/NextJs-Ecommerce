@@ -11,7 +11,7 @@ export async function GET() {
 
 export async function POST(request) {
   const body = await request.json();
-  const { title, slug: rawSlug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlug, imagePaths } = body;
+  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categorySlug, imagePaths } = body;
   const slug = rawSlug?.trim();
 
   if (!title || !slug) {
@@ -25,8 +25,8 @@ export async function POST(request) {
       description,
       unite_price: parseFloat(unite_price),
       sale_price: sale_price ? parseFloat(sale_price) : null,
-      compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
-      inventoryQuantity: inventoryQuantity ? parseInt(inventoryQuantity) : null,
+      sku: sku || null,
+      quantity: quantity ? parseInt(quantity) : null,
       status: status || 'draft',
       categories: categorySlug ? { connect: { slug: categorySlug } } : undefined,
       images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,

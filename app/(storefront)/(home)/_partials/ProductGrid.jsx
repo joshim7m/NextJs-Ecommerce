@@ -40,6 +40,7 @@ function ProductCard({ product, index }) {
     addToCart({
       productId: product.id,
       productSlug: product.slug,
+      sku: product.sku,
       title: product.title,
       image: firstImage || '',
       variantId: variant ? variant.id : 'default',

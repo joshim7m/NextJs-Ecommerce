@@ -6,19 +6,12 @@ import Link from 'next/link';
 import { getOrderByOrderNo, updateOrderStatus, updateOrderDetails } from '../../../../src/actions/orders';
 
 const orderStatuses = ['pending', 'processing', 'completed', 'cancelled'];
-const paymentStatuses = ['unpaid', 'paid', 'refund'];
 
 const orderStatusColors = {
   pending: { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-400' },
   processing: { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
   completed: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
   cancelled: { bg: 'bg-red-50', text: 'text-red-700', dot: 'bg-red-500' },
-};
-
-const paymentStatusColors = {
-  unpaid: { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' },
-  paid: { bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-500' },
-  refund: { bg: 'bg-red-50', text: 'text-red-700', dot: 'bg-red-500' },
 };
 
 function StatCard({ label, value, sub }) {
@@ -104,7 +97,6 @@ export default function OrderDetailPage() {
   const deliveryCharge = Number(order.details?.deliveryCharge || 0);
   const itemCount = order.items.reduce((sum, i) => sum + i.quantity, 0);
   const osColor = orderStatusColors[order.orderStatus] || { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' };
-  const psColor = paymentStatusColors[order.paymentStatus] || { bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400' };
 
   return (
     <div className="space-y-6">
@@ -140,10 +132,6 @@ export default function OrderDetailPage() {
             <span className={`h-1.5 w-1.5 rounded-full ${osColor.dot}`} />
             {order.orderStatus}
           </span>
-          <span className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold ${psColor.bg} ${psColor.text}`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${psColor.dot}`} />
-            {order.paymentStatus}
-          </span>
         </div>
       </div>
 
@@ -153,7 +141,7 @@ export default function OrderDetailPage() {
         <StatCard label="Subtotal" value={`৳${subtotal.toLocaleString()}`} />
         <div className="rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
           <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Delivery Charge</p>
-          {order.orderStatus === 'completed' || order.orderStatus === 'cancelled' || order.paymentStatus === 'paid' || order.paymentStatus === 'refund' ? (
+          {order.orderStatus === 'completed' || order.orderStatus === 'cancelled' ? (
             <div className="mt-2">
               <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2.5 text-sm">
                 <span className="text-slate-900 font-medium">৳{deliveryCharge > 0 ? deliveryCharge.toLocaleString() : '0'}</span>
@@ -302,24 +290,6 @@ export default function OrderDetailPage() {
                     className="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-900 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] disabled:opacity-50 transition"
                   >
                     {orderStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                  <svg className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
-                  Payment Status
-                </label>
-                <div className="relative">
-                  <select
-                    value={order.paymentStatus}
-                    onChange={(e) => handleStatusUpdate('paymentStatus', e.target.value)}
-                    disabled={saving}
-                    className="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-900 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] disabled:opacity-50 transition"
-                  >
-                    {paymentStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
                   <svg className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

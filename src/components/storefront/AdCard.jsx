@@ -24,7 +24,7 @@ export default function AdCard({ ad }) {
             <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400 line-clamp-1">{ad.text}</p>
           )}
           {ad.price && (
-            <p className="mt-1 text-sm font-bold text-[#2f0f6b] dark:text-[#a78bfa]">${parseFloat(ad.price).toFixed(2)}</p>
+            <p className="mt-1 text-sm font-bold text-[#2f0f6b] dark:text-[#a78bfa]">৳{parseFloat(ad.price).toLocaleString()}</p>
           )}
         </div>
         <span className="inline-flex items-center gap-1 shrink-0 rounded-md bg-gradient-to-r from-amber-400 to-orange-400 px-2.5 py-1 text-[11px] font-semibold text-white shadow-sm transition group-hover:from-amber-500 group-hover:to-orange-500 dark:from-amber-500 dark:to-orange-500">

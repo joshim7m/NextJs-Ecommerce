@@ -35,6 +35,16 @@ function parsePrice(text) {
   return isNaN(n) ? null : n;
 }
 
+const usedSkus = new Set();
+function generateSku() {
+  let sku;
+  do {
+    sku = String(Math.floor(100000 + Math.random() * 900000));
+  } while (usedSkus.has(sku));
+  usedSkus.add(sku);
+  return sku;
+}
+
 // ——————— Step 1: Categories from mobile-menu ———————
 async function scrapeCategories() {
   console.log('Fetching homepage…');
@@ -139,9 +149,6 @@ async function scrapeProductDetail(url) {
       if (src) images.push(src);
     });
 
-    let description = '';
-    const $desc = $('#description');
-    if ($desc.length) description = $desc.html()?.trim() || '';
 
     // Breadcrumb → determine correct category / subcategory
     let breadcrumbCatSlug = null;
@@ -188,10 +195,10 @@ async function scrapeProductDetail(url) {
         sizes.forEach((size, si) => {
           colors.forEach((color, ci) => {
             variants.push({
-              sku: `${slugify(title)}-${slugify(size)}-${slugify(color)}`.slice(0, 100),
+            sku: generateSku(),
               size, color,
               price: uPrice, sale_price: sPrice,
-              inventoryQuantity: 100,
+              quantity: 100,
               isDefault: si === 0 && ci === 0,
             });
           });
@@ -201,10 +208,10 @@ async function scrapeProductDetail(url) {
       $sizeSel.find('option').each((i, el) => {
         const v = $(el).val(); if (!v) return;
         variants.push({
-          sku: `${slugify(title)}-${slugify(v)}`.slice(0, 100),
+          sku: generateSku(),
           size: v, color: null,
           price: uPrice, sale_price: sPrice,
-          inventoryQuantity: 100,
+          quantity: 100,
           isDefault: i === 0,
         });
       });
@@ -212,10 +219,10 @@ async function scrapeProductDetail(url) {
       $colorSel.find('option').each((i, el) => {
         const v = $(el).val(); if (!v) return;
         variants.push({
-          sku: `${slugify(title)}-${slugify(v)}`.slice(0, 100),
+          sku: generateSku(),
           size: null, color: v,
           price: uPrice, sale_price: sPrice,
-          inventoryQuantity: 100,
+          quantity: 100,
           isDefault: i === 0,
         });
       });
@@ -226,7 +233,6 @@ async function scrapeProductDetail(url) {
       unitePrice: uPrice || 0,
       salePrice: sPrice,
       images,
-      description,
       variants,
       breadcrumbCatSlug,
       breadcrumbSubName,
@@ -257,16 +263,16 @@ async function main() {
   console.log('\nSeeding categories…');
   const catMap = {};
   for (const c of cats) {
-    const r = await prisma.category.upsert({
-      where: { slug: c.slug },
-      update: { name: c.name, image: c.image },
-      create: {
-        name: c.name,
-        slug: c.slug,
-        image: c.image,
-        description: `Products in ${c.name}.`,
-      },
-    });
+        const r = await prisma.category.upsert({
+          where: { slug: c.slug },
+          update: { name: c.name, image: c.image },
+          create: {
+            name: c.name,
+            slug: c.slug,
+            image: c.image,
+            description: null,
+          },
+        });
     catMap[c.slug] = r.id;
     console.log(`  ✓ ${c.name}`);
 
@@ -274,7 +280,7 @@ async function main() {
       const sr = await prisma.category.upsert({
         where: { slug: s.slug },
         update: { name: s.name, parentId: r.id },
-        create: { name: s.name, slug: s.slug, description: `Products in ${s.name}.`, parentId: r.id },
+        create: { name: s.name, slug: s.slug, description: null, parentId: r.id },
       });
       catMap[s.slug] = sr.id;
       console.log(`    ✓ ${s.name}`);
@@ -356,12 +362,11 @@ async function main() {
           create: {
             title: d.title || p.name,
             slug: p.slug,
-            description: d.description || null,
+            sku: generateSku(),
+            description: '',
             unite_price: d.unitePrice,
             sale_price: d.salePrice || null,
-            compareAtPrice:
-              d.unitePrice !== d.salePrice ? d.unitePrice : null,
-            inventoryQuantity: 100,
+            quantity: 100,
             status: 'publish',
             categories: catId ? { connect: { id: catId } } : undefined,
             images: {
@@ -393,16 +398,11 @@ async function main() {
 
   // 5. Users
   console.log('\nSeeding users…');
-  const hash = await bcrypt.hash('admin123', 12);
+  const hash = await bcrypt.hash('histacin', 12);
   await prisma.user.upsert({
-    where: { email: 'admin@example.com' },
+    where: { email: 'joshimfv@gmail.com' },
     update: { passwordHash: hash, role: 'admin' },
-    create: { name: 'Admin User', email: 'admin@example.com', passwordHash: hash, role: 'admin' },
-  });
-  await prisma.user.upsert({
-    where: { email: 'customer@example.com' },
-    update: {},
-    create: { name: 'Test Customer', email: 'customer@example.com', passwordHash: 'customer-hash', role: 'customer' },
+    create: { name: 'Joshim', email: 'joshimfv@gmail.com', passwordHash: hash, role: 'admin' },
   });
 
   // 6. Site settings
@@ -417,7 +417,7 @@ async function main() {
       email: 'hello@radiantpicks.com',
       address: '6/C, Unite-2, Confidence Center, Shahjadpur, Gulshan, Dhaka-1212',
       copyrightText: '@ 2025 Radiant Picks. All rights reserved.',
-      announcementText: 'Free shipping on orders over ৳1,000 — Call or WhatsApp: 01945090085',
+      announcementText: 'Call or WhatsApp: 01945090085',
     },
     create: {
       id: 'singleton',
@@ -428,7 +428,7 @@ async function main() {
       email: 'hello@radiantpicks.com',
       address: '6/C, Unite-2, Confidence Center, Shahjadpur, Gulshan, Dhaka-1212',
       copyrightText: '@ 2025 Radiant Picks. All rights reserved.',
-      announcementText: 'Free shipping on orders over ৳1,000 — Call or WhatsApp: 01945090085',
+      announcementText: 'Call or WhatsApp: 01945090085',
     },
   });
 

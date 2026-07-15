@@ -8,34 +8,42 @@ datasource db {
 }
 
 model Category {
-  id        String     @id @default(uuid())
-  name      String
-  slug      String     @unique
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
   image       String?
   description String?
   parentId    String?
-  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children  Category[] @relation("CategoryHierarchy")
-  products  Product[]  @relation("ProductCategories")
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]  @relation("ProductCategories")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([parentId])
+  @@index([name])
+  @@index([slug])
 }
 
 model Product {
   id                String          @id @default(uuid())
   title             String
   slug              String          @unique
+  sku               String          @unique
   description       String?
   unite_price       Decimal
   sale_price        Decimal?
-  compareAtPrice    Decimal?
-  inventoryQuantity Int?
+  quantity          Int?
   status            String
   categories        Category[]      @relation("ProductCategories")
   images            ProductImage[]
   variants          ProductVariant[]
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+
+  @@index([status, createdAt])
+  @@index([title])
+  @@index([slug])
 }
 
 model ProductImage {
@@ -45,6 +53,8 @@ model ProductImage {
   image_path String
   altText    String?
   variants   ProductVariant[]
+
+  @@index([productId])
 }
 
 model ProductVariant {
@@ -54,14 +64,17 @@ model ProductVariant {
   sku               String?
   size              String?
   color             String?
-  price             Decimal?
+  unite_price       Decimal?
   sale_price        Decimal?
   image             ProductImage?  @relation(fields: [imageId], references: [id])
   imageId           String?
-  inventoryQuantity Int
+  quantity          Int
   isDefault         Boolean        @default(false)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
+
+  @@index([productId])
+  @@index([imageId])
 }
 
 model User {
@@ -81,7 +94,6 @@ model UserDetails {
   user            User     @relation(fields: [userId], references: [id])
   userId          String   @unique
   shippingAddress String
-  billingAddress  String?
   phoneNumber     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -94,11 +106,14 @@ model Order {
   userId        String?
   total         Decimal
   orderStatus   String
-  paymentStatus String
   details       OrderDetails?
   items         OrderItem[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([orderNo])
+  @@index([orderStatus])
 }
 
 model OrderDetails {
@@ -141,6 +156,9 @@ model OrderItem {
   variantId     String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([productTitle])
 }
 
 model SocialLink {
@@ -152,6 +170,9 @@ model SocialLink {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
 }
 
 model HeroSlider {
@@ -165,18 +186,25 @@ model HeroSlider {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([order])
+  @@index([isActive])
 }
 
 model BlogCategory {
-  id        String     @id @default(uuid())
-  title     String
-  slug      String     @unique
-  image     String?
+  id         String      @id @default(uuid())
+  title      String
+  slug       String      @unique
+  image      String?
   authorName String?
-  status    String     @default("draft")
-  posts     BlogPost[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  status     String      @default("draft")
+  posts      BlogPost[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([status])
+  @@index([title])
+  @@index([slug])
 }
 
 model BlogPost {
@@ -193,6 +221,10 @@ model BlogPost {
   advertisements  BlogPostAdvertisement[]
   createdAt       DateTime                 @default(now())
   updatedAt       DateTime                 @updatedAt
+
+  @@index([categoryId, createdAt])
+  @@index([status, createdAt])
+  @@index([title])
 }
 
 model Advertisement {

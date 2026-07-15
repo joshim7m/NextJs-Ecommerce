@@ -29,7 +29,6 @@ export async function POST(request) {
       orderNo,
       total,
       orderStatus: 'pending',
-      paymentStatus: 'pending',
       details: {
         create: {
           customerName: name,
@@ -42,7 +41,7 @@ export async function POST(request) {
       },
       items: {
         create: items.map((item) => ({
-          productTitle: item.title,
+          productTitle: `${item.productSlug}-${item.sku || ''}`,
           itemImagePath: item.image || '',
           purchasePrice: Number(item.salePrice ?? item.price ?? 0),
           quantity: Number(item.quantity ?? 0),

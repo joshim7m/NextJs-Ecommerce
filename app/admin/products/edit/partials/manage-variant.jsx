@@ -118,8 +118,8 @@ export default function ManageVariant({ variants, optionLabels, allImages, onCha
               <td className="px-3 py-2.5">
                 <input
                   type="number"
-                  value={v.inventoryQuantity}
-                  onChange={(e) => onChange(v._key, 'inventoryQuantity', e.target.value)}
+                  value={v.quantity}
+                  onChange={(e) => onChange(v._key, 'quantity', e.target.value)}
                   className="w-16 rounded-md border border-slate-200 px-2 py-1 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
                 />
               </td>

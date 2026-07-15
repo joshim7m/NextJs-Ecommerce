@@ -154,7 +154,7 @@ export default function AdminAdvertisementsPage() {
                   )}
                 </td>
                 <td className="px-4 py-3 font-medium text-slate-900 max-w-[200px] truncate">{ad.title}</td>
-                <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{ad.price ? `$${parseFloat(ad.price).toFixed(2)}` : <span className="text-slate-300">&mdash;</span>}</td>
+                <td className="px-4 py-3 text-slate-500 whitespace-nowrap">{ad.price ? `৳${parseFloat(ad.price).toLocaleString()}` : <span className="text-slate-300">&mdash;</span>}</td>
                 <td className="px-4 py-3 max-w-[200px] truncate text-slate-500">{ad.productLink || <span className="text-slate-300">&mdash;</span>}</td>
                 <td className="px-4 py-3 text-center">
                   <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-medium text-slate-600">{ad._count?.blogPosts ?? 0}</span>

@@ -1,8 +1,15 @@
 import { SignJWT } from 'jose';
 import bcrypt from 'bcryptjs';
 
-const SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'dev-secret-change-in-production');
+const JWT_SECRET = process.env.JWT_SECRET;
+const SECRET = new TextEncoder().encode(JWT_SECRET || 'dev-secret-change-in-production');
 const COOKIE_NAME = 'admin_session';
+
+function assertSecret() {
+  if (!JWT_SECRET && process.env.NODE_ENV === 'production' && typeof window === 'undefined') {
+    throw new Error('JWT_SECRET environment variable must be set in production');
+  }
+}
 
 export async function hashPassword(password) {
   return bcrypt.hash(password, 12);
@@ -14,6 +21,7 @@ export async function verifyPassword(password, hash) {
 }
 
 export async function createToken(payload) {
+  assertSecret();
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()

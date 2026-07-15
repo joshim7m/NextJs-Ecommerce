@@ -4,7 +4,7 @@ import prisma from '../../../../../src/lib/prisma';
 export async function PUT(request, { params }) {
   const { id } = await params;
   const body = await request.json();
-  const { title, slug: rawSlug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlug, imagePaths, removeImageIds, variants } = body;
+  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categorySlug, imagePaths, removeImageIds, variants } = body;
   const slug = rawSlug?.trim();
 
   try {
@@ -28,7 +28,7 @@ export async function PUT(request, { params }) {
             color: v.color || null,
             price: v.price ? parseFloat(v.price) : null,
             sale_price: v.sale_price ? parseFloat(v.sale_price) : null,
-            inventoryQuantity: v.inventoryQuantity ? parseInt(v.inventoryQuantity) : 0,
+            quantity: v.quantity ? parseInt(v.quantity) : 0,
             isDefault: v.isDefault || false,
             image: v.imageId ? { connect: { id: v.imageId } } : undefined,
           },
@@ -45,7 +45,7 @@ export async function PUT(request, { params }) {
             color: v.color || null,
             price: v.price ? parseFloat(v.price) : null,
             sale_price: v.sale_price ? parseFloat(v.sale_price) : null,
-            inventoryQuantity: v.inventoryQuantity ? parseInt(v.inventoryQuantity) : 0,
+            quantity: v.quantity ? parseInt(v.quantity) : 0,
             isDefault: v.isDefault || false,
             image: v.imageId ? { connect: { id: v.imageId } } : { disconnect: true },
           },
@@ -61,8 +61,8 @@ export async function PUT(request, { params }) {
         description,
         unite_price: parseFloat(unite_price),
         sale_price: sale_price ? parseFloat(sale_price) : null,
-        compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
-        inventoryQuantity: inventoryQuantity ? parseInt(inventoryQuantity) : null,
+        sku: sku || null,
+        quantity: quantity ? parseInt(quantity) : null,
         status,
         categories: categorySlug ? { set: [{ slug: categorySlug }] } : { set: [] },
         images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,

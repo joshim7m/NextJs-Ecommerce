@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { getOrders, updateOrderStatus } from '../../../src/actions/orders';
 
 const orderStatuses = ['pending', 'processing', 'completed', 'cancelled'];
-const paymentStatuses = ['unpaid', 'paid', 'refund'];
 
 const orderStatusColors = {
   pending: 'bg-amber-50 text-amber-700',
@@ -14,18 +13,12 @@ const orderStatusColors = {
   cancelled: 'bg-red-50 text-red-700',
 };
 
-const paymentStatusColors = {
-  unpaid: 'bg-slate-100 text-slate-600',
-  paid: 'bg-emerald-50 text-emerald-700',
-  refund: 'bg-red-50 text-red-700',
+const orderStatusDotColors = {
+  pending: 'bg-amber-500',
+  processing: 'bg-blue-500',
+  completed: 'bg-emerald-500',
+  cancelled: 'bg-red-500',
 };
-
-function OrderStatusDot({ status, type }) {
-  const colors = type === 'order'
-    ? { pending: 'bg-amber-400', processing: 'bg-blue-500', completed: 'bg-emerald-500', cancelled: 'bg-red-500' }
-    : { unpaid: 'bg-slate-400', paid: 'bg-emerald-500', refund: 'bg-red-500' };
-  return <span className={`inline-block h-2 w-2 rounded-full ${colors[status] || 'bg-slate-400'}`} />;
-}
 
 function ItemsSection({ items }) {
   if (!items?.length) return null;
@@ -126,21 +119,10 @@ function StatusCard({ order, onUpdate }) {
             {orderStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
-        <div>
-          <label className="text-xs font-medium uppercase tracking-wider text-slate-500">Payment</label>
-          <select value={order.paymentStatus} onChange={(e) => onUpdate('paymentStatus', e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 p-2 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-            {paymentStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </div>
         <div className="flex items-center gap-4 pt-1 text-xs">
           <span className="flex items-center gap-1.5">
-            <OrderStatusDot status={order.orderStatus} type="order" />
+            <span className={`h-2 w-2 rounded-full ${orderStatusDotColors[order.orderStatus] || 'bg-slate-400'}`} />
             {order.orderStatus}
-          </span>
-          <span className="text-slate-300">|</span>
-          <span className="flex items-center gap-1.5">
-            <OrderStatusDot status={order.paymentStatus} type="payment" />
-            {order.paymentStatus}
           </span>
         </div>
       </div>
@@ -203,7 +185,6 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterOrderStatus, setFilterOrderStatus] = useState('all');
-  const [filterPaymentStatus, setFilterPaymentStatus] = useState('all');
   const [expanded, setExpanded] = useState(null);
 
   useEffect(() => {
@@ -217,9 +198,8 @@ export default function AdminOrdersPage() {
       list = list.filter((o) => o.orderNo.toLowerCase().includes(q));
     }
     if (filterOrderStatus !== 'all') list = list.filter((o) => o.orderStatus === filterOrderStatus);
-    if (filterPaymentStatus !== 'all') list = list.filter((o) => o.paymentStatus === filterPaymentStatus);
     return list;
-  }, [orders, search, filterOrderStatus, filterPaymentStatus]);
+  }, [orders, search, filterOrderStatus]);
 
   const handleStatusUpdate = async (id, field, value) => {
     try {
@@ -248,12 +228,8 @@ export default function AdminOrdersPage() {
           <option value="all">All Status</option>
           {orderStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        <select value={filterPaymentStatus} onChange={(e) => setFilterPaymentStatus(e.target.value)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-          <option value="all">All Payment</option>
-          {paymentStatuses.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-        {(filterOrderStatus !== 'all' || filterPaymentStatus !== 'all' || search) && (
-          <button onClick={() => { setFilterOrderStatus('all'); setFilterPaymentStatus('all'); setSearch(''); }} className="text-sm text-slate-500 hover:text-slate-700 transition">Clear</button>
+        {(filterOrderStatus !== 'all' || search) && (
+          <button onClick={() => { setFilterOrderStatus('all'); setSearch(''); }} className="text-sm text-slate-500 hover:text-slate-700 transition">Clear</button>
         )}
       </div>
 
@@ -272,9 +248,6 @@ export default function AdminOrdersPage() {
                   </Link>
                   <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${orderStatusColors[order.orderStatus] || 'bg-slate-100 text-slate-600'}`}>
                     {order.orderStatus}
-                  </span>
-                  <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${paymentStatusColors[order.paymentStatus] || 'bg-slate-100 text-slate-600'}`}>
-                    {order.paymentStatus}
                   </span>
                 </div>
                 <p className="text-xs font-medium text-slate-900">{order.details?.customerName || order.user?.name || '—'}</p>
@@ -310,7 +283,7 @@ export default function AdminOrdersPage() {
         ))}
         {filtered.length === 0 && (
           <div className="rounded-xl border border-slate-200 bg-white py-12 text-center text-sm text-slate-400">
-            {search || filterOrderStatus !== 'all' || filterPaymentStatus !== 'all' ? 'No orders match your filters.' : 'No orders yet.'}
+            {search || filterOrderStatus !== 'all' ? 'No orders match your filters.' : 'No orders yet.'}
           </div>
         )}
       </div>
@@ -324,7 +297,6 @@ export default function AdminOrdersPage() {
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Customer</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Total</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Payment</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">IP Address</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Date</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right"></th>
@@ -344,9 +316,6 @@ export default function AdminOrdersPage() {
                   <td className="px-4 py-3 font-medium text-slate-900">৳{Number(order.total).toLocaleString()}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${orderStatusColors[order.orderStatus] || 'bg-slate-100 text-slate-600'}`}>{order.orderStatus}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${paymentStatusColors[order.paymentStatus] || 'bg-slate-100 text-slate-600'}`}>{order.paymentStatus}</span>
                   </td>
                   <td className="px-4 py-3">
                     <span className="text-xs font-mono text-slate-500">{order.details?.ipAddress || '—'}</span>
@@ -377,7 +346,7 @@ export default function AdminOrdersPage() {
                 </tr>
                 {expanded === order.id && (
                   <tr>
-                    <td colSpan={8} className="px-0 py-0">
+                    <td colSpan={7} className="px-0 py-0">
                       <ExpandedDetails order={order} onStatusUpdate={handleStatusUpdate} />
                     </td>
                   </tr>
@@ -385,7 +354,7 @@ export default function AdminOrdersPage() {
               </Fragment>
             ))}
             {filtered.length === 0 ? (
-              <tr><td colSpan={8} className="px-4 py-10 text-center text-sm text-slate-400">{search || filterOrderStatus !== 'all' || filterPaymentStatus !== 'all' ? 'No orders match your filters.' : 'No orders yet.'}</td></tr>
+              <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-400">{search || filterOrderStatus !== 'all' ? 'No orders match your filters.' : 'No orders yet.'}</td></tr>
             ) : null}
           </tbody>
         </table>

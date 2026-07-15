@@ -62,7 +62,20 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
             <ul className="space-y-3 text-sm">
               <li><Link href="/categories" className="transition hover:text-white">All Categories</Link></li>
               <li><Link href="/products" className="transition hover:text-white">All Products</Link></li>
-              <li><Link href="/blog" className="transition hover:text-white">Blog</Link></li>
+              <li><Link href="/wishlist" className="transition hover:text-white">Wishlist</Link></li>
+              <li><Link href="/blogs" className="transition hover:text-white">Blog</Link></li>
+              <li><Link href="/blogs/categories" className="transition hover:text-white">Blog Categories</Link></li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Company</h4>
+            <ul className="space-y-3 text-sm">
+              <li><Link href="/about" className="transition hover:text-white">About Us</Link></li>
+              <li><Link href="/contact" className="transition hover:text-white">Contact Us</Link></li>
+              <li><Link href="/privacy" className="transition hover:text-white">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="transition hover:text-white">Terms of Service</Link></li>
             </ul>
           </div>
 
@@ -97,10 +110,10 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
           <div className="space-y-4">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Stay Connected</h4>
             <p className="text-sm leading-relaxed text-slate-400">Subscribe to get notifications about new products and exclusive offers.</p>
-            <div className="flex">
-              <input type="email" placeholder="Your email" className="min-w-0 flex-1 rounded-l-lg border-0 bg-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-white/30" />
-              <button className="rounded-r-lg bg-white px-4 py-2.5 text-sm font-medium text-[#1a0a3e] transition hover:bg-slate-200">Subscribe</button>
-            </div>
+            <form onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing!'); e.target.reset(); }} className="flex">
+              <input type="email" name="email" required placeholder="Your email" className="min-w-0 flex-1 rounded-l-lg border-0 bg-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-white/30" />
+              <button type="submit" className="rounded-r-lg bg-white px-4 py-2.5 text-sm font-medium text-[#1a0a3e] transition hover:bg-slate-200">Subscribe</button>
+            </form>
           </div>
         </div>
 

@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
     { label: 'Total Products', value: stats.products, href: '/admin/products', icon: 'products', color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'Categories', value: stats.categories, href: '/admin/categories', icon: 'categories', color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Orders', value: stats.orders, href: '/admin/orders', icon: 'orders', color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: 'Revenue', value: stats.revenue !== '\u2014' ? `$${Number(stats.revenue).toLocaleString()}` : '\u2014', href: '/admin/orders', icon: 'revenue', color: 'text-violet-600', bg: 'bg-violet-50' },
+    { label: 'Revenue', value: stats.revenue !== '\u2014' ? `\u09F3${Number(stats.revenue).toLocaleString()}` : '\u2014', href: '/admin/orders', icon: 'revenue', color: 'text-violet-600', bg: 'bg-violet-50' },
   ];
 
   const quickActions = [
@@ -105,7 +105,7 @@ export default function AdminDashboardPage() {
                     <td className="py-3 pr-4 font-medium text-[#2f0f6b]">{o.orderNo}</td>
                     <td className="py-3 pr-4 text-slate-600">{o.details?.customerName || o.user?.name || '\u2014'}</td>
                     <td className="py-3 pr-4"><StatusBadge status={o.orderStatus} /></td>
-                    <td className="py-3 pr-4 text-slate-900">${Number(o.total).toLocaleString()}</td>
+                    <td className="py-3 pr-4 text-slate-900">{'\u09F3'}{Number(o.total).toLocaleString()}</td>
                     <td className="py-3 text-slate-400">{o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : '\u2014'}</td>
                   </tr>
                 ))}
@@ -132,7 +132,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <p className="text-sm font-medium text-slate-900">{o.details?.customerName || o.user?.name || "\u2014"}</p>
                 <div className="mt-1 flex items-center justify-between text-xs text-slate-400">
-                  <span>${Number(o.total).toLocaleString()}</span>
+                  <span>{'\u09F3'}{Number(o.total).toLocaleString()}</span>
                   <span>{o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "\u2014"}</span>
                 </div>
               </Link>

@@ -138,6 +138,7 @@ export default function AdminProductsPage() {
                 </td>
                 <td className="px-4 py-3 max-w-[200px] truncate">
                   <Link href={`/admin/products/edit?id=${p.id}`} className="font-medium text-slate-900 hover:text-[#2f0f6b] transition">{p.title}</Link>
+                  {p.sku && <p className="text-xs text-slate-400 mt-0.5">SKU: {p.sku}</p>}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
                   <span className="font-medium text-slate-900">৳{Number(p.sale_price || p.unite_price).toLocaleString()}</span>
@@ -146,7 +147,7 @@ export default function AdminProductsPage() {
                 <td className="px-4 py-3"><StatusBadge status={p.status} /></td>
                 <td className="px-4 py-3 text-slate-500 max-w-[150px] truncate">{p.categories?.map((c) => c.name).join(', ') || '\u2014'}</td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`text-sm font-medium ${(p.inventoryQuantity ?? 0) > 0 ? 'text-slate-900' : 'text-red-400'}`}>{p.inventoryQuantity ?? '\u2014'}</span>
+                  <span className={`text-sm font-medium ${(p.quantity ?? 0) > 0 ? 'text-slate-900' : 'text-red-400'}`}>{p.quantity ?? '\u2014'}</span>
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="relative inline-block">

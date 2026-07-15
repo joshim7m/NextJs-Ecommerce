@@ -24,12 +24,12 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   const { id } = await params;
   const body = await request.json();
-  const { orderStatus, paymentStatus } = body;
+  const { orderStatus } = body;
 
   try {
     const order = await prisma.order.update({
       where: { id },
-      data: { orderStatus, paymentStatus },
+      data: { orderStatus },
       include: { details: true, items: true },
     });
     return NextResponse.json(order);

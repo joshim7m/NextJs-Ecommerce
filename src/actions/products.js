@@ -24,7 +24,7 @@ export async function getCategories() {
 }
 
 export async function createProduct(data) {
-  const { title, slug: rawSlug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlug, imagePaths } = data;
+  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categorySlug, imagePaths } = data;
   const slug = rawSlug?.trim();
   if (!title || !slug) throw new Error('Title and slug are required.');
 
@@ -33,8 +33,8 @@ export async function createProduct(data) {
       title, slug, description,
       unite_price: parseFloat(unite_price),
       sale_price: sale_price ? parseFloat(sale_price) : null,
-      compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
-      inventoryQuantity: inventoryQuantity ? parseInt(inventoryQuantity) : null,
+      sku: sku || null,
+      quantity: quantity ? parseInt(quantity) : null,
       status: status || 'draft',
       categories: categorySlug ? { connect: { slug: categorySlug } } : undefined,
       images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,
@@ -47,7 +47,7 @@ export async function createProduct(data) {
 }
 
 export async function updateProduct(id, data) {
-  const { title, slug: rawSlug, description, unite_price, sale_price, compareAtPrice, inventoryQuantity, status, categorySlug, imagePaths, removeImageIds, variants, removedVariantIds } = data;
+  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categorySlug, imagePaths, removeImageIds, variants, removedVariantIds } = data;
   const slug = rawSlug?.trim();
 
   if (removeImageIds?.length) {
@@ -67,9 +67,9 @@ export async function updateProduct(id, data) {
           sku: v.sku || null,
           size: v.size || null,
           color: v.color || null,
-          price: v.price ? parseFloat(v.price) : null,
+          unite_price: v.unite_price ? parseFloat(v.unite_price) : null,
           sale_price: v.sale_price ? parseFloat(v.sale_price) : null,
-          inventoryQuantity: v.inventoryQuantity ? parseInt(v.inventoryQuantity) : 0,
+          quantity: v.quantity ? parseInt(v.quantity) : 0,
           isDefault: v.isDefault || false,
           image: v.imageId ? { connect: { id: v.imageId } } : undefined,
         },
@@ -84,9 +84,9 @@ export async function updateProduct(id, data) {
           sku: v.sku || null,
           size: v.size || null,
           color: v.color || null,
-          price: v.price ? parseFloat(v.price) : null,
+          unite_price: v.unite_price ? parseFloat(v.unite_price) : null,
           sale_price: v.sale_price ? parseFloat(v.sale_price) : null,
-          inventoryQuantity: v.inventoryQuantity ? parseInt(v.inventoryQuantity) : 0,
+          quantity: v.quantity ? parseInt(v.quantity) : 0,
           isDefault: v.isDefault || false,
           image: v.imageId ? { connect: { id: v.imageId } } : { disconnect: true },
         },
@@ -100,8 +100,8 @@ export async function updateProduct(id, data) {
       title, slug, description,
       unite_price: parseFloat(unite_price),
       sale_price: sale_price ? parseFloat(sale_price) : null,
-      compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : null,
-      inventoryQuantity: inventoryQuantity ? parseInt(inventoryQuantity) : null,
+      sku: sku || null,
+      quantity: quantity ? parseInt(quantity) : null,
       status: status || 'draft',
       categories: categorySlug ? { set: [{ slug: categorySlug }] } : { set: [] },
       images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,

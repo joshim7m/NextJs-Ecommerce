@@ -18,7 +18,7 @@ export function injectAdsIntoContent(html, ads = []) {
     const t = escHtml(ad.title);
     const txt = escHtml(ad.text || '');
     const link = escHtml(ad.productLink || '#');
-    const price = ad.price ? `$${parseFloat(ad.price).toFixed(2)}` : '';
+    const price = ad.price ? `\u09F3${parseFloat(ad.price).toLocaleString()}` : '';
     const imgHtml = ad.image
       ? `<div class="flex w-24 shrink-0 sm:w-28"><img src="${escHtml(ad.image)}" alt="${t}" class="min-h-0 flex-1 object-cover" loading="lazy" /></div>`
       : '';

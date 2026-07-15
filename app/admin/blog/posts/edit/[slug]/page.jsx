@@ -227,7 +227,7 @@ export default function EditBlogPostPage({ params }) {
                   />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-slate-900 truncate">{ad.title}</p>
-                    {ad.price && <p className="text-xs text-slate-500">${parseFloat(ad.price).toFixed(2)}</p>}
+                    {ad.price && <p className="text-xs text-slate-500">{'৳'}{parseFloat(ad.price).toLocaleString()}</p>}
                   </div>
                 </label>
               ))}

@@ -56,6 +56,9 @@ export default function CartDrawer({ open, onClose }) {
         className={`fixed right-0 top-0 z-[120] flex h-full w-full flex-col bg-white shadow-2xl transition-transform duration-300 sm:w-[420px] dark:bg-slate-900 ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Shopping cart"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-700">

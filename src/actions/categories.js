@@ -11,18 +11,32 @@ export async function getCategories() {
 }
 
 export async function createCategory(data) {
-  const { name, slug, image, description } = data;
+  const { name, slug, image, description, parentId } = data;
   if (!name || !slug) throw new Error('Name and slug are required.');
-  const category = await prisma.category.create({ data: { name, slug, image, description } });
+  const category = await prisma.category.create({
+    data: {
+      name,
+      slug,
+      image,
+      description,
+      parentId: parentId || null,
+    },
+  });
   revalidatePath('/admin/categories');
   return category;
 }
 
 export async function updateCategory(id, data) {
-  const { name, slug, image, description } = data;
+  const { name, slug, image, description, parentId } = data;
   const category = await prisma.category.update({
     where: { id },
-    data: { name, slug, image, description },
+    data: {
+      name,
+      slug,
+      image,
+      description,
+      parentId: parentId || null,
+    },
   });
   revalidatePath('/admin/categories');
   return category;

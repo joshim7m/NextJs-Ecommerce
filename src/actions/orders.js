@@ -21,7 +21,7 @@ export async function getDashboardStats() {
     prisma.product.count(),
     prisma.category.count(),
     prisma.order.count(),
-    prisma.order.aggregate({ _sum: { total: true }, where: { paymentStatus: { not: 'unpaid' } } }),
+    prisma.order.aggregate({ _sum: { total: true }, where: { orderStatus: { not: 'cancelled' } } }),
   ]);
   return serialize({
     products: productCount,

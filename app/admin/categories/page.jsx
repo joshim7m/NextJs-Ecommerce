@@ -27,12 +27,12 @@ export default function AdminCategoriesPage() {
   const safePage = Math.min(page, totalPages - 1);
   const paginated = filtered.slice(safePage * PER_PAGE, (safePage + 1) * PER_PAGE);
 
-  const resetForm = () => setForm({ name: '', slug: '', image: '', description: '' });
+  const resetForm = () => setForm({ name: '', slug: '', image: '', description: '', parentId: '' });
   const openCreate = () => { setEditing('new'); resetForm(); };
 
   const openEdit = (cat) => {
     setEditing(cat.id);
-    setForm({ name: cat.name, slug: cat.slug, image: cat.image || '', description: cat.description || '' });
+    setForm({ name: cat.name, slug: cat.slug, image: cat.image || '', description: cat.description || '', parentId: cat.parentId || '' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -145,6 +145,22 @@ export default function AdminCategoriesPage() {
             <div>
               <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Description</label>
               <input name="description" value={form.description} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Parent Category</label>
+              <select
+                name="parentId"
+                value={form.parentId}
+                onChange={handleChange}
+                className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              >
+                <option value="">None (Top-level)</option>
+                {categories
+                  .filter((c) => c.id !== editing)
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+              </select>
             </div>
           </div>
           <div className="mt-4 sm:mt-5 flex gap-3">

@@ -12,16 +12,31 @@ async function getSiteSettings() {
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
+  const siteName = settings.siteName || 'Radiant Picks';
   return {
-    title: settings.siteName ? `${settings.siteName} — Home` : "Cabinet & Closet — Home",
-    description: 'Carefully selected products for your home and everyday style.',
+    title: {
+      default: `${siteName} — Online Lingerie & Women's Intimates Store in Bangladesh`,
+      template: `%s | ${siteName}`,
+    },
+    description:
+      'Shop premium lingerie, bras, panties, nightwear, and women\'s intimate apparel at Radiant Picks. ' +
+      'Discreet packaging, cash on delivery, and free shipping options across Bangladesh.',
     icons: settings.favicon ? { icon: settings.favicon } : undefined,
   };
 }
 
+export const viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
+    <html lang="en" suppressHydrationWarning >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

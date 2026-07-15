@@ -7,7 +7,7 @@ export default function BlogCard({ post, horizontal = true }) {
   if (!horizontal) {
     return (
       <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50 dark:hover:shadow-lg dark:hover:shadow-slate-900/30">
-        <Link href={`/blog/${post.slug}`} className="block overflow-hidden">
+        <Link href={`/blogs/${post.slug}`} className="block overflow-hidden">
           {post.bannerImage ? (
             <img src={post.bannerImage} alt={post.title} className="h-48 w-full object-cover transition duration-300 group-hover:scale-105" loading="lazy" />
           ) : (
@@ -21,7 +21,7 @@ export default function BlogCard({ post, horizontal = true }) {
         <div className="flex flex-1 flex-col p-4">
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             {post.category && (
-              <Link href={`/blog?category=${post.category.slug}`} className="font-medium text-[#2f0f6b] hover:underline dark:text-[#a78bfa]">{post.category.title}</Link>
+               <Link href={`/blogs/category/${post.category.slug}`} className="font-medium text-[#2f0f6b] hover:underline dark:text-[#a78bfa]">{post.category.title}</Link>
             )}
             <span>&middot;</span>
             <time dateTime={post.createdAt}>{date}</time>
@@ -29,7 +29,7 @@ export default function BlogCard({ post, horizontal = true }) {
               <><span>&middot;</span><span>{post.category.authorName}</span></>
             )}
           </div>
-          <Link href={`/blog/${post.slug}`} className="mt-2 block">
+          <Link href={`/blogs/${post.slug}`} className="mt-2 block">
             <h2 className="text-lg font-semibold text-slate-900 line-clamp-2 group-hover:text-[#2f0f6b] transition-colors dark:text-white dark:group-hover:text-[#a78bfa]">{post.title}</h2>
           </Link>
           <p className="mt-2 text-sm text-slate-500 line-clamp-3 dark:text-slate-400">{excerpt}</p>
@@ -45,7 +45,7 @@ export default function BlogCard({ post, horizontal = true }) {
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50 dark:hover:shadow-lg dark:hover:shadow-slate-900/30 md:flex-row">
-      <Link href={`/blog/${post.slug}`} className="block w-full shrink-0 overflow-hidden md:w-72">
+      <Link href={`/blogs/${post.slug}`} className="block w-full shrink-0 overflow-hidden md:w-72">
         {post.bannerImage ? (
           <img src={post.bannerImage} alt={post.title} className="h-48 w-full object-cover transition duration-300 group-hover:scale-105 md:h-full" loading="lazy" />
         ) : (
@@ -58,16 +58,13 @@ export default function BlogCard({ post, horizontal = true }) {
       </Link>
       <div className="flex flex-1 flex-col justify-center p-5">
         <div className="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
-          
-          {post.category?.authorName && (
-            <span>{post.category.authorName}</span>
+          {post.category && (
+            <Link href={`/blogs/category/${post.category.slug}`} className="font-medium text-[#2f0f6b] hover:underline dark:text-[#a78bfa]">{post.category.title}</Link>
           )}
-
-          <div>
-            <time dateTime={post.createdAt}>{date}</time>
-          </div>
+          <span>&middot;</span>
+          <time dateTime={post.createdAt}>{date}</time>
         </div>
-        <Link href={`/blog/${post.slug}`} className="mt-2 block">
+        <Link href={`/blogs/${post.slug}`} className="mt-2 block">
           <h2 className="text-base md:text-xl font-semibold text-slate-900 line-clamp-2 group-hover:text-[#2f0f6b] transition-colors dark:text-white dark:group-hover:text-[#a78bfa]">
             {post.title}
           </h2>

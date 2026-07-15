@@ -36,8 +36,8 @@ export default function ProductTabs({ product, selectedVariant }) {
               {v.sku ? <p className="text-slate-600 dark:text-slate-300"><span className="font-medium">SKU:</span> {v.sku}</p> : null}
               <p className="text-slate-600 dark:text-slate-300">
                 <span className="font-medium">Stock:</span>{' '}
-                {v.inventoryQuantity > 0 ? (
-                  <span className="text-emerald-600 dark:text-emerald-400">{v.inventoryQuantity} available</span>
+                {v.quantity > 0 ? (
+                  <span className="text-emerald-600 dark:text-emerald-400">{v.quantity} available</span>
                 ) : (
                   <span className="text-red-500 dark:text-red-400">Out of stock</span>
                 )}

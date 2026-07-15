@@ -1,9 +1,17 @@
 import { jwtVerify } from 'jose';
 
-const SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'dev-secret-change-in-production');
+const JWT_SECRET = process.env.JWT_SECRET;
+const SECRET = new TextEncoder().encode(JWT_SECRET || 'dev-secret-change-in-production');
 const COOKIE_NAME = 'admin_session';
 
+function assertSecret() {
+  if (!JWT_SECRET && process.env.NODE_ENV === 'production' && typeof window === 'undefined') {
+    throw new Error('JWT_SECRET environment variable must be set in production');
+  }
+}
+
 export async function verifyToken(token) {
+  assertSecret();
   try {
     const { payload } = await jwtVerify(token, SECRET);
     return payload;

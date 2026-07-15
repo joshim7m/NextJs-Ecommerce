@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { getCategories, createProduct } from '../../../../src/actions/products';
 
 const emptyForm = {
-  title: '', slug: '', description: '', unite_price: '', sale_price: '', compareAtPrice: '',
-  inventoryQuantity: '', status: 'draft', categorySlug: '',
+  title: '', slug: '', description: '', unite_price: '', sale_price: '', sku: '',
+  quantity: '', status: 'draft', categorySlug: '',
 };
 
 export default function CreateProductPage() {
@@ -34,6 +34,11 @@ export default function CreateProductPage() {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '');
     setForm((prev) => ({ ...prev, slug }));
+  };
+
+  const generateSku = () => {
+    const sku = String(Math.floor(100000 + Math.random() * 900000));
+    setForm((prev) => ({ ...prev, sku }));
   };
 
   const handleFileSelect = (e) => {
@@ -93,7 +98,7 @@ export default function CreateProductPage() {
             <textarea name="description" value={form.description} onChange={handleChange} rows={2} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Price (৳)</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Unit Price (৳)</label>
             <input name="unite_price" type="number" step="0.01" value={form.unite_price} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
           </div>
           <div>
@@ -101,12 +106,15 @@ export default function CreateProductPage() {
             <input name="sale_price" type="number" step="0.01" value={form.sale_price} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Compare At (৳)</label>
-            <input name="compareAtPrice" type="number" step="0.01" value={form.compareAtPrice} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">SKU</label>
+            <div className="mt-1 flex gap-2">
+              <input name="sku" value={form.sku} onChange={handleChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+              <button type="button" onClick={generateSku} className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Generate</button>
+            </div>
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</label>
-            <input name="inventoryQuantity" type="number" value={form.inventoryQuantity} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <input name="quantity" type="number" value={form.quantity} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Status</label>

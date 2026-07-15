@@ -9,8 +9,8 @@ import VariantGenerator from './partials/variant-generator';
 import ManageVariant from './partials/manage-variant';
 
 const emptyForm = {
-  title: '', slug: '', description: '', unite_price: '', sale_price: '', compareAtPrice: '',
-  inventoryQuantity: '', status: 'draft', categorySlug: '',
+  title: '', slug: '', description: '', unite_price: '', sale_price: '', sku: '',
+  quantity: '', status: 'draft', categorySlug: '',
 };
 
 let variantKeyCounter = 0;
@@ -53,8 +53,8 @@ function EditProductForm() {
         description: product.description || '',
         unite_price: product.unite_price.toString(),
         sale_price: product.sale_price?.toString() || '',
-        compareAtPrice: product.compareAtPrice?.toString() || '',
-        inventoryQuantity: product.inventoryQuantity?.toString() || '',
+        sku: product.sku?.toString() || '',
+        quantity: product.quantity?.toString() || '',
         status: product.status,
         categorySlug: product.categories?.[0]?.slug || '',
       });
@@ -68,7 +68,7 @@ function EditProductForm() {
         sku: v.sku || '',
         price: v.price?.toString() || '',
         sale_price: v.sale_price?.toString() || '',
-        inventoryQuantity: v.inventoryQuantity?.toString() || '',
+        quantity: v.quantity?.toString() || '',
         imageId: v.imageId || '',
         isDefault: v.isDefault,
         _delete: false,
@@ -97,6 +97,11 @@ function EditProductForm() {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '');
     setForm((prev) => ({ ...prev, slug }));
+  };
+
+  const generateSku = () => {
+    const sku = String(Math.floor(100000 + Math.random() * 900000));
+    setForm((prev) => ({ ...prev, sku }));
   };
 
   const handleFileSelect = (e) => {
@@ -149,7 +154,7 @@ function EditProductForm() {
       sku: '',
       price: form.unite_price,
       sale_price: form.sale_price,
-      inventoryQuantity: form.inventoryQuantity,
+      quantity: form.quantity,
       imageId: '',
       isDefault: false,
       _delete: false,
@@ -203,7 +208,7 @@ function EditProductForm() {
         color: v.optionValues?.[1] || '',
         price: v.price,
         sale_price: v.sale_price,
-        inventoryQuantity: v.inventoryQuantity ? parseInt(v.inventoryQuantity) : 0,
+        quantity: v.quantity ? parseInt(v.quantity) : 0,
         imageId: v.imageId,
         isDefault: v.isDefault,
       }));
@@ -275,6 +280,7 @@ function EditProductForm() {
         form={form}
         onChange={handleChange}
         onGenerateSlug={generateSlug}
+        onGenerateSku={generateSku}
         categories={categories}
         existingImages={existingImages}
         newPreviews={newPreviews}

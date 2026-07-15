@@ -6,9 +6,9 @@ function Toast({ toast }) {
   if (!toast) return null;
   const isSuccess = toast.type === 'success';
   return (
-    <div className="fixed right-6 top-20 z-50 animate-fade-in">
+    <div className="fixed left-4 right-4 top-20 z-50 animate-fade-in sm:left-auto sm:right-6">
       <div
-        className={`flex items-center gap-3 rounded-xl border px-5 py-3.5 shadow-lg backdrop-blur-md ${
+        className={`flex items-center gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur-md sm:px-5 sm:py-3.5 ${
           isSuccess
             ? 'border-emerald-200 bg-emerald-50/95 text-emerald-800'
             : 'border-red-200 bg-red-50/95 text-red-800'
@@ -23,7 +23,7 @@ function Toast({ toast }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         )}
-        <p className="text-sm font-medium">{toast.message}</p>
+        <p className="flex-1 text-sm font-medium">{toast.message}</p>
         <button
           type="button"
           onClick={() => {}}
@@ -42,13 +42,13 @@ function Toast({ toast }) {
 
 function Skeleton() {
   return (
-    <div className="mx-auto max-w-3xl animate-pulse space-y-8">
+    <div className="mx-auto max-w-3xl animate-pulse space-y-6 px-4 sm:space-y-8 sm:px-0">
       <div>
         <div className="mb-2 h-7 w-48 rounded-lg bg-slate-200" />
         <div className="h-4 w-72 rounded-lg bg-slate-100" />
       </div>
       {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div key={i} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="mb-4 h-4 w-24 rounded bg-slate-200" />
           <div className="space-y-4">
             <div className="h-10 w-full rounded-lg bg-slate-100" />
@@ -94,23 +94,25 @@ function ImageUpload({ label, value, field, onUpload, onRemove }) {
     e.target.value = '';
   };
 
+  const isFavicon = field === 'favicon';
+
   return (
     <div>
       <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</label>
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-start gap-3">
         {value ? (
           <div className="group relative">
             <img
               src={value}
               alt={label}
               className={`rounded-lg border border-slate-200 object-cover ${
-                field === 'favicon' ? 'h-16 w-16' : 'h-24 w-52'
+                isFavicon ? 'h-14 w-14 sm:h-16 sm:w-16' : 'h-20 w-full max-w-[200px] sm:h-24 sm:w-52'
               }`}
             />
             <button
               type="button"
               onClick={() => onRemove(field)}
-              className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white opacity-0 transition hover:bg-red-600 group-hover:opacity-100"
+              className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white opacity-100 transition hover:bg-red-600 sm:opacity-0 sm:group-hover:opacity-100"
             >
               ✕
             </button>
@@ -125,9 +127,9 @@ function ImageUpload({ label, value, field, onUpload, onRemove }) {
             dragging
               ? 'border-[#2f0f6b] bg-[#2f0f6b]/5 text-[#2f0f6b]'
               : 'border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b]'
-          } ${field === 'favicon' ? 'h-16 w-16' : 'h-24 w-52'}`}
+          } ${isFavicon ? 'h-14 w-14 sm:h-16 sm:w-16' : 'h-20 w-full max-w-[200px] sm:h-24 sm:w-52'}`}
         >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
           </svg>
           <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
@@ -168,11 +170,11 @@ function InputField({ label, type = 'text', value, onChange, placeholder, rows }
 function SectionCard({ title, description, children }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
-      <div className="border-b border-slate-100 px-6 py-4">
+      <div className="border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4">
         <h3 className="text-base font-semibold text-slate-900">{title}</h3>
         {description && <p className="mt-0.5 text-sm text-slate-500">{description}</p>}
       </div>
-      <div className="space-y-5 px-6 py-5">{children}</div>
+      <div className="space-y-4 px-4 py-4 sm:space-y-5 sm:px-6 sm:py-5">{children}</div>
     </div>
   );
 }
@@ -259,27 +261,25 @@ export default function SiteSettingsPage() {
   if (loading) return <Skeleton />;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-3xl px-4 sm:px-0">
       <Toast toast={toast} />
 
-      {/* Page Header */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2f0f6b]/10">
-            <svg className="h-5 w-5 text-[#2f0f6b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#2f0f6b]/10 sm:h-10 sm:w-10">
+            <svg className="h-4 w-4 text-[#2f0f6b] sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Site Setting</h1>
+            <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Site Setting</h1>
             <p className="mt-0.5 text-sm text-slate-500">Manage your site branding and contact information.</p>
           </div>
         </div>
       </div>
 
-      <div className="space-y-6">
-        {/* Branding Section */}
+      <div className="space-y-4 sm:space-y-6">
         <SectionCard title="Branding" description="Your site identity and visual assets.">
           <InputField
             label="Company Name"
@@ -305,22 +305,25 @@ export default function SiteSettingsPage() {
           />
         </SectionCard>
 
-        {/* Contact Section */}
         <SectionCard title="Contact" description="How customers can reach you.">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <InputField
-              label="Mobile"
-              value={form.mobile}
-              onChange={(e) => setForm((prev) => ({ ...prev, mobile: e.target.value }))}
-              placeholder="+880 1XXX-XXXXXX"
-            />
-            <InputField
-              label="Email"
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
-              placeholder="contact@example.com"
-            />
+          <div className="grid gap-4 sm:grid-cols-5 sm:gap-5">
+            <div className="sm:col-span-2">
+              <InputField
+                label="Mobile"
+                value={form.mobile}
+                onChange={(e) => setForm((prev) => ({ ...prev, mobile: e.target.value }))}
+                placeholder="+880 1XXX-XXXXXX"
+              />
+            </div>
+            <div className="sm:col-span-3">
+              <InputField
+                label="Email"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
+                placeholder="contact@example.com"
+              />
+            </div>
           </div>
           <InputField
             label="Address"
@@ -331,7 +334,6 @@ export default function SiteSettingsPage() {
           />
         </SectionCard>
 
-        {/* Announcement Bar Section */}
         <SectionCard title="Announcement Bar" description="The message shown at the top of every page.">
           <InputField
             label="Announcement Text"
@@ -341,7 +343,6 @@ export default function SiteSettingsPage() {
           />
         </SectionCard>
 
-        {/* Footer Section */}
         <SectionCard title="Footer" description="Copyright text displayed in your site footer.">
           <InputField
             label="Copyright Text"
@@ -351,14 +352,13 @@ export default function SiteSettingsPage() {
           />
         </SectionCard>
 
-        {/* Actions */}
-        <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
+        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
           <p className="text-xs text-slate-400">All changes are saved immediately to your site.</p>
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#2f0f6b] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2f0f6b]/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/30 disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2f0f6b] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2f0f6b]/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/30 disabled:opacity-50 sm:w-auto"
           >
             {saving ? (
               <>

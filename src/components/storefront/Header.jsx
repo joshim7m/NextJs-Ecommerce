@@ -168,6 +168,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
               onClick={() => setSearchOpen(true)}
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title="Search (Ctrl+K)"
+              aria-label="Search"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-4.34-4.34" />
@@ -175,12 +176,25 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
               </svg>
             </button>
 
+            {/* Wishlist */}
+            <Link
+              href="/wishlist"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
+              title="Wishlist"
+              aria-label="Wishlist"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </Link>
+
             {/* Cart */}
             <button
               type="button"
               onClick={() => setCartOpen(true)}
               className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title="Cart"
+              aria-label="Cart"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <circle cx="8" cy="21" r="1" />
@@ -200,6 +214,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
               onClick={toggleTheme}
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {dark ? (
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,6 +233,8 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition md:hidden sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title="Menu"
+              aria-label="Menu"
+              aria-expanded={mobileMenuOpen}
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -246,6 +263,9 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
           ref={overlayRef}
           className="fixed inset-0 z-[100] bg-black/50 sm:flex sm:items-start sm:justify-center sm:pt-[15vh]"
           onClick={() => setSearchOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search products"
         >
           <div
             className="flex h-full w-full flex-col bg-white animate-in slide-in-from-top duration-300 sm:h-auto sm:max-w-lg sm:rounded-xl sm:shadow-xl sm:animate-none dark:bg-slate-900"

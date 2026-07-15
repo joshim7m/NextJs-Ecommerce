@@ -1,4 +1,4 @@
-export default function ProductInfo({ form, onChange, categories, existingImages, newPreviews, onRemoveExisting, onRemoveNew, onAdd, onGenerateSlug }) {
+export default function ProductInfo({ form, onChange, categories, existingImages, newPreviews, onRemoveExisting, onRemoveNew, onAdd, onGenerateSlug, onGenerateSku }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -28,12 +28,17 @@ export default function ProductInfo({ form, onChange, categories, existingImages
           <input name="sale_price" type="number" step="0.01" value={form.sale_price} onChange={onChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Compare At (&#x9F3;)</label>
-          <input name="compareAtPrice" type="number" step="0.01" value={form.compareAtPrice} onChange={onChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">SKU</label>
+          <div className="mt-1 flex gap-2">
+            <input name="sku" value={form.sku} onChange={onChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            {onGenerateSku && (
+              <button type="button" onClick={onGenerateSku} className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Generate</button>
+            )}
+          </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</label>
-          <input name="inventoryQuantity" type="number" value={form.inventoryQuantity} onChange={onChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+          <input name="quantity" type="number" value={form.quantity} onChange={onChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
         </div>
         <div>
           <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Status</label>
