@@ -124,3 +124,7 @@ The app will be available at `http://localhost:3000`. Admin panel at `http://loc
 npx prisma migrate reset --force
 npx prisma migrate dev --name add_quantity
 npx prisma db seed
+
+npx prisma migrate reset --force --skip-seed
+
+npx prisma migrate deploy

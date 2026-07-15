@@ -27,33 +27,7 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-white">{brandName}</h3>
             {address && <p className="text-sm leading-relaxed text-slate-400">{address}</p>}
-            {socialLinks?.filter((l) => l.isActive).length > 0 && (
-              <div className="flex gap-2">
-                {socialLinks.filter((l) => l.isActive).map((link) => {
-                  const platform = platforms[link.icon || ''];
-                  return (
-                    <a
-                      key={link.id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 transition hover:bg-white"
-                      title={link.name}
-                    >
-                      {platform ? (
-                        <svg className="h-4 w-4 text-slate-400 transition group-hover:text-[#1a0a3e]" viewBox="0 0 24 24" fill="currentColor">
-                          <path d={platform.path} />
-                        </svg>
-                      ) : (
-                        <svg className="h-4 w-4 text-slate-400 transition group-hover:text-[#1a0a3e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                        </svg>
-                      )}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
+            
           </div>
 
           {/* Quick Links */}
@@ -63,8 +37,6 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
               <li><Link href="/categories" className="transition hover:text-white">All Categories</Link></li>
               <li><Link href="/products" className="transition hover:text-white">All Products</Link></li>
               <li><Link href="/wishlist" className="transition hover:text-white">Wishlist</Link></li>
-              <li><Link href="/blogs" className="transition hover:text-white">Blog</Link></li>
-              <li><Link href="/blogs/categories" className="transition hover:text-white">Blog Categories</Link></li>
             </ul>
           </div>
 
@@ -104,16 +76,36 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
                 </li>
               )}
             </ul>
-          </div>
 
-          {/* Newsletter / Info */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Stay Connected</h4>
-            <p className="text-sm leading-relaxed text-slate-400">Subscribe to get notifications about new products and exclusive offers.</p>
-            <form onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing!'); e.target.reset(); }} className="flex">
-              <input type="email" name="email" required placeholder="Your email" className="min-w-0 flex-1 rounded-l-lg border-0 bg-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-white/30" />
-              <button type="submit" className="rounded-r-lg bg-white px-4 py-2.5 text-sm font-medium text-[#1a0a3e] transition hover:bg-slate-200">Subscribe</button>
-            </form>
+            <div>
+              {socialLinks?.filter((l) => l.isActive).length > 0 && (
+              <div className="flex gap-2">
+                {socialLinks.filter((l) => l.isActive).map((link) => {
+                  const platform = platforms[link.icon || ''];
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 transition hover:bg-white"
+                      title={link.name}
+                    >
+                      {platform ? (
+                        <svg className="h-4 w-4 text-slate-400 transition group-hover:text-[#1a0a3e]" viewBox="0 0 24 24" fill="currentColor">
+                          <path d={platform.path} />
+                        </svg>
+                      ) : (
+                        <svg className="h-4 w-4 text-slate-400 transition group-hover:text-[#1a0a3e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                      )}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+            </div>
           </div>
         </div>
 

@@ -154,7 +154,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
               <img src={logo} alt={siteName || 'Store'} className="h-10 sm:h-14 object-contain" />
             ) : (
               <span className="text-base font-bold text-[#2f0f6b] dark:text-[#a78bfa] sm:text-xl">
-                {siteName || 'Cabinet &amp; Closet'}
+                {siteName || 'Radiant Picks'}
               </span>
             )}
           </Link>
