@@ -4,6 +4,7 @@ out
 .env
 .DS_Store
 coverage
+catalogData.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
