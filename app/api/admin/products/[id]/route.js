@@ -4,7 +4,7 @@ import prisma from '../../../../../src/lib/prisma';
 export async function PUT(request, { params }) {
   const { id } = await params;
   const body = await request.json();
-  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categorySlug, imagePaths, removeImageIds, variants } = body;
+  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths, removeImageIds, variants } = body;
   const slug = rawSlug?.trim();
 
   try {
@@ -64,7 +64,7 @@ export async function PUT(request, { params }) {
         sku: sku || null,
         quantity: quantity ? parseInt(quantity) : null,
         status,
-        categories: categorySlug ? { set: [{ slug: categorySlug }] } : { set: [] },
+        categories: categoryIds?.length ? { set: categoryIds.map((id) => ({ id })) } : { set: [] },
         images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,
       },
       include: { images: true, variants: true, categories: true },

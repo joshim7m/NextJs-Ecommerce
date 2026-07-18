@@ -42,21 +42,21 @@ function Toast({ toast }) {
 
 function Skeleton() {
   return (
-    <div className="mx-auto max-w-3xl animate-pulse space-y-6 px-4 sm:space-y-8 sm:px-0">
+      <div className="mx-auto max-w-3xl animate-pulse space-y-6 px-4 sm:space-y-8 sm:px-0">
       <div>
-        <div className="mb-2 h-7 w-48 rounded-lg bg-slate-200" />
-        <div className="h-4 w-72 rounded-lg bg-slate-100" />
+        <div className="mb-2 h-7 w-48 rounded-lg bg-slate-200 dark:bg-slate-700" />
+        <div className="h-4 w-72 rounded-lg bg-slate-100 dark:bg-slate-700/50" />
       </div>
       {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-          <div className="mb-4 h-4 w-24 rounded bg-slate-200" />
+        <div key={i} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
+          <div className="mb-4 h-4 w-24 rounded bg-slate-200 dark:bg-slate-700" />
           <div className="space-y-4">
-            <div className="h-10 w-full rounded-lg bg-slate-100" />
-            <div className="h-10 w-full rounded-lg bg-slate-100" />
+            <div className="h-10 w-full rounded-lg bg-slate-100 dark:bg-slate-700/50" />
+            <div className="h-10 w-full rounded-lg bg-slate-100 dark:bg-slate-700/50" />
           </div>
         </div>
       ))}
-      <div className="h-10 w-36 rounded-lg bg-slate-200" />
+      <div className="h-10 w-36 rounded-lg bg-slate-200 dark:bg-slate-700" />
     </div>
   );
 }
@@ -98,14 +98,14 @@ function ImageUpload({ label, value, field, onUpload, onRemove }) {
 
   return (
     <div>
-      <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</label>
+      <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</label>
       <div className="flex flex-wrap items-start gap-3">
         {value ? (
           <div className="group relative">
             <img
               src={value}
               alt={label}
-              className={`rounded-lg border border-slate-200 object-cover ${
+              className={`rounded-lg border border-slate-200 object-cover dark:border-slate-700 ${
                 isFavicon ? 'h-14 w-14 sm:h-16 sm:w-16' : 'h-20 w-full max-w-[200px] sm:h-24 sm:w-52'
               }`}
             />
@@ -126,7 +126,7 @@ function ImageUpload({ label, value, field, onUpload, onRemove }) {
           className={`flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed transition ${
             dragging
               ? 'border-[#2f0f6b] bg-[#2f0f6b]/5 text-[#2f0f6b]'
-              : 'border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b]'
+              : 'border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b] dark:border-slate-600 dark:text-slate-500 dark:hover:border-[#a78bfa] dark:hover:text-[#a78bfa]'
           } ${isFavicon ? 'h-14 w-14 sm:h-16 sm:w-16' : 'h-20 w-full max-w-[200px] sm:h-24 sm:w-52'}`}
         >
           <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,11 +141,11 @@ function ImageUpload({ label, value, field, onUpload, onRemove }) {
 
 function InputField({ label, type = 'text', value, onChange, placeholder, rows }) {
   const baseCls =
-    'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-[#2f0f6b] focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/15';
+    'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-[#2f0f6b] focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/15 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]';
 
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</label>
+      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</label>
       {rows ? (
         <textarea
           rows={rows}
@@ -169,10 +169,10 @@ function InputField({ label, type = 'text', value, onChange, placeholder, rows }
 
 function SectionCard({ title, description, children }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
-      <div className="border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4">
-        <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-        {description && <p className="mt-0.5 text-sm text-slate-500">{description}</p>}
+    <div className="rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
+      <div className="border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4 dark:border-slate-700">
+        <h3 className="text-base font-semibold text-slate-900 dark:text-white">{title}</h3>
+        {description && <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{description}</p>}
       </div>
       <div className="space-y-4 px-4 py-4 sm:space-y-5 sm:px-6 sm:py-5">{children}</div>
     </div>
@@ -266,15 +266,15 @@ export default function SiteSettingsPage() {
 
       <div className="mb-6 sm:mb-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#2f0f6b]/10 sm:h-10 sm:w-10">
-            <svg className="h-4 w-4 text-[#2f0f6b] sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#2f0f6b]/10 dark:bg-[#a78bfa]/20 sm:h-10 sm:w-10">
+            <svg className="h-4 w-4 text-[#2f0f6b] dark:text-[#a78bfa] sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Site Setting</h1>
-            <p className="mt-0.5 text-sm text-slate-500">Manage your site branding and contact information.</p>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">Site Setting</h1>
+            <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Manage your site branding and contact information.</p>
           </div>
         </div>
       </div>
@@ -352,13 +352,13 @@ export default function SiteSettingsPage() {
           />
         </SectionCard>
 
-        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
-          <p className="text-xs text-slate-400">All changes are saved immediately to your site.</p>
+        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
+          <p className="text-xs text-slate-400 dark:text-slate-500">All changes are saved immediately to your site.</p>
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2f0f6b] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2f0f6b]/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/30 disabled:opacity-50 sm:w-auto"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2f0f6b] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2f0f6b]/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/30 dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90 disabled:opacity-50 sm:w-auto"
           >
             {saving ? (
               <>

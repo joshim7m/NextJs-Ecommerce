@@ -4,15 +4,17 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCategories, createProduct } from '../../../../src/actions/products';
+import CategoryMultiSelect from '../../../../src/components/admin/CategoryMultiSelect';
 
 const emptyForm = {
   title: '', slug: '', description: '', unite_price: '', sale_price: '', sku: '',
-  quantity: '', status: 'draft', categorySlug: '',
+  quantity: '', status: 'draft',
 };
 
 export default function CreateProductPage() {
   const router = useRouter();
   const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [form, setForm] = useState({ ...emptyForm });
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -66,73 +68,80 @@ export default function CreateProductPage() {
         const uploadData = await uploadRes.json();
         imagePaths = uploadData.urls;
       }
-      const product = await createProduct({ ...form, imagePaths });
+      const product = await createProduct({
+        ...form,
+        categoryIds: selectedCategories.map((c) => c.id),
+        imagePaths,
+      });
       router.push(`/admin/products/edit?id=${product.id}`);
     } catch {
       setSaving(false);
     }
   };
 
+  const inputCls = "mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]";
+  const labelCls = "block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400";
+
   return (
     <section className="space-y-6">
       <div>
-        <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition">&larr; Back to Products</Link>
-        <h1 className="mt-2 text-2xl font-bold text-slate-900">Create Product</h1>
+        <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition dark:text-slate-400 dark:hover:text-slate-300">&larr; Back to Products</Link>
+        <h1 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">Create Product</h1>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Title</label>
-            <input name="title" value={form.title} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <label className={labelCls}>Title</label>
+            <input name="title" value={form.title} onChange={handleChange} className={inputCls} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Slug</label>
+            <label className={labelCls}>Slug</label>
             <div className="mt-1 flex gap-2">
-              <input name="slug" value={form.slug} onChange={handleChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-              <button type="button" onClick={generateSlug} disabled={!form.title.trim()} className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40">Generate</button>
+              <input name="slug" value={form.slug} onChange={handleChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]" />
+              <button type="button" onClick={generateSlug} disabled={!form.title.trim()} className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700">Generate</button>
             </div>
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Description</label>
-            <textarea name="description" value={form.description} onChange={handleChange} rows={2} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <label className={labelCls}>Description</label>
+            <textarea name="description" value={form.description} onChange={handleChange} rows={2} className={inputCls} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Unit Price (৳)</label>
-            <input name="unite_price" type="number" step="0.01" value={form.unite_price} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <label className={labelCls}>Unit Price (৳)</label>
+            <input name="unite_price" type="number" step="0.01" value={form.unite_price} onChange={handleChange} className={inputCls} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Sale Price (৳)</label>
-            <input name="sale_price" type="number" step="0.01" value={form.sale_price} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <label className={labelCls}>Sale Price (৳)</label>
+            <input name="sale_price" type="number" step="0.01" value={form.sale_price} onChange={handleChange} className={inputCls} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">SKU</label>
+            <label className={labelCls}>SKU</label>
             <div className="mt-1 flex gap-2">
-              <input name="sku" value={form.sku} onChange={handleChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
-              <button type="button" onClick={generateSku} className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Generate</button>
+              <input name="sku" value={form.sku} onChange={handleChange} className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]" />
+              <button type="button" onClick={generateSku} className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700">Generate</button>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</label>
-            <input name="quantity" type="number" value={form.quantity} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+            <label className={labelCls}>Stock</label>
+            <input name="quantity" type="number" value={form.quantity} onChange={handleChange} className={inputCls} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Status</label>
-            <select name="status" value={form.status} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
+            <label className={labelCls}>Status</label>
+            <select name="status" value={form.status} onChange={handleChange} className={inputCls}>
               <option value="draft">Draft</option>
               <option value="publish">Published</option>
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Images</label>
+            <label className={labelCls}>Images</label>
             <div className="mt-1 flex flex-wrap gap-3">
               {previews.map((src, i) => (
                 <div key={i} className="relative group">
-                  <img src={src} alt="" className="h-20 w-20 rounded-lg border border-slate-200 object-cover" />
+                  <img src={src} alt="" className="h-20 w-20 rounded-lg border border-slate-200 object-cover dark:border-slate-700" />
                   <button type="button" onClick={() => removeImage(i)} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition hover:bg-red-600">✕</button>
                 </div>
               ))}
-              <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b] transition">
+              <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b] transition dark:border-slate-600 dark:hover:border-[#a78bfa] dark:hover:text-[#a78bfa]">
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
                 </svg>
@@ -141,18 +150,13 @@ export default function CreateProductPage() {
             </div>
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Category</label>
-            <select name="categorySlug" value={form.categorySlug} onChange={handleChange} className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]">
-              <option value="">Select a category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.slug}>{cat.name}</option>
-              ))}
-            </select>
+            <label className={labelCls}>Categories</label>
+            <CategoryMultiSelect categories={categories} selected={selectedCategories} onChange={setSelectedCategories} />
           </div>
         </div>
         <div className="mt-5 flex gap-3">
           <button onClick={handleSave} disabled={saving} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition disabled:opacity-50">{saving ? 'Saving…' : 'Save'}</button>
-          <Link href="/admin/products" className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</Link>
+          <Link href="/admin/products" className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700">Cancel</Link>
         </div>
       </div>
     </section>

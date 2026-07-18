@@ -33,9 +33,8 @@ const settingsSubItems = [
   { label: 'Social Media', href: '/admin/settings/social', icon: 'social' },
 ];
 
-function NavIcon({ icon, colorize }) {
+function NavIcon({ icon }) {
   const cls = `h-4 w-4`;
-  const c = iconColors[icon] || iconColors.home;
   switch (icon) {
     case 'dashboard':
       return (
@@ -94,7 +93,7 @@ function NavIcon({ icon, colorize }) {
 function ColorIcon({ icon }) {
   const c = iconColors[icon] || iconColors.home;
   return (
-    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${c.bg} ${c.text}`}>
+    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${c.bg} ${c.text} ${c.darkBg} ${c.darkText}`}>
       <NavIcon icon={icon} />
     </div>
   );
@@ -108,11 +107,11 @@ function NavLink({ item, pathname, onClose }) {
       onClick={onClose}
       className={`group relative flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
         active
-          ? 'bg-[#2f0f6b]/5 text-[#2f0f6b]'
-          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+          ? 'bg-[#2f0f6b]/5 text-[#2f0f6b] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
+          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
       }`}
     >
-      {active && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b]" />}
+      {active && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b] dark:bg-[#a78bfa]" />}
       <ColorIcon icon={item.icon} />
       {item.label}
     </Link>
@@ -142,11 +141,11 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-white border-r border-slate-200 shadow-lg transition-transform duration-300 lg:shadow-none lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-white border-r border-slate-200 shadow-lg transition-transform duration-300 lg:shadow-none lg:translate-x-0 dark:bg-slate-900 dark:border-slate-700 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex h-14 items-center gap-3 border-b border-slate-100 px-4">
+        <div className="flex h-14 items-center gap-3 border-b border-slate-100 px-4 dark:border-slate-800">
           <Link href="/admin/dashboard" className="flex items-center gap-2.5" onClick={onClose}>
             {settings.logo ? (
               <img src={settings.logo} alt={settings.siteName || 'Logo'} className="h-10 w-auto object-contain" />
@@ -161,22 +160,22 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
             <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
           ))}
 
-          <div className="my-3 border-t border-slate-100" />
+          <div className="my-3 border-t border-slate-100 dark:border-slate-800" />
 
           <div className="mb-1.5 flex items-center gap-2 px-3">
             <div className="h-1 w-1 rounded-full bg-rose-400" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Blog</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Blog</p>
           </div>
 
           {blogSubItems.map((item) => (
             <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
           ))}
 
-          <div className="my-3 border-t border-slate-100" />
+          <div className="my-3 border-t border-slate-100 dark:border-slate-800" />
 
           <div className="mb-1.5 flex items-center gap-2 px-3">
             <div className="h-1 w-1 rounded-full bg-slate-400" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Settings</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Settings</p>
           </div>
 
           <button
@@ -184,11 +183,11 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
             onClick={() => setSettingsOpen(!settingsOpen)}
             className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
               pathname.startsWith('/admin/settings')
-                ? 'bg-[#2f0f6b]/5 text-[#2f0f6b]'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                ? 'bg-[#2f0f6b]/5 text-[#2f0f6b] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
             }`}
           >
-            {pathname.startsWith('/admin/settings') && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b]" />}
+            {pathname.startsWith('/admin/settings') && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b] dark:bg-[#a78bfa]" />}
             <ColorIcon icon="home" />
             <span className="flex-1 text-left">Home Setting</span>
             <svg
@@ -206,7 +205,7 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
               settingsOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-100 pl-3">
+            <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-100 pl-3 dark:border-slate-700">
               {settingsSubItems.map((item) => {
                 const active = pathname.startsWith(item.href);
                 return (
@@ -216,11 +215,11 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
                     onClick={onClose}
                     className={`group flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
                       active
-                        ? 'bg-[#2f0f6b]/5 text-[#2f0f6b]'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                        ? 'bg-[#2f0f6b]/5 text-[#2f0f6b] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
                     }`}
                   >
-                    <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${iconColors[item.icon]?.bg || 'bg-slate-100'} ${iconColors[item.icon]?.text || 'text-slate-500'}`}>
+                    <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${iconColors[item.icon]?.bg || 'bg-slate-100'} ${iconColors[item.icon]?.text || 'text-slate-500'} ${iconColors[item.icon]?.darkBg || 'dark:bg-slate-800'} ${iconColors[item.icon]?.darkText || 'dark:text-slate-400'}`}>
                       <NavIcon icon={item.icon} />
                     </div>
                     {item.label}
@@ -231,14 +230,14 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
           </div>
         </nav>
 
-        <div className="border-t border-slate-100 px-3 py-2">
+        <div className="border-t border-slate-100 px-3 py-2 dark:border-slate-800">
           <button
             type="button"
             onClick={onLogout}
             disabled={loggingOut}
-            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-all hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-all hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:text-slate-400 dark:hover:bg-red-900/20 dark:hover:text-red-400"
           >
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-500">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-500 dark:bg-red-900/30 dark:text-red-400">
               <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>

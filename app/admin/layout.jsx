@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import AdminSidebar from './partials/AdminSidebar';
 import AdminHeader from './partials/AdminHeader';
+import { ThemeProvider } from '../../src/components/admin/ThemeProvider';
 
 const pageTitles = {
   '/admin/dashboard': 'Dashboard',
@@ -43,25 +44,27 @@ export default function AdminLayout({ children }) {
   )?.[1] || 'Admin';
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <AdminSidebar
-        sidebarOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        pathname={pathname}
-        onLogout={handleLogout}
-        loggingOut={loggingOut}
-      />
+    <ThemeProvider>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+        <AdminSidebar
+          sidebarOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          pathname={pathname}
+          onLogout={handleLogout}
+          loggingOut={loggingOut}
+        />
 
-      <AdminHeader
-        onMenuToggle={() => setSidebarOpen(true)}
-        currentTitle={currentTitle}
-        onLogout={handleLogout}
-        loggingOut={loggingOut}
-      />
+        <AdminHeader
+          onMenuToggle={() => setSidebarOpen(true)}
+          currentTitle={currentTitle}
+          onLogout={handleLogout}
+          loggingOut={loggingOut}
+        />
 
-      <main className="lg:pl-64">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
-      </main>
-    </div>
+        <main className="lg:pl-64">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }

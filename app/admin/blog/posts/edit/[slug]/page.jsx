@@ -4,12 +4,14 @@ import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { getPublishedBlogCategories, getAdvertisements, getBlogPostBySlug, updateBlogPost } from '../../../../../../src/actions/blog';
 import TipTapEditor from '../../../../../../src/components/admin/TipTapEditor';
+import AdvertisementMultiSelect from '../../../../../../src/components/admin/AdvertisementMultiSelect';
 
 export default function EditBlogPostPage({ params }) {
   const router = useRouter();
   const { slug } = use(params);
   const [categories, setCategories] = useState([]);
   const [ads, setAds] = useState([]);
+  const [selectedAds, setSelectedAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [postId, setPostId] = useState(null);
@@ -38,6 +40,7 @@ export default function EditBlogPostPage({ params }) {
       setCategories(cats);
       setAds(adList);
       setPostId(post.id);
+      setSelectedAds(post.advertisements?.map((pa) => pa.advertisement) || []);
       setForm({
         title: post.title,
         slug: post.slug,
@@ -56,15 +59,6 @@ export default function EditBlogPostPage({ params }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const toggleAd = (adId) => {
-    setForm((prev) => ({
-      ...prev,
-      advertisementIds: prev.advertisementIds.includes(adId)
-        ? prev.advertisementIds.filter((id) => id !== adId)
-        : [...prev.advertisementIds, adId],
-    }));
   };
 
   const handleImageUpload = async (file) => {
@@ -90,33 +84,33 @@ export default function EditBlogPostPage({ params }) {
     }
   };
 
-  if (loading) return <div className="p-8 text-slate-500">Loading...</div>;
+  if (loading) return <div className="p-8 text-slate-500 dark:text-slate-400">Loading...</div>;
 
   return (
     <section className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Edit Blog Post</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Edit Blog Post</h1>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-5">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-5 dark:border-slate-700 dark:bg-slate-800">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Title</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">Title</label>
             <input
               name="title"
               value={form.title}
               onChange={handleChange}
-              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Slug</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">Slug</label>
             <div className="mt-1 flex gap-2">
               <input
                 name="slug"
                 value={form.slug}
                 onChange={handleChange}
-                className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+                className="flex-1 rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
               />
               <button
                 type="button"
@@ -125,17 +119,17 @@ export default function EditBlogPostPage({ params }) {
                   setForm((prev) => ({ ...prev, slug }));
                 }}
                 disabled={!form.title.trim()}
-                className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40"
+                className="rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700/30"
               >Generate</button>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Category</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">Category</label>
             <select
               name="categoryId"
               value={form.categoryId}
               onChange={handleChange}
-              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
             >
               <option value="">Select category</option>
               {categories.map((cat) => (
@@ -144,43 +138,43 @@ export default function EditBlogPostPage({ params }) {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Status</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">Status</label>
             <select
               name="status"
               value={form.status}
               onChange={handleChange}
-              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
             >
               <option value="draft">Draft</option>
               <option value="publish">Publish</option>
             </select>
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Tags (comma-separated)</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">Tags (comma-separated)</label>
             <input
               name="tags"
               value={form.tags}
               onChange={handleChange}
               placeholder="e.g. fashion, tips, trends"
-              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider">Meta Description</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400">Meta Description</label>
             <textarea
               name="metaDescription"
               value={form.metaDescription}
               onChange={handleChange}
               rows={2}
-              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Banner Image</label>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5 dark:text-slate-400">Banner Image</label>
             <div className="flex flex-wrap items-center gap-3">
               {form.bannerImage ? (
                 <div className="group relative">
-                  <img src={form.bannerImage} alt="Banner" className="h-24 w-40 rounded-lg border border-slate-200 object-cover" />
+                  <img src={form.bannerImage} alt="Banner" className="h-24 w-40 rounded-lg border border-slate-200 object-cover dark:border-slate-700" />
                   <button
                     type="button"
                     onClick={() => setForm((prev) => ({ ...prev, bannerImage: '' }))}
@@ -188,7 +182,7 @@ export default function EditBlogPostPage({ params }) {
                   >✕</button>
                 </div>
               ) : null}
-              <label className="flex h-24 w-40 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 transition hover:border-[#2f0f6b] hover:text-[#2f0f6b]">
+              <label className="flex h-24 w-40 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 transition hover:border-[#2f0f6b] hover:text-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:hover:text-[#a78bfa]">
                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
                 </svg>
@@ -199,7 +193,7 @@ export default function EditBlogPostPage({ params }) {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Content</label>
+          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2 dark:text-slate-400">Content</label>
           <TipTapEditor
             content={form.content}
             onChange={(html) => setForm((prev) => ({ ...prev, content: html }))}
@@ -208,30 +202,18 @@ export default function EditBlogPostPage({ params }) {
 
         {ads.length > 0 && (
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Advertisements</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {ads.map((ad) => (
-                <label
-                  key={ad.id}
-                  className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${
-                    form.advertisementIds.includes(ad.id)
-                      ? 'border-[#2f0f6b] bg-[#2f0f6b]/5'
-                      : 'border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={form.advertisementIds.includes(ad.id)}
-                    onChange={() => toggleAd(ad.id)}
-                    className="rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b]"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-slate-900 truncate">{ad.title}</p>
-                    {ad.price && <p className="text-xs text-slate-500">{'৳'}{parseFloat(ad.price).toLocaleString()}</p>}
-                  </div>
-                </label>
-              ))}
-            </div>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2 dark:text-slate-400">Advertisements</label>
+            <AdvertisementMultiSelect
+              advertisements={ads}
+              selected={selectedAds}
+              onChange={(newSelected) => {
+                setSelectedAds(newSelected);
+                setForm((prev) => ({
+                  ...prev,
+                  advertisementIds: newSelected.map((ad) => ad.id),
+                }));
+              }}
+            />
           </div>
         )}
 
@@ -239,14 +221,14 @@ export default function EditBlogPostPage({ params }) {
           <button
             onClick={handleSave}
             disabled={saving || !form.title || !form.slug || !form.categoryId}
-            className="rounded-lg bg-[#2f0f6b] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition disabled:opacity-50"
+            className="rounded-lg bg-[#2f0f6b] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition disabled:opacity-50 dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90"
           >
             {saving ? 'Saving...' : 'Update Post'}
           </button>
           <button
             type="button"
             onClick={() => router.push('/admin/blog/posts')}
-            className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition"
+            className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700/30"
           >Cancel</button>
         </div>
       </div>

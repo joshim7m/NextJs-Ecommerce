@@ -20,12 +20,12 @@ function StatIcon({ icon }) {
 
 function StatusBadge({ status }) {
   const colors = {
-    Shipped: 'bg-blue-50 text-blue-700',
-    Processed: 'bg-blue-50 text-blue-700',
-    completed: 'bg-emerald-50 text-emerald-700',
-    processing: 'bg-blue-50 text-blue-700',
-    pending: 'bg-slate-50 text-slate-600',
-    cancelled: 'bg-red-50 text-red-700',
+    Shipped: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    Processed: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    completed: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    processing: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    pending: 'bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-400',
+    cancelled: 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
   };
   return (
     <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${colors[status] || colors.pending}`}>
@@ -44,10 +44,10 @@ export default function AdminDashboardPage() {
   }, []);
 
   const statCards = [
-    { label: 'Total Products', value: stats.products, href: '/admin/products', icon: 'products', color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Categories', value: stats.categories, href: '/admin/categories', icon: 'categories', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Orders', value: stats.orders, href: '/admin/orders', icon: 'orders', color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: 'Revenue', value: stats.revenue !== '\u2014' ? `\u09F3${Number(stats.revenue).toLocaleString()}` : '\u2014', href: '/admin/orders', icon: 'revenue', color: 'text-violet-600', bg: 'bg-violet-50' },
+    { label: 'Total Products', value: stats.products, href: '/admin/products', icon: 'products', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/30' },
+    { label: 'Categories', value: stats.categories, href: '/admin/categories', icon: 'categories', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30' },
+    { label: 'Orders', value: stats.orders, href: '/admin/orders', icon: 'orders', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/30' },
+    { label: 'Revenue', value: stats.revenue !== '\u2014' ? `\u09F3${Number(stats.revenue).toLocaleString()}` : '\u2014', href: '/admin/orders', icon: 'revenue', color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-900/30' },
   ];
 
   const quickActions = [
@@ -61,24 +61,24 @@ export default function AdminDashboardPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {statCards.map((s) => (
-          <Link key={s.label} href={s.href} className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm transition hover:shadow-md">
+          <Link key={s.label} href={s.href} className="group rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
             <div className="flex items-center justify-between">
-              <p className="text-xs sm:text-sm font-medium text-slate-500">{s.label}</p>
+              <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">{s.label}</p>
               <div className={"rounded-lg " + s.bg + " p-1.5 sm:p-2 " + s.color}>
                 <StatIcon icon={s.icon} />
               </div>
             </div>
-            <p className="mt-2 sm:mt-3 text-xl sm:text-2xl font-bold text-slate-900">{s.value}</p>
+            <p className="mt-2 sm:mt-3 text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">{s.value}</p>
           </Link>
         ))}
       </div>
 
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-3">
         {/* Recent Orders */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm lg:col-span-2 dark:border-slate-700 dark:bg-slate-800">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900">Recent Orders</h2>
-            <Link href="/admin/orders" className="text-sm font-medium text-[#2f0f6b] hover:underline">
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white">Recent Orders</h2>
+            <Link href="/admin/orders" className="text-sm font-medium text-[#2f0f6b] hover:underline dark:text-[#a78bfa]">
               View all
             </Link>
           </div>
@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
           <div className="hidden md:block">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-100 text-xs font-medium text-slate-400 uppercase tracking-wider dark:border-slate-700">
                   <th className="pb-3 pr-4">Order</th>
                   <th className="pb-3 pr-4">Customer</th>
                   <th className="pb-3 pr-4">Status</th>
@@ -99,13 +99,13 @@ export default function AdminDashboardPage() {
                 {orders.map((o) => (
                   <tr
                     key={o.id}
-                    className="border-b border-slate-50 last:border-0 cursor-pointer transition hover:bg-slate-50/50"
+                    className="border-b border-slate-50 last:border-0 cursor-pointer transition hover:bg-slate-50/50 dark:border-slate-700/50 dark:hover:bg-slate-700/30"
                     onClick={() => window.location.href = "/admin/orders/" + o.orderNo}
                   >
-                    <td className="py-3 pr-4 font-medium text-[#2f0f6b]">{o.orderNo}</td>
-                    <td className="py-3 pr-4 text-slate-600">{o.details?.customerName || o.user?.name || '\u2014'}</td>
+                    <td className="py-3 pr-4 font-medium text-[#2f0f6b] dark:text-[#a78bfa]">{o.orderNo}</td>
+                    <td className="py-3 pr-4 text-slate-600 dark:text-slate-400">{o.details?.customerName || o.user?.name || '\u2014'}</td>
                     <td className="py-3 pr-4"><StatusBadge status={o.orderStatus} /></td>
-                    <td className="py-3 pr-4 text-slate-900">{'\u09F3'}{Number(o.total).toLocaleString()}</td>
+                    <td className="py-3 pr-4 text-slate-900 dark:text-white">{'\u09F3'}{Number(o.total).toLocaleString()}</td>
                     <td className="py-3 text-slate-400">{o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : '\u2014'}</td>
                   </tr>
                 ))}
@@ -122,15 +122,13 @@ export default function AdminDashboardPage() {
               <Link
                 key={o.id}
                 href={"/admin/orders/" + o.orderNo}
-                className="block rounded-lg border border-slate-100 p-3 transition hover:border-[#2f0f6b]/20 hover:bg-[#2f0f6b]/5"
+                className="block rounded-lg border border-slate-100 p-3 transition hover:border-[#2f0f6b]/20 hover:bg-[#2f0f6b]/5 dark:border-slate-700 dark:hover:border-[#a78bfa]/30 dark:hover:bg-[#a78bfa]/5"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-[#2f0f6b]">{o.orderNo}</span>
-                  <span className={"inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium " + ({pending: "bg-slate-50 text-slate-600",processing: "bg-blue-50 text-blue-700",completed: "bg-emerald-50 text-emerald-700",cancelled: "bg-red-50 text-red-700"}[o.orderStatus] || "bg-slate-50 text-slate-600")}>
-                    {o.orderStatus}
-                  </span>
+                  <span className="text-sm font-semibold text-[#2f0f6b] dark:text-[#a78bfa]">{o.orderNo}</span>
+                  <StatusBadge status={o.orderStatus} />
                 </div>
-                <p className="text-sm font-medium text-slate-900">{o.details?.customerName || o.user?.name || "\u2014"}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">{o.details?.customerName || o.user?.name || "\u2014"}</p>
                 <div className="mt-1 flex items-center justify-between text-xs text-slate-400">
                   <span>{'\u09F3'}{Number(o.total).toLocaleString()}</span>
                   <span>{o.createdAt ? new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "\u2014"}</span>
@@ -144,16 +142,16 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-base font-semibold text-slate-900">Quick Actions</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <h2 className="mb-4 text-base font-semibold text-slate-900 dark:text-white">Quick Actions</h2>
           <div className="space-y-3">
             {quickActions.map((a) => (
               <Link
                 key={a.label}
                 href={a.href}
-                className="block rounded-lg border border-slate-100 p-3 transition hover:border-[#2f0f6b]/20 hover:bg-[#2f0f6b]/5"
+                className="block rounded-lg border border-slate-100 p-3 transition hover:border-[#2f0f6b]/20 hover:bg-[#2f0f6b]/5 dark:border-slate-700 dark:hover:border-[#a78bfa]/30 dark:hover:bg-[#a78bfa]/5"
               >
-                <p className="text-sm font-medium text-slate-900">{a.label}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white">{a.label}</p>
               </Link>
             ))}
           </div>

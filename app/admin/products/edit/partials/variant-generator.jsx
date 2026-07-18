@@ -44,27 +44,27 @@ export default function VariantGenerator({ onGenerate, existingOptions }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Variant Options</p>
-      <p className="text-sm text-slate-400">Define option names and values, then generate all combinations.</p>
+      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">Variant Options</p>
+      <p className="text-sm text-slate-400 dark:text-slate-500">Define option names and values, then generate all combinations.</p>
 
       {options.map((opt, i) => (
         <div key={i} className="grid gap-3 sm:grid-cols-3 items-start">
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1">Option {i + 1} Name</label>
+            <label className="block text-xs font-medium text-slate-400 mb-1 dark:text-slate-500">Option {i + 1} Name</label>
             <input
               value={opt.name}
               onChange={(e) => updateOption(i, 'name', e.target.value)}
               placeholder="e.g. Size"
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-400 mb-1">Values (comma separated)</label>
+            <label className="block text-xs font-medium text-slate-400 mb-1 dark:text-slate-500">Values (comma separated)</label>
             <input
               value={opt.values}
               onChange={(e) => updateOption(i, 'values', e.target.value)}
               placeholder="e.g. S, M, L"
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
             />
           </div>
         </div>

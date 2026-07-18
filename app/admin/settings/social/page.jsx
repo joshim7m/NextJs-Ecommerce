@@ -36,36 +36,36 @@ function SocialIcon({ icon, className = 'h-5 w-5' }) {
 
 function LinkCard({ link, onEdit, onDelete, onMove, isFirst, isLast }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-900/50 dark:text-slate-400">
           <SocialIcon icon={link.icon || ''} className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="truncate text-sm font-semibold text-slate-900">{link.name}</h3>
-            <span className={`flex-shrink-0 inline-flex h-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${link.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+            <h3 className="truncate text-sm font-semibold text-slate-900 dark:text-white">{link.name}</h3>
+            <span className={`flex-shrink-0 inline-flex h-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${link.isActive ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-400 dark:bg-slate-900/30 dark:text-slate-500'}`}>
               {link.isActive ? 'Active' : 'Off'}
             </span>
           </div>
-          <a href={link.url} target="_blank" rel="noopener noreferrer" className="mt-0.5 block truncate text-xs text-slate-500 hover:text-[#2f0f6b] transition">{link.url}</a>
+          <a href={link.url} target="_blank" rel="noopener noreferrer" className="mt-0.5 block truncate text-xs text-slate-500 hover:text-[#2f0f6b] transition dark:text-slate-400 dark:hover:text-[#a78bfa]">{link.url}</a>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+      <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-700">
         <div className="flex items-center gap-1">
-          <button onClick={() => onMove(link.id, -1)} disabled={isFirst} className="rounded p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed">
+          <button onClick={() => onMove(link.id, -1)} disabled={isFirst} className="rounded p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed dark:hover:text-slate-300">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
           </button>
-          <span className="text-xs font-mono text-slate-400">#{link.order}</span>
-          <button onClick={() => onMove(link.id, 1)} disabled={isLast} className="rounded p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed">
+          <span className="text-xs font-mono text-slate-400 dark:text-slate-500">#{link.order}</span>
+          <button onClick={() => onMove(link.id, 1)} disabled={isLast} className="rounded p-1 text-slate-400 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed dark:hover:text-slate-300">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
           </button>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => onEdit(link)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-[#2f0f6b]/10 hover:text-[#2f0f6b]">
+          <button onClick={() => onEdit(link)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-[#2f0f6b]/10 hover:text-[#2f0f6b] dark:hover:bg-[#a78bfa]/10 dark:hover:text-[#a78bfa]">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
           </button>
-          <button onClick={() => onDelete(link.id)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-red-50 hover:text-red-500">
+          <button onClick={() => onDelete(link.id)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
           </button>
         </div>
@@ -180,14 +180,14 @@ export default function SocialSettingsPage() {
   if (loading) {
     return (
       <section className="space-y-4 p-4 sm:space-y-6 sm:p-0">
-        <div className="h-8 w-48 animate-pulse rounded-lg bg-slate-200" />
-        <div className="h-10 w-full animate-pulse rounded-lg bg-slate-100" />
+        <div className="h-8 w-48 animate-pulse rounded-lg bg-slate-200 dark:bg-slate-700" />
+        <div className="h-10 w-full animate-pulse rounded-lg bg-slate-100 dark:bg-slate-800" />
         <div className="space-y-3 sm:hidden">
           {[1, 2].map((i) => (
-            <div key={i} className="h-24 rounded-xl border border-slate-200 bg-white animate-pulse" />
+            <div key={i} className="h-24 rounded-xl border border-slate-200 bg-white animate-pulse dark:border-slate-700 dark:bg-slate-800" />
           ))}
         </div>
-        <div className="hidden h-64 animate-pulse rounded-xl border border-slate-200 bg-white sm:block" />
+        <div className="hidden h-64 animate-pulse rounded-xl border border-slate-200 bg-white sm:block dark:border-slate-700 dark:bg-slate-800" />
       </section>
     );
   }
@@ -196,10 +196,10 @@ export default function SocialSettingsPage() {
     <section className="space-y-4 p-4 sm:space-y-6 sm:p-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">Social Media</h1>
-          <p className="mt-0.5 text-sm text-slate-500">{links.length} {links.length === 1 ? 'link' : 'links'}</p>
+          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl dark:text-white">Social Media</h1>
+          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{links.length} {links.length === 1 ? 'link' : 'links'}</p>
         </div>
-        <button onClick={openCreate} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#2f0f6b] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#2f0f6b]/90 sm:w-auto">
+        <button onClick={openCreate} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#2f0f6b] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#2f0f6b]/90 sm:w-auto dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90">
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
@@ -208,22 +208,22 @@ export default function SocialSettingsPage() {
       </div>
 
       <div className="relative">
-        <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <input type="text" placeholder="Search links…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+        <input type="text" placeholder="Search links…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm placeholder-slate-400 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]" />
       </div>
 
       {editing && (
-        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">{editing === 'new' ? 'Create Link' : 'Edit Link'}</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-700 dark:bg-slate-800">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">{editing === 'new' ? 'Create Link' : 'Edit Link'}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-medium uppercase tracking-wider text-slate-500">Platform</label>
+              <label className="block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Platform</label>
               <select
                 onChange={(e) => handlePlatformSelect(e.target.value)}
                 value={form.icon}
-                className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]"
+                className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
               >
                 <option value="">Select a platform or type a custom name below</option>
                 {PLATFORMS.map((p) => (
@@ -233,22 +233,22 @@ export default function SocialSettingsPage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider text-slate-500">Name</label>
-                <input name="name" value={form.name} onChange={handleChange} placeholder="Facebook" className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+                <label className="block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Name</label>
+                <input name="name" value={form.name} onChange={handleChange} placeholder="Facebook" className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]" />
               </div>
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider text-slate-500">URL</label>
-                <input name="url" value={form.url} onChange={handleChange} placeholder="https://facebook.com/yourpage" className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b]" />
+                <label className="block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">URL</label>
+                <input name="url" value={form.url} onChange={handleChange} placeholder="https://facebook.com/yourpage" className="mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]" />
               </div>
             </div>
-            <label className="flex items-center gap-2 text-sm text-slate-600">
-              <input type="checkbox" name="isActive" checked={form.isActive} onChange={handleChange} className="rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b]" />
+            <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+              <input type="checkbox" name="isActive" checked={form.isActive} onChange={handleChange} className="rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-900" />
               Active
             </label>
           </div>
           <div className="mt-5 flex gap-3">
-            <button onClick={handleSave} disabled={!form.name || !form.url} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#2f0f6b]/90 disabled:opacity-50">Save</button>
-            <button onClick={() => { setEditing(null); resetForm(); }} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50">Cancel</button>
+            <button onClick={handleSave} disabled={!form.name || !form.url} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#2f0f6b]/90 disabled:opacity-50 dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90">Save</button>
+            <button onClick={() => { setEditing(null); resetForm(); }} className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700/30">Cancel</button>
           </div>
         </div>
       )}
@@ -266,57 +266,57 @@ export default function SocialSettingsPage() {
           />
         ))}
         {paginated.length === 0 && (
-          <div className="rounded-xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-400">
+          <div className="rounded-xl border border-slate-200 bg-white px-4 py-10 text-center text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500">
             {search ? 'No links match your search.' : 'No social links yet. Click "New Link" to add one.'}
           </div>
         )}
       </div>
 
-      <div className="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:block">
+      <div className="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:block dark:border-slate-700 dark:bg-slate-800">
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50/80">
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Icon</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Name</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">URL</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-center">Active</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-center">Order</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 text-right">Actions</th>
+            <tr className="border-b border-slate-100 bg-slate-50/80 dark:border-slate-700 dark:bg-slate-900/50">
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Icon</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Name</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">URL</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">Active</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">Order</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
             {paginated.map((link, i) => (
-              <tr key={link.id} className="transition-colors hover:bg-slate-50/50">
+              <tr key={link.id} className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-700/30">
                 <td className="px-4 py-3">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-900/50 dark:text-slate-400">
                     <SocialIcon icon={link.icon || ''} className="h-4 w-4" />
                   </span>
                 </td>
-                <td className="max-w-[160px] truncate px-4 py-3 font-medium text-slate-900">{link.name}</td>
-                <td className="max-w-[240px] truncate px-4 py-3 text-slate-500">
-                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#2f0f6b] transition">{link.url}</a>
+                <td className="max-w-[160px] truncate px-4 py-3 font-medium text-slate-900 dark:text-white">{link.name}</td>
+                <td className="max-w-[240px] truncate px-4 py-3 text-slate-500 dark:text-slate-400">
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#2f0f6b] transition dark:hover:text-[#a78bfa]">{link.url}</a>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${link.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                  <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${link.isActive ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-400 dark:bg-slate-900/30 dark:text-slate-500'}`}>
                     {link.isActive ? '✓' : '✕'}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="inline-flex items-center gap-0.5">
-                    <button onClick={() => handleMove(link.id, -1)} disabled={i === 0} className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30">
+                    <button onClick={() => handleMove(link.id, -1)} disabled={i === 0} className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:text-slate-300">
                       <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
                     </button>
-                    <span className="mx-1 font-mono text-xs text-slate-400">{link.order}</span>
-                    <button onClick={() => handleMove(link.id, 1)} disabled={i === links.length - 1} className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30">
+                    <span className="mx-1 font-mono text-xs text-slate-400 dark:text-slate-500">{link.order}</span>
+                    <button onClick={() => handleMove(link.id, 1)} disabled={i === links.length - 1} className="rounded p-0.5 text-slate-400 hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:text-slate-300">
                       <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                     </button>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <button onClick={() => openEdit(link)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-[#2f0f6b]/10 hover:text-[#2f0f6b]">
+                  <button onClick={() => openEdit(link)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-[#2f0f6b]/10 hover:text-[#2f0f6b] dark:hover:bg-[#a78bfa]/10 dark:hover:text-[#a78bfa]">
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   </button>
-                  <button onClick={() => handleDelete(link.id)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-red-50 hover:text-red-500">
+                  <button onClick={() => handleDelete(link.id)} className="rounded-lg p-1.5 text-slate-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400">
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
                 </td>
@@ -324,7 +324,7 @@ export default function SocialSettingsPage() {
             ))}
             {paginated.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400">
+                <td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400 dark:text-slate-500">
                   {search ? 'No links match your search.' : 'No social links yet. Click "New Link" to add one.'}
                 </td>
               </tr>
@@ -335,11 +335,11 @@ export default function SocialSettingsPage() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-1.5 sm:gap-2">
-          <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={safePage === 0} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 sm:px-3 sm:text-sm">Prev</button>
+          <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={safePage === 0} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 sm:px-3 sm:text-sm dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700/30">Prev</button>
           {Array.from({ length: totalPages }, (_, i) => (
-            <button key={i} onClick={() => setPage(i)} className={`h-8 w-8 rounded-lg text-sm font-medium transition ${i === safePage ? 'bg-[#2f0f6b] text-white' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'}`}>{i + 1}</button>
+            <button key={i} onClick={() => setPage(i)} className={`h-8 w-8 rounded-lg text-sm font-medium transition ${i === safePage ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900' : 'border border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700/30'}`}>{i + 1}</button>
           ))}
-          <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={safePage === totalPages - 1} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 sm:px-3 sm:text-sm">Next</button>
+          <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={safePage === totalPages - 1} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 sm:px-3 sm:text-sm dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700/30">Next</button>
         </div>
       )}
     </section>

@@ -10,7 +10,7 @@ import ManageVariant from './partials/manage-variant';
 
 const emptyForm = {
   title: '', slug: '', description: '', unite_price: '', sale_price: '', sku: '',
-  quantity: '', status: 'draft', categorySlug: '',
+  quantity: '', status: 'draft',
 };
 
 let variantKeyCounter = 0;
@@ -21,6 +21,7 @@ function EditProductForm() {
   const id = searchParams.get('id');
 
   const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [form, setForm] = useState({ ...emptyForm });
   const [existingImages, setExistingImages] = useState([]);
   const [newFiles, setNewFiles] = useState([]);
@@ -56,8 +57,8 @@ function EditProductForm() {
         sku: product.sku?.toString() || '',
         quantity: product.quantity?.toString() || '',
         status: product.status,
-        categorySlug: product.categories?.[0]?.slug || '',
       });
+      setSelectedCategories(product.categories || []);
       setExistingImages(product.images || []);
       setCategories(cats);
 
@@ -215,6 +216,7 @@ function EditProductForm() {
 
       await updateProduct(id, {
         ...form,
+        categoryIds: selectedCategories.map((c) => c.id),
         imagePaths,
         removeImageIds,
         variants: variantPayload,
@@ -229,15 +231,15 @@ function EditProductForm() {
     }
   };
 
-  if (loading) return <div className="p-8 text-slate-500">Loading...</div>;
+  if (loading) return <div className="p-8 text-slate-500 dark:text-slate-400">Loading...</div>;
 
   if (notFound) {
     return (
       <section className="space-y-6">
         <div>
-          <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition">&larr; Back to Products</Link>
-          <h1 className="mt-2 text-2xl font-bold text-slate-900">Product Not Found</h1>
-          <p className="mt-2 text-slate-500">The product you are looking for does not exist.</p>
+          <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition dark:text-slate-400 dark:hover:text-slate-300">&larr; Back to Products</Link>
+          <h1 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">Product Not Found</h1>
+          <p className="mt-2 text-slate-500 dark:text-slate-400">The product you are looking for does not exist.</p>
         </div>
       </section>
     );
@@ -272,8 +274,8 @@ function EditProductForm() {
       )}
 
       <div>
-        <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition">&larr; Back to Products</Link>
-        <h1 className="mt-2 text-2xl font-bold text-slate-900">Edit Product</h1>
+        <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition dark:text-slate-400 dark:hover:text-slate-300">&larr; Back to Products</Link>
+        <h1 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">Edit Product</h1>
       </div>
 
       <ProductInfo
@@ -282,6 +284,8 @@ function EditProductForm() {
         onGenerateSlug={generateSlug}
         onGenerateSku={generateSku}
         categories={categories}
+        selectedCategories={selectedCategories}
+        onCategoriesChange={setSelectedCategories}
         existingImages={existingImages}
         newPreviews={newPreviews}
         onRemoveExisting={removeExistingImage}
@@ -290,7 +294,7 @@ function EditProductForm() {
       />
 
       {/* Variants section */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
         <label className="flex items-center gap-3 cursor-pointer mb-5">
           <input
             type="checkbox"
@@ -299,9 +303,9 @@ function EditProductForm() {
               setHasVariants(e.target.checked);
               if (!e.target.checked) { setVariants([]); setOptionLabels([]); }
             }}
-            className="h-4 w-4 rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b]"
+            className="h-4 w-4 rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-700"
           />
-          <span className="text-sm font-medium text-slate-900">This product has variants (size, color, etc.)</span>
+          <span className="text-sm font-medium text-slate-900 dark:text-white">This product has variants (size, color, etc.)</span>
         </label>
 
         {hasVariants && (
@@ -323,7 +327,7 @@ function EditProductForm() {
         <button onClick={handleSave} disabled={saving} className="rounded-lg bg-[#2f0f6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#2f0f6b]/90 transition disabled:opacity-50">
           {saving ? 'Saving\u2026' : 'Save'}
         </button>
-        <Link href="/admin/products" className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">Cancel</Link>
+        <Link href="/admin/products" className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700">Cancel</Link>
       </div>
     </section>
   );
@@ -331,7 +335,7 @@ function EditProductForm() {
 
 export default function EditProductPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-slate-500">Loading...</div>}>
+    <Suspense fallback={<div className="p-8 text-slate-500 dark:text-slate-400">Loading...</div>}>
       <EditProductForm />
     </Suspense>
   );

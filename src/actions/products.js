@@ -24,7 +24,7 @@ export async function getCategories() {
 }
 
 export async function createProduct(data) {
-  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categorySlug, imagePaths } = data;
+  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths } = data;
   const slug = rawSlug?.trim();
   if (!title || !slug) throw new Error('Title and slug are required.');
 
@@ -36,7 +36,7 @@ export async function createProduct(data) {
       sku: sku || null,
       quantity: quantity ? parseInt(quantity) : null,
       status: status || 'draft',
-      categories: categorySlug ? { connect: { slug: categorySlug } } : undefined,
+      categories: categoryIds?.length ? { connect: categoryIds.map((id) => ({ id })) } : undefined,
       images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,
     },
     include: { images: true, variants: true, categories: true },
@@ -47,7 +47,7 @@ export async function createProduct(data) {
 }
 
 export async function updateProduct(id, data) {
-  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categorySlug, imagePaths, removeImageIds, variants, removedVariantIds } = data;
+  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths, removeImageIds, variants, removedVariantIds } = data;
   const slug = rawSlug?.trim();
 
   if (removeImageIds?.length) {
@@ -103,7 +103,7 @@ export async function updateProduct(id, data) {
       sku: sku || null,
       quantity: quantity ? parseInt(quantity) : null,
       status: status || 'draft',
-      categories: categorySlug ? { set: [{ slug: categorySlug }] } : { set: [] },
+      categories: categoryIds?.length ? { set: categoryIds.map((id) => ({ id })) } : { set: [] },
       images: imagePaths?.length ? { create: imagePaths.map((p) => ({ image_path: p, altText: title })) } : undefined,
     },
     include: { images: true, variants: true, categories: true },

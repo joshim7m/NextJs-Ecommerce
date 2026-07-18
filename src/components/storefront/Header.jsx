@@ -143,7 +143,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm dark:bg-slate-900">
-      <AnnouncementBar text={announcementText} mobile={mobile} />
+      {/* <AnnouncementBar text={announcementText} mobile={mobile} /> */}
 
       {/* Main header */}
       <div className="border-b border-slate-200/50 dark:border-slate-700/50">
