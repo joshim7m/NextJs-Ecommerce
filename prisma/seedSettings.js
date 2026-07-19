@@ -10,6 +10,7 @@ async function main() {
   // 1. Users
   console.log('Seeding users…');
   const hash = await bcrypt.hash('histacin', 12);
+  
   await prisma.user.upsert({
     where: { email: 'joshimfv@gmail.com' },
     update: { passwordHash: hash, role: 'admin' },
@@ -30,6 +31,8 @@ async function main() {
       address: '6/C, Unite-2, Confidence Center, Shahjadpur, Gulshan, Dhaka-1212',
       copyrightText: '@ 2025 Radiant Picks. All rights reserved.',
       announcementText: 'Call or WhatsApp: 01945090085',
+      aboutCompany: `Welcome to Radiant Picks, your trusted online hub for premium lifestyle products in Bangladesh. We bring you a curated collection of modern apparel, comfortable sleepwear, premium lingerie, stylish footwear, beauty essentials, and smart home gadgets.`,
+      aboutCompanyBn: `রেডিয়্যান্ট পিকস (Radiant Picks)-এ আপনাকে স্বাগতম—যা বাংলাদেশে প্রিমিয়াম লাইফস্টাইল পণ্য কেনাকাটার একটি নির্ভরযোগ্য অনলাইন মাধ্যম। আমরা নিয়ে এসেছি আধুনিক পোশাক, আরামদায়ক স্লিপওয়্যার, এক্সক্লুসিভ লিঞ্জেরি, ট্রেন্ডি জুতো, রূপচর্চার সামগ্রী এবং স্মার্ট কিচেন ও হোম গ্যাজেটসের চমৎকার কালেকশন।`,
     },
     create: {
       id: 'singleton',
@@ -41,6 +44,8 @@ async function main() {
       address: '6/C, Unite-2, Confidence Center, Shahjadpur, Gulshan, Dhaka-1212',
       copyrightText: '@ 2025 Radiant Picks. All rights reserved.',
       announcementText: 'Call or WhatsApp: 01945090085',
+      aboutCompany: `Welcome to Radiant Picks, your trusted online hub for premium lifestyle products in Bangladesh. We bring you a curated collection of modern apparel, comfortable sleepwear, premium lingerie, stylish footwear, beauty essentials, and smart home gadgets.`,
+      aboutCompanyBn: `রেডিয়্যান্ট পিকস (Radiant Picks)-এ আপনাকে স্বাগতম—যা বাংলাদেশে প্রিমিয়াম লাইফস্টাইল পণ্য কেনাকাটার একটি নির্ভরযোগ্য অনলাইন মাধ্যম। আমরা নিয়ে এসেছি আধুনিক পোশাক, আরামদায়ক স্লিপওয়্যার, এক্সক্লুসিভ লিঞ্জেরি, ট্রেন্ডি জুতো, রূপচর্চার সামগ্রী এবং স্মার্ট কিচেন ও হোম গ্যাজেটসের চমৎকার কালেকশন।`,
     },
   });
   console.log('  ✓ Site settings');
@@ -48,9 +53,11 @@ async function main() {
   // 3. Hero sliders
   console.log('\nSeeding hero sliders…');
   const heroSlides = [
-    { title: 'Modern Furniture Collection', subtitle: 'Discover premium furniture & decor', buttonText: 'Shop Now', buttonLink: '/products', image: 'https://picsum.photos/seed/furniture1/1400/500', order: 0 },
-    { title: 'Elegant Home Decor', subtitle: 'Transform your living space', buttonText: 'Explore', buttonLink: '/products', image: 'https://picsum.photos/seed/furniture2/1400/500', order: 1 },
-    { title: 'Premium Cabinet Designs', subtitle: 'Crafted with precision and care', buttonText: 'View Collection', buttonLink: '/products', image: 'https://picsum.photos/seed/furniture3/1400/500', order: 2 },
+    { title: "Comfortable Women's Sleepwear & Nightwear", subtitle: 'Soft, cozy sleepwear sets designed for ultimate comfort — shop dresses, shorts & loungewear', buttonText: 'Shop Sleepwear', buttonLink: '/products', image: 'https://picsum.photos/seed/sleepwear1/1400/500', order: 0 },
+    { title: 'Premium Lingerie & Intimates Collection', subtitle: 'Elegant bra sets, stockings & lingerie — find your perfect fit with fast delivery in Bangladesh', buttonText: 'Explore Lingerie', buttonLink: '/products', image: 'https://picsum.photos/seed/lingerie1/1400/500', order: 1 },
+    { title: 'Beauty & Personal Care Essentials', subtitle: 'Skincare, haircare & grooming products to elevate your daily self-care routine', buttonText: 'Shop Beauty', buttonLink: '/products', image: 'https://picsum.photos/seed/beauty1/1400/500', order: 2 },
+    { title: 'Kitchen & Dining Must-Haves', subtitle: 'Quality cookware, utensils & dining accessories for every modern home', buttonText: 'Shop Kitchen', buttonLink: '/products', image: 'https://picsum.photos/seed/kitchen1/1400/500', order: 3 },
+    { title: 'Trendy Fashion & Lifestyle Picks', subtitle: 'Stay ahead with curated fashion accessories & lifestyle products at affordable prices', buttonText: 'Explore Fashion', buttonLink: '/products', image: 'https://picsum.photos/seed/fashion1/1400/500', order: 4 },
   ];
   for (const slide of heroSlides) {
     await prisma.heroSlider.create({ data: slide });

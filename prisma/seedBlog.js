@@ -2,385 +2,263 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const blogCategories = [
-  { title: 'Fashion Trends', slug: 'fashion-trends', authorName: 'Madame Editorial', status: 'publish' },
-  { title: 'Styling Tips', slug: 'styling-tips', authorName: 'Madame Editorial', status: 'publish' },
-  { title: 'Outfit Ideas', slug: 'outfit-ideas', authorName: 'Madame Editorial', status: 'publish' },
-  { title: 'Work & Formal Wear', slug: 'work-formal-wear', authorName: 'Madame Editorial', status: 'publish' },
-  { title: 'Seasonal Style', slug: 'seasonal-style', authorName: 'Madame Editorial', status: 'publish' },
+  { title: 'Lingerie & Nightwear (লিঞ্জেরি ও নাইটওয়্যার)', slug: 'lingerie-and-nightwear', authorName: 'Samiya Jaman', status: 'publish' },
+  { title: 'Fashion & Clothing (ফ্যাশন ও পোশাক)', slug: 'fashion-and-clothing', authorName: 'Samiya Jaman', status: 'publish' },
+  { title: 'Shoes & Accessories (জুতো ও অ্যাকসেসরিজ)', slug: 'shoes-and-accessories', authorName: 'Samiya Jaman', status: 'publish' },
+  { title: 'Beauty & Personal Care (বিউটি ও পার্সোনাল কেয়ার)', slug: 'beauty-and-personal-care', authorName: 'Samiya Jaman', status: 'publish' },
+  { title: 'Kitchen & Dining (রান্নাঘর ও ডাইনিং)', slug: 'kitchen-and-dining', authorName: 'Samiya Jaman', status: 'publish' },
+  { title: 'Home & Living (হোম ও লিভিং)', slug: 'home-and-living', authorName: 'Samiya Jaman', status: 'publish' },
+  { title: 'Electronics & Gadgets (ইলেকট্রনিক্স ও গ্যাজেটস)', slug: 'electronics-and-gadgets', authorName: 'Samiya Jaman', status: 'publish' }
 ];
 
 const blogPosts = [
-  // Fashion Trends (2 posts)
+  // ==========================================
+  // 1. LINGERIE & NIGHTWEAR (2 Posts)
+  // ==========================================
   {
-    categorySlug: 'fashion-trends',
-    title: 'Spring 2026 Fashion Trends for Women: What to Wear This Season',
-    slug: 'spring-fashion-trends-2026',
+    categorySlug: 'lingerie-and-nightwear',
+    title: 'গরমের রাতে আরামদায়ক ঘুমের জন্য সেরা নাইটওয়্যার গাইড ২০২৬',
+    slug: 'comfortable-nightwear-guide-bangladesh',
+    bannerImage: 'https://www.eghuri.com/public/uploads/product/1783687396-h9c6199869cbb493195a784bfcf4e1284f.jpg',
+    tags: 'comfortable sleepwear, nightwear bangladesh, আরামদায়ক নাইটওয়্যার, gorom er nightwear, nighty price bd, soft pajama set',
+    metaDescription: 'জানুন গরমের রাতে আরামদায়ক ঘুমের জন্য কোন ধরনের ফেব্রিক ও নাইটওয়্যার সেট বেছে নেওয়া উচিত। আরামদায়ক পলিয়েস্টার স্লিপওয়্যার ও সাটিন নাইটগাউন কালেকশন দেখতে পড়ুন।',
+    content: `<p>প্রতিদিনের ব্যস্ততা শেষে রাতে একটি নিখুঁত ও আরামদায়ক ঘুম সবারই কাম্য। কিন্তু আবহাওয়ার পরিবর্তনের সাথে সাথে আমাদের কাপড়ের অভ্যাসেও পরিবর্তন আনা জরুরি। বিশেষ করে গরমে আরামদায়ক স্লিপওয়্যার বা নাইটওয়্যার নির্বাচন করা অত্যন্ত গুরুত্বপূর্ণ।</p>
+<h2>সঠিক নাইটওয়্যার কেন জরুরি?</h2>
+<p>ভালো ঘুম আমাদের মানসিক ও শারীরিক স্বাস্থ্য উন্নত রাখে। রাতে টাইট বা ভারী পোশাক পরলে ত্বকে বাতাস চলাচল করতে পারে না, যার ফলে ঘুমের ব্যাঘাত ঘটে। সঠিক ফেব্রিকের ঢিলেঢালা পোশাক আপনার শরীরকে ঠাণ্ডা রাখতে সাহায্য করে।</p>
+<h3>১. পলিয়েস্টার স্লিপওয়্যার সেট (Polyester Sleepwear Set)</h3>
+<p>বর্তমান সময়ে পলিয়েস্টার ব্লেন্ডের স্লিপওয়্যার শর্টস সেটগুলো মেয়েদের মধ্যে বেশ জনপ্রিয়। এগুলো ওজনে অত্যন্ত হালকা এবং ধোয়ার পর খুব দ্রুত শুকিয়ে যায়। ক্যাজুয়াল হোম ওয়্যার হিসেবে এর জুড়ি নেই।</p>
+<h3>২. সাটিন লাউঞ্জওয়্যার (Satin Loungewear)</h3>
+<p>যারা আরামের পাশাপাশি একটু লাক্সারিয়াস লুক পছন্দ করেন, তাদের জন্য সাটিন বা সিল্কি ফেব্রিকের টু-পিস পাজামা সেট দারুণ চয়েস। এটি ত্বকে খুব সফট অনুভূতি দেয় এবং দেখতেও বেশ আকর্ষণীয় লাগে।</p>
+<h2>নাইটওয়্যার কেনার সময় যা খেয়াল রাখবেন</h2>
+<p>সবসময় নিজের সাইজ থেকে এক সাইজ বড় বা লুজ ফিটিং পোশাক বেছে নিন। এছাড়া পোশাকের ইলাস্টিক যেন খুব বেশি টাইট না হয়, সেদিকে খেয়াল রাখুন। রেডিয়্যান্ট পিকসে পেয়ে যাবেন আপনার বাজেটের মধ্যেই সেরা সব কালেকশন।</p>`
+  },
+  {
+    categorySlug: 'lingerie-and-nightwear',
+    title: 'পারফেক্ট ফিটিং ও কনফিডেন্সের জন্য সঠিক অন্তর্বাস বা ব্রা নির্বাচন',
+    slug: 'right-bra-fitting-guide-women',
+    images: 'https://www.eghuri.com/public/uploads/product/1781078878-a296620mangobrab4_1.jpg',
+    tags: 'bra shopping bd, perfect bra fit, অন্তর্বাস গাইড, right bra size, mango cup pads bd, ladies innerwear bangladesh',
+    metaDescription: 'সঠিক সাইজের ব্রা বা অন্তর্বাস না পরলে হতে পারে স্বাস্থ্যের ক্ষতি। জানুন কীভাবে নিজের সঠিক সাইজ বুঝবেন এবং পোশাকের সাথে মানানসই আধুনিক ব্রা এক্সেসরিজ বেছে নেবেন।',
+    content: `<p>অধিকাংশ নারীই তাদের জীবনের কোনো না কোনো সময়ে ভুল সাইজের অন্তর্বাস বা ব্রা পরিধান করে থাকেন। ভুল অন্তর্বাস পরার কারণে পিঠে ব্যথা, কাঁধে দাগ বা ব্রেস্ট টিস্যুর ক্ষতি হতে পারে। তাই সঠিক সাইজ ও ফেব্রিক জানা জরুরি।</p>
+<h2>কীভাবে বুঝবেন আপনার ব্রা পারফেক্ট?</h2>
+<p>যদি ব্রায়ের স্ট্র্যাপ কাঁধ থেকে বারবার পড়ে যায় কিংবা কাপের চারপাশ থেকে চামড়া ঝুলে থাকে, তবে বুঝবেন সাইজ ঠিক নেই। একটি পারফেক্ট ফিটিং ব্রা আপনার পোস্টার বা বসার ভঙ্গি সোজা রাখতে সাহায্য করবে এবং আপনাকে দেবে আত্মবিশ্বাস।</p>
+<h3>পোশাকের ধরন অনুযায়ী এক্সেসরিজ</h3>
+<p>আজকাল বিভিন্ন ওয়েস্টার্ন বা অফ-শোল্ডার পোশাকের সাথে সাধারণ ব্রা পরা যায় না। সেক্ষেত্রে ব্যাকলেস বা পুশ-আপ ব্রেস্ট প্যাড এবং অ্যান্টি-এক্সপোজার স্টিকার ব্যবহার করা বেশ সুবিধাজনক ও নিরাপদ। এগুলো কাপড়ের নিচ থেকে একদম ইনভিজিবল থাকে।</p>
+<h2>সঠিক ইনারওয়্যার নির্বাচন করুন</h2>
+<p>প্রতিদিনের ব্যবহারের জন্য সুতি বা কটন ফেব্রিকের ব্রা সবচেয়ে ভালো। তবে বিশেষ কোনো পার্টি বা পোশাকের জন্য মানানসই শেপ পরিধান করুন। রেডিয়্যান্ট পিকস দিচ্ছে প্রিমিয়াম কোয়ালিটির ইনারওয়্যার ও লঞ্জেরি কালেকশন যা শতভাগ কমফোর্ট নিশ্চিত করে।</p>`
+  },
+
+  // ==========================================
+  // 2. FASHION & CLOTHING (2 Posts)
+  // ==========================================
+  {
+    categorySlug: 'fashion-and-clothing',
+    title: '২০২৬ সালের ট্রেন্ডি ও কমফোর্টেবল ক্যাজুয়াল ফ্যাশন ট্রেন্ডস',
+    slug: 'casual-fashion-trends-2026-bangladesh',
     bannerImage: 'https://madameonline.com/cdn/shop/articles/ba921d4e1188448c3a9037367ee0802d.webp?v=1774347421',
-    tags: 'spring, fashion trends, 2026, women fashion, pastels, co-ord sets',
-    metaDescription: 'Discover the top Spring 2026 fashion trends for women including soft pastels, relaxed tailoring, co-ord sets, and modern florals.',
-    content: `<p>Spring always feels like a fresh start. The heavy layers disappear from the wardrobe. The mornings are more relaxed. Spring 2026 fashion trends for women are all about ease, freshness, and confidence.</p>
-
-<h2>What Defines Spring 2026 Fashion?</h2>
-<p>The spring of 2026 marks a major trend towards functional elegance. Fashion-conscious women want clothes that look sophisticated but are at ease. Structured pieces come in relaxed styles. Colors that are bold and vibrant meet soft pastels.</p>
-
-<h2>Top Spring 2026 Fashion Trends for Women</h2>
-
-<h3>Soft Pastels and Sorbet Shades</h3>
-<p>Color sets the mood for spring. In 2026, soft pastels lead the way. Think lavender, butter yellow, mint green, powder blue, and blush pink. These shades instantly brighten your look without feeling loud.</p>
-
-<h3>Relaxed Tailoring and Structured Comfort</h3>
-<p>This season is all about comfort meeting style. Easy silhouettes with a polished feel are dominating. Pair with minimal accessories for a clean look.</p>
-
-<h3>Feminine Florals with a Modern Twist</h3>
-<p>Florals return every spring. However, this year they come with a fresh perspective. You will see both delicate micro florals and bold botanical prints. Floral dresses are ideal for casual gatherings.</p>
-
-<h3>Statement Tops and Elevated Basics</h3>
-<p>Sometimes, all you require is one piece that stands out. The spring 2026 season is dominated by statement tops. Think of subtle ruffles, textured fabrics, soft pleats, and attractive necklines.</p>
-
-<h3>Coordinated Sets for Effortless Style</h3>
-<p>Co-ord sets continue to dominate Spring 2026 fashion trends for women. You can wear them as a complete set for a polished look or mix and match the top and bottom with other wardrobe staples.</p>
-
-<h2>Must Have Fabrics for Spring 2026</h2>
-<p>Cotton blends are a popular option because they let air flow. Linen-inspired fabrics provide natural beauty and comfort. Denim with a light weight provides structure and comfort without the weight.</p>
-
-<h2>How to Build a Spring 2026 Capsule Wardrobe</h2>
-<p>Begin with a standout dress that expresses your personal style. Add a coord set that can be worn for casual and semi-formal events. Invest in a reliable pair of everyday jeans. Pick a neutral layering piece like a lightweight jacket.</p>
-
-<h2>Conclusion</h2>
-<p>Spring 2026 fashion trends for women celebrate freshness, practicality, and self-expression. This season is the perfect time to select pieces that feel as great as they appear.</p>`,
+    tags: 'fashion trends 2026, casual wear bd, নতুন ফ্যাশন ডিজাইন, trending dress, clothing store bd, bangladesh style catalog',
+    metaDescription: '২০২৬ সালে কোন ধরনের পোশাক ট্রেন্ডে থাকছে? জানুন কো-অর্ড সেট, মিনিমালিস্টিক স্টাইল এবং আরামদায়ক ক্যাজুয়াল পোশাকের বিস্তারিত গাইড।',
+    content: `<p>ফ্যাশন প্রতিনিয়ত পরিবর্তনশীল। ২০২৬ সালের ফ্যাশন দুনিয়ায় এখন সবচেয়ে বেশি গুরুত্ব দেওয়া হচ্ছে আরাম এবং আধুনিকতার মিশ্রণকে। অতিরিক্ত জমকালো পোশাকের চেয়ে মানুষ এখন মিনিমাল এবং এলিগেন্ট লুক বেশি পছন্দ করছেন।</p>
+<h2>২০২৬ এর মূল ফ্যাশন থিম: মিনিমালিজম</h2>
+<p>এ বছর কালার প্যালেটে যোগ হয়েছে সফট পেস্টেল ও লাইট শেডস। লেভেন্ডার, পাউডার ব্লু এবং বাটার ইয়োলোর মতো রঙগুলো এই সিজনে বেশ জনপ্রিয়। অতিরিক্ত ভারী ডিজাইন বাদ দিয়ে ফেব্রিকের কোয়ালিটির ওপর নজর দিচ্ছেন ডিজাইনাররা।</p>
+<h3>কো-অর্ড সেটের জয়জয়কার (Co-ord Sets)</h3>
+<p>ঝামেলাহীন স্টাইলিংয়ের জন্য কো-অর্ড সেট এখন মেয়েদের প্রথম পছন্দ। টপস ও বটম একই ফেব্রিক ও প্রিন্টের হওয়ায় এটি পরলে খুব সহজেই একটি স্মার্ট লুক চলে আসে। অফিস, ইউনিভার্সিটি কিংবা বন্ধুদের সাথে আড্ডায় এটি অনায়াসে পরা যায়।</p>
+<h2>আপনার ফেব্রিক যেভাবে বেছে নেবেন</h2>
+<p>আমাদের দেশের আবহাওয়া অনুযায়ী লিনেন, কটন ব্লেন্ড এবং লাইটওয়েট ডেনিম সবসময় সেরা। পোশাক নির্বাচনের সময় স্টাইলের পাশাপাশি তা কতটা আরামদায়ক তা অবশ্যই নিশ্চিত করুন।</p>`
   },
   {
-    categorySlug: 'fashion-trends',
-    title: "What's New on Madame Spring Summer 2026: Western Wear Highlights",
-    slug: 'madame-spring-summer-2026-highlights',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/9373cad4d7a483d670d28e73aaf76dbd.webp?v=1774347423',
-    tags: 'spring summer 2026, Madame, western wear, new collection, SS26',
-    metaDescription: "Explore Madame's Spring Summer 2026 collection featuring soft silhouettes, bold prints, and easy vibes for your main character wardrobe.",
-    content: `<p>Soft silhouettes, bold prints, and easy vibes. SS26 at Madame is your main character's spring summer wardrobe unlocked.</p>
-
-<h2>Introducing the Spring Summer 2026 Collection</h2>
-<p>This season at Madame brings a fresh perspective to women's western wear. The collection is designed for the modern woman who values both style and comfort. From breezy dresses to structured co-ords, every piece is crafted to make you feel confident.</p>
-
-<h2>Key Highlights of the Collection</h2>
-
-<h3>Breezy Dresses and Co-ords</h3>
-<p>The collection features flowy dresses perfect for brunch dates and vacations. Co-ord sets in vibrant prints and soft pastels make getting dressed effortless. Mix and match pieces for maximum versatility.</p>
-
-<h3>Statement Denim</h3>
-<p>Denim gets a fresh update with lighter washes and modern cuts. From wide-leg jeans to cropped jackets, the denim collection bridges the gap between casual and chic.</p>
-
-<h3>Elevated Basics</h3>
-<p>Everyday essentials get a premium upgrade. Think perfectly cut t-shirts, well-fitted shirts, and versatile trousers that form the backbone of your wardrobe.</p>
-
-<h2>Styling the Collection</h2>
-<p>The beauty of this collection lies in its versatility. Pair a bold printed top with classic denim for a casual day out. Layer a structured blazer over a flowy dress for a work-appropriate look. Mix bold prints with solid pieces for balance.</p>
-
-<h2>Conclusion</h2>
-<p>Madame's Spring Summer 2026 collection is all about embracing your personal style with confidence. Discover the latest styles and make this season your most fashionable one yet.</p>`,
+    categorySlug: 'fashion-and-clothing',
+    title: 'অফিস ও রেগুলার লাইফে স্মার্ট দেখানোর কিছু সহজ ড্রেসিং টিপস',
+    slug: 'smart-dressing-tips-office-casual',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1747469709-cc420aca09f6bcdd95c2c470c1c44cc6.webp',
+    tags: 'office wear tips, corporate styling bd, স্মার্ট পোশাক, office dressing style, casual outfits, smart look tutorial',
+    metaDescription: 'প্রতিদিনের অফিস বা ক্লাসে নিজেকে আকর্ষণীয় ও প্রফেশনাল দেখাতে চান? জানুন সঠিক কালার কম্বিনেশন এবং ড্রেস আপ করার কিছু কার্যকরী লাইফ হ্যাকস।',
+    content: `<p>আপনার পোশাক আপনার ব্যক্তিত্বের আয়না। আপনি কীভাবে পোশাক পরছেন তার ওপর নির্ভর করে মানুষ আপনাকে কীভাবে মূল্যায়ন করবে। বিশেষ করে কর্মক্ষেত্রে বা প্রতিদিনের আড্ডায় মার্জিত পোশাক আপনাকে সবার থেকে আলাদা করে তুলবে।</p>
+<h2>১. সঠিক ফিটিংসের পোশাক পরুন</h2>
+<p>খুব বেশি টাইট কিংবা অতিরিক্ত ঢিলেঢালা পোশাক আপনার লুক নষ্ট করতে পারে। আপনার শরীরের গড়ন অনুযায়ী সেমি-ফিটিং পোশাক বেছে নিন। এটি আপনাকে প্রফেশনাল ও আত্মবিশ্বাসী দেখাবে।</p>
+<h2>২. কালার কম্বিনেশন ও কনট্রাস্ট</h2>
+<p>অফিসের জন্য নিউট্রাল বা প্যাস্টেল কালার যেমন- সাদা, অফ-হোয়াইট, নেভি ব্লু, বা গ্রে কালার খুব ভালো মানায়। আপনি যদি প্রিন্টের পোশাক পরেন, তবে বটম বা প্যান্ট সবসময় সলিড কালারের রাখার চেষ্টা করুন।</p>
+<h3>৩. পোশাকের যত্ন ও আইরনিং</h3>
+<p>দামি পোশাক পরলেই স্মার্ট দেখায় না, যদি তা কুঁচকানো থাকে। সবসময় পরিষ্কার এবং ভালোভাবে ইস্ত্রি করা পোশাক পরিধান করুন। জুতো এবং বেল্টের রঙে সামঞ্জস্য রাখলে লুকে একটি প্রিমিয়াম টাচ আসে।</p>`
   },
 
-  // Styling Tips (2 posts)
+  // ==========================================
+  // 3. SHOES & ACCESSORIES (2 Posts)
+  // ==========================================
   {
-    categorySlug: 'styling-tips',
-    title: 'Cardigans and Shrugs Styling Guide for Everyday Wear',
-    slug: 'cardigans-and-shrugs-styling-guide',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/cardigans_and_shrugs_styling_guide_for_women.webp?v=1767953193',
-    tags: 'cardigans, shrugs, layering, styling tips, everyday wear',
-    metaDescription: 'Master the art of layering with cardigans and shrugs. Learn how to style them for work, casual outings, and everyday looks.',
-    content: `<p>The process of dressing every day should be effortless and not a burden. This is why smart layering is crucial. Shrugs and cardigans improve simple outfits and keep you comfortable when temperatures change.</p>
-
-<h2>Cardigans vs Shrugs – Understanding the Difference</h2>
-<p>Women's cardigans are generally open-front or buttoned sweaters with full sleeves. They are warm and provide coverage, making them perfect for colder weather. Shrugs are less bulky, typically placed above the waist, and focused more on style and not warmth.</p>
-
-<h2>Cardigans Styling Guide for Everyday Wear</h2>
-
-<h3>Styling Cardigans with Jeans and Tops</h3>
-<p>This is where comfort meets fashion. Begin with a semi-fitted or fitted top and a pair of your favorite jeans. Layer a cardigan over it. To keep from looking bulky, balance is important. Cropped cardigans with high-waisted jeans work well.</p>
-
-<h3>Styling Cardigans with Dresses</h3>
-<p>Cardigans instantly help dresses more comfortable to wear in everyday life. For a more relaxed appearance, wear the cardigan open. For a more sculpted look, fasten it or tie it around the waist.</p>
-
-<h2>Shrugs Styling Guide for Casual & Smart Looks</h2>
-
-<h3>Shrugs with Dresses and Tops</h3>
-<p>Shrugs look great with sleeveless tops and dresses. They provide just the right amount of coverage. For casual events, opt for soft fabrics and comfortable fits. For a more sophisticated look, choose a structured shrug.</p>
-
-<h3>Shrugs for Light Layering</h3>
-<p>Shrugs are perfect for indoor or mild conditions. They add style and flexibility without extra weight. They're especially helpful when you need the freedom to move and a polished appearance.</p>
-
-<h2>Everyday Layering Tips</h2>
-<p>Start by wearing breathable layers. Try experimenting with proportions. Longer cardigans are great with fitted bottoms, while cropped shrugs compliment flowing silhouettes. Make sure you stick to a consistent color scheme.</p>
-
-<h2>Conclusion</h2>
-<p>Fashion for everyday life is easier with dependable layers. Even the smallest styling choices can have a significant difference in how you feel and appear.</p>`,
+    categorySlug: 'shoes-and-accessories',
+    title: 'যেকোনো পোশাকের সাথে মানানসই ফুটওয়্যার ও জুতো বাছার নিয়ম',
+    slug: 'footwear-matching-guide-lifestyle',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1747469709-cc420aca09f6bcdd95c2c470c1c44cc6.webp',
+    tags: 'shoes collection bd, ladies footwear, জুতো ম্যাচিং টিপস, high heels price, comfortable flats, fashion shoes bangladesh',
+    metaDescription: 'পোশাকের সাথে ভুল জুতো পুরো লুক নষ্ট করে দিতে পারে। শাড়ি, কুর্তি বা ওয়েস্টার্ন ড্রেসের সাথে কোন জুতো ভালো মানাবে, জানতে পড়ুন ফুটওয়্যার সিলেকশন গাইড।',
+    content: `<p>কথায় আছে, মানুষের রুচির পরিচয় পাওয়া যায় তার জুতো দেখে। আপনি যতই সুন্দর পোশাক পরুন না কেন, জুতো যদি মানানসই না হয়, তবে পুরো স্টাইলটাই মাটি হয়ে যেতে পারে। তাই অকেশন অনুযায়ী জুতো নির্বাচন করা শিখতে হবে।</p>
+<h2>১. শাড়ি ও ট্র্যাডিশনাল পোশাকের সাথে ফুটওয়্যার</h2>
+<p>শাড়ির সাথে একটু হিল জুতো পরলে চমৎকার দেখায়। যদি হিল পরতে সমস্যা হয়, তবে কিটেন হিলস বা প্ল্যাটফর্ম হিল বেছে নিতে পারেন। কুর্তি বা সালোয়ার কামিজের সাথে নাগরা বা কোলাপুরী জুতো দারুণ মানিয়ে যায়।</p>
+<h2>২. ক্যাজুয়াল ও ওয়েস্টার্ন লুকের জন্য স্নিকার্স বা ফ্ল্যাটস</h2>
+<p>জিন্স, টপস কিংবা কো-অর্ড সেটের সাথে স্নিকার্স এখন ভীষণ ইন-ট্রেন্ড। এছাড়া প্রতিদিনের চলাফেরার জন্য আরামদায়ক ফ্ল্যাট জুতো বা স্লাইডার্স বেছে নিতে পারেন, যা দীর্ঘক্ষণ পায়ে রাখলেও কোনো অস্বস্তি হবে না।</p>
+<h3>পায়ের স্বাস্থ্যের দিকে নজর দিন</h3>
+<p>জুতো কেনার সময় কেবল সৌন্দর্য দেখলেই হবে না, সোলের সফটনেস এবং ম্যাটেরিয়াল কেমন তা পরীক্ষা করে নিন। পা ভালো রাখতে সবসময় প্রিমিয়াম কোয়ালিটির জুতো ব্যবহার করুন।</p>`
   },
   {
-    categorySlug: 'styling-tips',
-    title: 'Coats & Blazers Styling Guide: From Workwear to Weekend Wear',
-    slug: 'coats-and-blazers-styling-guide',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/coats_and_blazers_styling_guide.webp?v=1767352885',
-    tags: 'coats, blazers, workwear, styling guide, women fashion',
-    metaDescription: 'Learn how to style coats and blazers for every occasion — from professional workwear to relaxed weekend looks.',
-    content: `<p>One blazer, many moods. This guide breaks down how to style coats and blazers for work, weekends, and everything between.</p>
-
-<h2>The Power of a Well-Fitted Blazer</h2>
-<p>A blazer is one of the most versatile pieces in any woman's wardrobe. It can instantly elevate a casual outfit or complete a professional look. The key is finding the right fit and knowing how to style it for different occasions.</p>
-
-<h2>Workwear Styling</h2>
-
-<h3>Classic Professional Looks</h3>
-<p>Pair a structured blazer with tailored trousers and a crisp blouse for a timeless office look. Neutral colors like black, navy, and grey work best for formal settings. Add pointed-toe heels and minimal jewelry to complete the outfit.</p>
-
-<h3>Modern Office Style</h3>
-<p>For a more contemporary approach, try an oversized blazer over a fitted midi dress. Or layer a blazer over a turtleneck and wide-leg trousers. This combination offers a relaxed yet polished appearance.</p>
-
-<h2>Weekend and Casual Styling</h2>
-
-<h3>Relaxed Weekend Vibes</h3>
-<p>Throw a blazer over your favorite jeans and t-shirt for an effortlessly cool weekend look. Roll up the sleeves for a more laid-back feel. Add sneakers or loafers for comfort.</p>
-
-<h3>Evening and Social Events</h3>
-<p>A well-chosen blazer can be your go-to for dinner dates and social gatherings. Pair a velvet or textured blazer with a sleek dress or tailored pants. Statement earrings add the finishing touch.</p>
-
-<h2>Choosing the Right Coat for Your Wardrobe</h2>
-<p>Invest in quality outerwear that transcends seasons. A classic trench coat or a wool-blend coat pairs beautifully with both formal and casual outfits. Choose neutral tones for maximum versatility.</p>
-
-<h2>Conclusion</h2>
-<p>Coats and blazers are wardrobe investments that pay off year-round. Master the art of styling them for every occasion and you'll always have the perfect outfit ready.</p>`,
+    categorySlug: 'shoes-and-accessories',
+    title: 'মিনিমালিস্ট জুয়েলারি ও ব্যাগ: আপনার লুকে প্রিমিয়াম টাচ দেওয়ার উপায়',
+    slug: 'minimalist-jewelry-handbag-styling',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1747469709-cc420aca09f6bcdd95c2c470c1c44cc6.webp',
+    tags: 'minimal jewelry bd, ladies handbags, ফ্যাশন এক্সেসরিজ, pearl collection, trendy bags, girl styling tools',
+    metaDescription: 'এক্সেসরিজ ছাড়া যেকোনো ফ্যাশনই অসম্পূর্ণ। জানুন কীভাবে সিম্পল জুয়েলারি ও মানানসই হ্যান্ডব্যাগ ব্যবহার করে আপনার সাধারণ লুককে করে তুলবেন আকর্ষণীয়।',
+    content: `<p>ফ্যাশনকে পূর্ণতা দিতে এক্সেসরিজের ভূমিকা অনস্বীকার্য। হেভি বা ভারী গহনার দিন এখন অনেকটাই ফুরিয়ে এসেছে। এখনকার ট্রেন্ড হলো মিনিমালিস্ট জুয়েলারি—যা হালকা, মার্জিত এবং যেকোনো সাধারণ পোশাকের সৌন্দর্য বহুগুণ বাড়িয়ে দেয়।</p>
+<h2>মিনিমালিস্ট গহনার জাদু</h2>
+<p>একটি পাতলা চেইন উইথ লকেট, ছোট পার্ল স্টাড ইয়ার রিং কিংবা একটি সিম্পল ব্রেসলেট আপনার লুকে সাথে সাথেই ক্লাসি ভাব নিয়ে আসে। অফিস বা ক্যাজুয়াল গেটটুগেদারে এই ধরনের গহনা খুব মানানসই।</p>
+<h3>সঠিক হ্যান্ডব্যাগ বা পার্স নির্বাচন</h3>
+<p>ব্যাগের সাইজ সবসময় আপনার অকেশনের ওপর ভিত্তি করে হওয়া উচিত। অফিসে যাওয়ার জন্য বড় টোট ব্যাগ (Tote Bag) দরকারি হলেও, রাতের কোনো পার্টি বা ডিনারে একটি মেটালিক চেইন স্লিং ব্যাগ বা ক্লাচ আপনার লুককে অনেক বেশি আকর্ষণীয় করে তুলবে।</p>
+<h2>এক্সেসরিজ ব্যবহারের গোল্ডেন রুল</h2>
+<p>একসাথে খুব বেশি জিনিস পরবেন না। যদি গলায় ভারী কোনো স্টেটমেন্ট পিস পরেন, তবে কান খালি রাখুন বা খুব ছোট টপ পরুন। লেস ইজ মোর (Less is more)—এই নীতি মেনে চললেই আপনি থাকবেন অনন্যা।</p>`
   },
 
-  // Outfit Ideas (2 posts)
+  // ==========================================
+  // 4. BEAUTY & PERSONAL CARE (2 Posts)
+  // ==========================================
   {
-    categorySlug: 'outfit-ideas',
-    title: "Valentine's Day Outfits for Women – Date & Dinner Looks",
-    slug: 'valentines-day-outfit-ideas-for-women',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/923b4b04423de6a73859ba1667622394.webp?v=1774347415',
-    tags: "valentine's day, outfit ideas, date night, dinner looks, women fashion",
-    metaDescription: "Find the perfect Valentine's Day outfit for any plan — from cute day dates to romantic dinner looks. Confidence looks good on you.",
-    content: `<p>Valentine's Day always brings a small amount of magic. No matter if you're heading to a coffee date or a romantic candlelight dinner, picking the perfect outfit will set the mood for the whole evening.</p>
-
-<h2>How to Choose the Perfect Valentine's Day Outfit</h2>
-
-<h3>Dress According to Your Date Plan</h3>
-<p>A brunch requires something easy and casual. A dinner reservation at a fine restaurant needs elegance. A party at home allows you to explore bold silhouettes. When your outfit matches the vibe, you'll be comfortable.</p>
-
-<h3>Pick Colors That Match the Mood</h3>
-<p>Red is the timeless Valentine's classic. Pink feels soft and feminine. Black adds a sophisticated look. Wine shades and soft pastels are also fashionable this year.</p>
-
-<h2>Cute Valentine's Day Outfit Ideas for Day Dates</h2>
-
-<h3>Floral Dresses with Light Layers</h3>
-<p>Floral dresses are ideal for brunches or coffee meetups. They look feminine without trying too hard. Pair them with minimal jewelry and a crossbody bag.</p>
-
-<h3>Chic Co-Ord Sets</h3>
-<p>Co-ords are in style and with good reason. They are easy to put together. A soft co-ord set with subtle makeup offers innovative and contemporary outfit ideas.</p>
-
-<h2>Romantic Dinner Outfit Ideas</h2>
-
-<h3>Red Bodycon Dresses</h3>
-<p>Nothing could be more Valentine's Day than a red bodycon dress. It's strong, powerful, and emphasizes your figure. Style with classic shoes and delicate earrings.</p>
-
-<h3>Elegant Midi and Maxi Dresses</h3>
-<p>For a classy style, go for a midi or maxi dress. These styles are classy and sophisticated. Silk or flowing fabrics give an air of elegance and movement.</p>
-
-<h2>Styling Tips to Elevate Your Look</h2>
-<p>Keep your accessories well-balanced. Select footwear with care. Ensure your makeup aligns with your attire. Most importantly, take pride in yourself — it is the most effective accessory.</p>
-
-<h2>Conclusion</h2>
-<p>Valentine's Day is not just about wearing a dress. It's about showing your feelings. When you select the right outfit, you are comfortable, beautiful, and ready to make unforgettable memories.</p>`,
+    categorySlug: 'beauty-and-personal-care',
+    title: 'প্রতিদিনের সহজ স্কিনকেয়ার রুটিন: গ্লোয়িং স্কিন পাওয়ার উপায়',
+    slug: 'daily-skincare-routine-glowing-skin',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1747468839-beauty-health-illustration-with.webp',
+    tags: 'skincare routine bd, glowing skin tips, ত্বকের যত্ন, sunscreen price bd, moisturizer for women, skin care bangla',
+    metaDescription: 'ঘরোয়া উপায়ে ও সঠিক প্রোডাক্ট ব্যবহারে কীভাবে গ্লোয়িং স্কিন পাবেন? জানুন ক্লিনজিং, টোনিং ও ময়েশ্চারাইজিংয়ের সহজ স্কিনকেয়ার গাইড।',
+    content: `<p>সুন্দর ও সুস্থ ত্বক আমাদের আত্মবিশ্বাস বাড়িয়ে দেয়। তবে গ্লোয়িং স্কিন একদিনে পাওয়া সম্ভব নয়, এর জন্য প্রয়োজন নিয়মিত এবং সঠিক নিয়মে ত্বকের যত্ন নেওয়া। খুব জটিল কিছু না করে মাত্র ৩টি ধাপে আপনি আপনার স্কিনকেয়ার সারতে পারেন।</p>
+<h2>ধাপ ১: সঠিক ফেসওয়াশ দিয়ে ক্লিনজিং</h2>
+<p>সারাদিনের ধুলাবালি ও তেল দূর করতে দিনে অন্তত দুইবার (সকালে ও রাতে) ত্বক পরিষ্কার করা উচিত। আপনার ত্বকের ধরন শুষ্ক, তৈলাক্ত নাকি কম্বিনেশন—তা জেনে ফেসওয়াশ কিনুন।</p>
+<h2>ধাপ ২: ময়েশ্চারাইজিং (Moisturizing)</h2>
+<p>অনেকেই ভাবেন তৈলাক্ত ত্বকে ময়েশ্চারাইজার লাগে না, যা একদম ভুল ধারণা। ত্বক হাইড্রেটেড রাখতে হালকা ও জেল বেসড ময়েশ্চারাইজার ব্যবহার করুন। এটি ত্বককে নরম ও সতেজ রাখে।</p>
+<h3>ধাপ ৩: সানস্ক্রিন ব্যবহার মিস করবেন না</h3>
+<p>রোদে বের হওয়ার অন্তত ১৫ মিনিট আগে ভালো মানের সানস্ক্রিন ব্যবহার করুন। এমনকি ঘরে থাকলেও বা মেঘলা দিনেও সানস্ক্রিন স্কিপ করা যাবে না। এটি ত্বকে বয়সের ছাপ ও পিগমেন্টেশন পড়া রোধ করে।</p>`
   },
   {
-    categorySlug: 'outfit-ideas',
-    title: "Women's Day Fashion Ideas for Work, Weekend and Celebrations",
-    slug: 'womens-day-fashion-ideas',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/9e6332b08570f59da8937d4ab90d30e3.webp?v=1774347417',
-    tags: "women's day, fashion ideas, workwear, weekend, celebration",
-    metaDescription: "Celebrate Women's Day with stylish outfit ideas for work, weekend plans, and celebrations. Confidence looks good on you.",
-    content: `<p>It's your day, own the spotlight. Women's Day fashion ideas for work, chill plans, and glam nights. Because confidence looks good on you.</p>
-
-<h2>What to Wear to Work on Women's Day</h2>
-
-<h3>Professional Yet Powerful</h3>
-<p>Make a statement at the office with outfits that reflect your strength. A well-tailored blazer paired with wide-leg trousers creates a commanding presence. Add a pop of color with a bold blouse underneath.</p>
-
-<h3>Smart Casual Options</h3>
-<p>If your workplace leans casual, opt for a chic co-ord set or a structured midi dress. These pieces are comfortable enough for a full day while still looking polished and put-together.</p>
-
-<h2>Weekend Outfit Ideas</h2>
-
-<h3>Brunch with Friends</h3>
-<p>For a relaxed weekend outing, try a flowy midi skirt paired with a fitted top. Add statement earrings and comfortable block heels. This look is effortless yet stylish.</p>
-
-<h3>Casual Shopping Day</h3>
-<p>Go for comfort without compromising style. A well-fitted pair of jeans with a statement top and sneakers creates the perfect casual ensemble for a day out.</p>
-
-<h2>Celebration and Party Looks</h2>
-
-<h3>Evening Glam</h3>
-<p>For Women's Day celebrations, don't hold back. A sequined top with tailored pants or a sleek bodycon dress creates an unforgettable look. Pair with heels and bold jewelry.</p>
-
-<h3>Dinner Party Elegance</h3>
-<p>A midi dress in a rich jewel tone is perfect for an elegant dinner celebration. Add a clutch and minimal accessories to let the dress speak for itself.</p>
-
-<h2>Conclusion</h2>
-<p>Women's Day is a celebration of you. Dress in a way that makes you feel powerful, confident, and ready to take on the world. Because when you feel good, you look even better.</p>`,
+    categorySlug: 'beauty-and-personal-care',
+    title: 'চুল পড়া বন্ধ করতে ও নতুন চুল গজাতে কার্যকরী হেয়ার কেয়ার টিপস',
+    slug: 'hair-fall-solution-care-tips',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1747468839-beauty-health-illustration-with.webp',
+    tags: 'hair fall control, organic hair oil, চুলের যত্ন, hair growth tips, anti dandruff shampoo, hair treatment bd',
+    metaDescription: 'অতিরিক্ত চুল পড়া নিয়ে চিন্তিত? নতুন চুল গজানো ও স্ক্যাল্প সুস্থ রাখার জন্য কিছু প্রাকৃতিক উপাদান ও হেয়ার কেয়ার রুটিন সম্পর্কে বিস্তারিত জানুন।',
+    content: `<p>চুল পড়া বর্তমান সময়ে একটি সাধারণ সমস্যা হয়ে দাঁড়িয়েছে। মানসিক চাপ, দূষণ এবং সঠিক যত্নের অভাবে চুল রুক্ষ হয়ে যায় এবং গোড়া দুর্বল হয়ে পড়ে। সঠিক নিয়মে হেয়ার কেয়ার করলে এই সমস্যা অনেকটাই কমিয়ে আনা সম্ভব।</p>
+<h2>নিয়মিত হট অয়েল ম্যাসাজ</h2>
+<p>সপ্তাহে অন্তত দুই দিন খাঁটি নারকেল তেল বা ক্যাস্টর অয়েল হালকা গরম করে স্ক্যাল্পে আলতো হাতে ম্যাসাজ করুন। এটি মাথার ত্বকে রক্ত সঞ্চালন বাড়ায় এবং চুলের গোড়ায় পুষ্টি জোগায়।</p>
+<h3>সঠিক শ্যাম্পু ও কন্ডিশনার বাছাই</h3>
+<p>চুলে অতিরিক্ত কেমিক্যালযুক্ত শ্যাম্পু ব্যবহার করা বন্ধ করুন। সালফেট ও প্যারাবেন মুক্ত শ্যাম্পু স্ক্যাল্পের ন্যাচারাল অয়েল ধরে রাখে। শ্যাম্পু করার পর চুলের লেন্থে কন্ডিশনার লাগাতে ভুলবেন না, এটি চুলকে সিল্কি ও জটমুক্ত রাখে।</p>
+<h2>ভেজা চুল আঁচড়াবেন না</h2>
+<p>ভেজা অবস্থায় চুলের গোড়া নরম থাকে, তাই ওই সময়ে চিরুনি ব্যবহার করলে চুল বেশি ভেঙে যায়। চুল শুকানোর জন্য মোটা দাঁতের কাঠের চিরুনি ব্যবহার করা সবচেয়ে ভালো। পর্যাপ্ত পানি পান ও পুষ্টিকর খাবার আপনার চুল ভেতর থেকে মজবুত করবে।</p>`
   },
 
-  // Work & Formal Wear (2 posts)
+  // ==========================================
+  // 5. KITCHEN & DINING (2 Posts)
+  // ==========================================
   {
-    categorySlug: 'work-formal-wear',
-    title: 'How to Layer Winter Formals for Women the Right Way',
-    slug: 'how-to-layer-winter-formals-for-women',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/how_to_layer_winter_formals_for_women_b7eca964-f5de-489a-a18f-7d915bbd1739.webp?v=1769171130',
-    tags: 'winter formals, office wear, layering, workwear, professional',
-    metaDescription: 'Master the art of layering winter formal wear for the office. Stay warm, polished, and professional all season long.',
-    content: `<p>Winter mornings are beautiful and challenging, particularly if you're getting ready for work. The choice of winter formals for women is not only about staying warm. It's about feeling professional, polished, and comfortable during long office hours.</p>
-
-<h2>Why Layering Matters in Winter Formal Wear</h2>
-<p>Layering lets you take control. The temperature of the office can vary and the weather outside is prone to change rapidly. Layered clothing lets you adapt easily while maintaining an elegant look.</p>
-
-<h2>Start with the Right Base Layer</h2>
-
-<h3>Choosing Comfortable Inner Layers</h3>
-<p>A well-fitting inner layer will keep your body warm without adding weight. Think soft tops, light thermal t-shirts, or tailored blouses that fit comfortably beneath formal clothes.</p>
-
-<h3>Fabric Selection for All Day Comfort</h3>
-<p>Fabrics that breathe like blended cotton, modal, or fine wool help regulate your body temperature. They keep you warm but avoid being too hot once you're indoors.</p>
-
-<h2>Mid Layers That Add Warmth Without Bulk</h2>
-
-<h3>Shirts, Tops and Fine Knitwear</h3>
-<p>A structured shirt paired with fine knit sweaters gives a professional and clean look. Opt for slim-fit knits which are close to the body. They look great with trousers and skirts.</p>
-
-<h3>Smart Use of Cardigans for Office Wear</h3>
-<p>Cardigans are an essential winter piece. Find tailored cardigans with clean lines and minimal details. They are easy to layer over dresses and shirts and can add warmth without overpowering your attire.</p>
-
-<h2>Outerwear That Completes Winter Formals</h2>
-
-<h3>Blazers: The Winter Formal Essential</h3>
-<p>Blazers are a classic option for winter formals. They give the look structure and instantly elevate any outfit. For winter, pick more substantial fabrics that provide warmth and a sleek appearance.</p>
-
-<h3>Coats and Jackets for Office Commutes</h3>
-<p>Jackets and coats shield you from the cold while keeping your attire elegant. Classic coats with neutral colors work with formal attire for winter.</p>
-
-<h2>Conclusion</h2>
-<p>The winter dress code doesn't have to be difficult. If you know how to approach formal winter layering, you can design outfits that are warm, confident, and professional.</p>`,
+    categorySlug: 'kitchen-and-dining',
+    title: 'মডার্ন রান্নাঘরের জন্য প্রয়োজনীয় কিছু স্মার্ট গ্যাজেট ও কিচেনওয়্যার',
+    slug: 'smart-kitchen-gadgets-modern-home',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1772872168-8189ca86d4d8296f81f9887532cce0b5.webp',
+    tags: 'kitchen gadgets bd, non stick cookware, রান্নাঘরের জিনিসপত্র, smart kitchen tools, blender price bd, modern kitchenware',
+    metaDescription: 'স্মার্ট কিচেন গ্যাজেট ব্যবহার করে আপনার রান্নাঘরের কাজকে করুন দ্বিগুণ সহজ ও দ্রুত। আধুনিক গৃহিণীদের জন্য প্রয়োজনীয় কিছু কিচেন টুলের তালিকা দেখে নিন।',
+    content: `<p>রান্নাঘর হলো ঘরের অন্যতম গুরুত্বপূর্ণ অংশ। আধুনিক সময়ে প্রযুক্তির ছোঁয়ায় রান্নাঘরের কাজ এখন অনেক সহজ এবং আনন্দদায়ক হয়ে উঠেছে। সঠিক কিচেনওয়্যার এবং স্মার্ট গ্যাজেট আপনার সময় ও শ্রম দুটোই বাঁচিয়ে দিতে পারে।</p>
+<h2>১. নন-স্টিক কুকওয়্যার সেট (Non-Stick Cookware)</h2>
+<p>কম তেলে স্বাস্থ্যকর রান্নার জন্য নন-স্টিক প্যান বা কড়াইয়ের কোনো বিকল্প নেই। এতে খাবার পুড়ে বা নিচে লেগে যায় না, এবং রান্নার পর পরিষ্কার করাও বেশ সহজ হয়।</p>
+<h2>২. মাল্টি-ফাংশনাল ব্লেন্ডার ও চপার</h2>
+<p>পেঁয়াজ, রসুন বা সবজি কাটার ঝামেলা এড়াতে একটি ভালো মানের চপার বা হ্যান্ড ব্লেন্ডার রান্নাঘরের কাজকে কয়েক মিনিটে নামিয়ে আনে। মশলা বাটার কষ্ট দূর করতে এটি প্রতিটি মডার্ন কিচেনে থাকা দরকার।</p>
+<h3>স্মার্ট স্টোরেজ কন্টেইনার</h3>
+<p>রান্নাঘর গোছানো রাখতে এয়ারটাইট ট্রান্সপারেন্ট জার বা কন্টেইনার ব্যবহার করুন। এতে ডাল, চাল বা মশলা অনেকদিন পর্যন্ত ভালো থাকে এবং বাইরে থেকে দেখেই সহজে চেনা যায়, যা আপনার সময় বাঁচায়।</p>`
   },
   {
-    categorySlug: 'work-formal-wear',
-    title: 'Smart Knitwear Styling Tips for Work, Weekends & Travel',
-    slug: 'smart-knitwear-styling-tips',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/Smart_Knitwear_Styling_Tips_for_Work_Weekends_Travel_8247c9db-ab21-4395-9653-aebda24c526f.webp?v=1768564198',
-    tags: 'knitwear, styling tips, workwear, travel, smart casual',
-    metaDescription: 'Discover smart knitwear styling tips for every occasion — from professional work looks to weekend comfort and travel-ready outfits.',
-    content: `<p>Knitwear isn't just winter vibes. Slay work, weekends, and travel looks with these smart knitwear styling tips.</p>
-
-<h2>Knitwear for the Office</h2>
-
-<h3>Fine Knits for Professional Settings</h3>
-<p>Fine-gauge knitwear is perfect for the office. A slim-fit sweater in a neutral tone paired with tailored trousers creates a polished professional look. Layer a blazer on top for added structure during meetings.</p>
-
-<h3>Knit Dresses for Effortless Elegance</h3>
-<p>A well-fitted knit dress is a wardrobe hero for work. It's comfortable enough for long days while looking put-together. Pair with a belt to define your waist and add pointed-toe heels.</p>
-
-<h2>Weekend Knitwear Styling</h2>
-
-<h3>Casual Comfort</h3>
-<p>For weekends, embrace chunkier knits. An oversized sweater paired with jeans or corduroy pants creates a cozy yet stylish look. Add boots or sneakers for a relaxed finish.</p>
-
-<h3>Layering for Texture</h3>
-<p>Mix different knit textures for visual interest. A cable-knit cardigan over a ribbed top adds depth to your outfit. Play with proportions — pair oversized knits with fitted bottoms.</p>
-
-<h2>Travel-Ready Knitwear</h2>
-
-<h3>Packing Smart</h3>
-<p>Knitwear is ideal for travel. It's lightweight, wrinkle-resistant, and versatile. Pack a neutral sweater that pairs with multiple bottoms. Layer over a dress or with jeans for different looks from one piece.</p>
-
-<h3>Airplane to Destination</h3>
-<p>Style a cozy knit set for comfort during travel. A matching knit top and pants set looks chic at the airport and transitions seamlessly to your destination.</p>
-
-<h2>Conclusion</h2>
-<p>Knitwear is one of the most versatile categories in your wardrobe. With the right styling, it works for every occasion — from boardrooms to weekend adventures.</p>`,
+    categorySlug: 'kitchen-and-dining',
+    title: 'ডাইনিং টেবিল সাজানোর আকর্ষণীয় আইডিয়া: অতিথি আপ্যায়নে নতুনত্ব',
+    slug: 'dining-table-decoration-ideas-guests',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1772872168-8189ca86d4d8296f81f9887532cce0b5.webp',
+    tags: 'dining table decor, luxury dinnerware, ডাইনিং টেবিল সাজানো, ceramic plates price, table mats bd, guest entertainment',
+    metaDescription: 'ঈদে বা যেকোনো ঘরোয়া অনুষ্ঠানে আপনার ডাইনিং টেবিল কীভাবে পরিপাটি করে সাজাবেন? আকর্ষণীয় ডিনার সেট, টেবিল ম্যাট ও রানার ব্যবহারের নিয়ম জানুন।',
+    content: `<p>বাঙালিদের যেকোনো উৎসব মানেই ভূরিভোজ আর অতিথি আপ্যায়ন। তবে শুধু সুস্বাদু খাবার রান্না করলেই হয় না, তা কীভাবে পরিবেশন করছেন সেটাও গুরুত্বপূর্ণ। একটি সুন্দর করে সাজানো ডাইনিং টেবিল আপনার রুচির পরিচয় বহন করে।</p>
+<h2>১. প্রিমিয়াম ডিনার সেট ব্যবহার করুন</h2>
+<p>বিশেষ অতিথিদের জন্য সিরামিক বা বোন চায়নার সুন্দর ডিনার সেট রাখুন। সাদা বা হালকা প্রিন্টের প্লেট-বাটি টেবিলের সৌন্দর্য অনেক বাড়িয়ে দেয় এবং খাবার দেখতেও বেশ লোভনীয় লাগে।</p>
+<h3>২. টেবিল রানার ও ম্যাটের সঠিক ব্যবহার</h3>
+<p>টেবিলের মাঝখানে একটি সুন্দর ডিজাইনের রানার বিছিয়ে দিতে পারেন। প্লেটের নিচে রাখার জন্য ওয়াটারপ্রুফ বা কোয়ালিটিসম্পন্ন টেবিল ম্যাট ব্যবহার করুন। এটি টেবিলকে স্ক্র্যাচ এবং ঝোলের দাগ থেকে রক্ষা করবে।</p>
+<h2>৩. সেন্টারপিস ও আলো</h2>
+<p>টেবিলের ঠিক মাঝখানে একটি ছোট কাঁচের পাত্রে তাজা ফুল বা ইনডোর প্ল্যান্ট রাখতে পারেন। ডাইনিং রুমের লাইটিং যেন একটু উজ্জ্বল ও ওয়ার্ম হয় সেদিকে খেয়াল রাখুন, যা খাওয়া-দাওয়ার পরিবেশকে আনন্দদায়ক করে তুলবে।</p>`
   },
 
-  // Seasonal Style (2 posts)
+  // ==========================================
+  // 6. HOME & LIVING (2 Posts)
+  // ==========================================
   {
-    categorySlug: 'seasonal-style',
-    title: 'Winter to Spring Fashion Guide for a Smooth Style Transition',
-    slug: 'winter-to-spring-fashion-guide',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/53c20175f7af1489f34a14b843cdb8e7.webp?v=1774347409',
-    tags: 'winter to spring, transitional fashion, layering, seasonal style',
-    metaDescription: 'Navigate the winter-to-spring transition with ease. Learn how to layer, mix fabrics, and style outfits for unpredictable weather.',
-    content: `<p>The transition from winter to spring is always a bit like a jumble. At one point, you are reaching for warm clothes, the next moment you are craving lighter clothes. This is precisely why having a properly planned winter to spring fashion guide is important.</p>
-
-<h2>What is Transitional Fashion?</h2>
-<p>Fashion for transitional times simply means wearing clothes that can be worn in a variety of weather. It emphasizes layers, flexibility, and picking pieces that shift to changing temperatures. The most important thing is layering and using a variety of fabrics.</p>
-
-<h2>Must Have Winter to Spring Wardrobe Staples</h2>
-
-<h3>Lightweight Jackets and Outerwear</h3>
-<p>Light layers are your ideal partner during this season. Denim jackets give an informal look and go well with everything. Light blazers are great for casual and formal occasions alike. These lightweight jackets are easy to throw on and off as the day changes.</p>
-
-<h3>Transitional Tops</h3>
-<p>Tops with full sleeves protect you from morning chills while remaining cool and breathable. Lightweight knit tops offer warmth without feeling weighty. Shirts are the ultimate heroes of transitional style.</p>
-
-<h3>Bottomwear That Works Across Seasons</h3>
-<p>Straight-fit trousers appear polished and are comfortable throughout the day. Denim that is lightweight pairs well with both winter and spring tops. Ankle-length pants provide a fresh look while offering coverage.</p>
-
-<h2>Smart Layering Tips for Spring Weather</h2>
-<p>Start with a thin base layer, then add pieces you can take off. Mix spring and winter items carefully. Wear a warm sweater over an aerating top. Tops, shirts, and light jackets provide flexibility without being bulky.</p>
-
-<h2>Color and Fabric Shift</h2>
-<p>Gradually introduce spring-inspired colors such as blush, mint, soft blue, and warm brown. Combine them with your neutral winter outfits. Stay away from heavy wool and thick knits. Select fabrics made of cotton, breathable blends, and lightweight fabrics.</p>
-
-<h2>Outfit Ideas for Women</h2>
-<p>For casual looks, wear everyday tops with jeans and a lightweight jacket. For workwear, style casual shirts with straight-fit pants and a light jacket. For weekends, layer dresses with denim jackets and soft shrugs.</p>
-
-<h2>Conclusion</h2>
-<p>A seamless transition from season to season doesn't require a new outfit. It's about making more intelligent selections with careful layers, breathable fabrics, and versatile staples.</p>`,
+    categorySlug: 'home-and-living',
+    title: 'ছোট ঘরকে বড় ও আকর্ষণীয় দেখানোর কিছু সহজ ইন্টেরিয়র ডিজাইন হ্যাকস',
+    slug: 'small-home-decor-interior-hacks',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1772872168-8189ca86d4d8296f81f9887532cce0b5.webp',
+    tags: 'home decor ideas, small room design, ঘর সাজানোর টিপস, wall mirrors bd, smart furniture, home improvement',
+    metaDescription: 'আপনার ছোট ফ্ল্যাট বা রুমটি গোছাতে পারছেন না? জানুন কীভাবে সঠিক কালার স্কিম, আয়না ও মাল্টিপারপাস ফার্নিচার ব্যবহার করে ছোট স্পেস বড় দেখাবেন।',
+    content: `<p>শহরের অ্যাপার্টমেন্টগুলোর সাইজ দিন দিন ছোট হয়ে আসছে। তবে একটু বুদ্ধি খাটিয়ে সাজালে ছোট ঘরকেও অনেক বড় ও রাজকীয় লুক দেওয়া সম্ভব। এর জন্য প্রয়োজন সঠিক আসবাবপত্র নির্বাচন এবং স্পেসের সঠিক ব্যবহার।</p>
+<h2>১. হালকা রঙের দেয়াল ও পর্দা</h2>
+<p>ছোট ঘরের দেয়ালে সবসময় সাদা, অফ-হোয়াইট বা হালকা লাইট শেড ব্যবহার করুন। ডার্ক কালার ঘরকে আরও ছোট দেখায়। জানালার পর্দাও যেন হালকা ফেব্রিকের এবং দেয়ালের রঙের সাথে ম্যাচিং হয়।</p>
+<h3>২. দেয়ালে বড় আয়না (Wall Mirrors) এর ব্যবহার</h3>
+<p>ইন্টেরিয়র ডিজাইনারদের একটি জনপ্রিয় ট্রিক হলো বড় আয়নার ব্যবহার। লিভিং রুম বা ডাইনিংয়ের দেয়ালে একটি বড় ডিজাইনার আয়না বসালে তা আলো প্রতিফলিত করে ঘরকে দ্বিগুণ বড় দেখাতে সাহায্য করে।</p>
+<h2>৩. মাল্টিফাংশনাল ফার্নিচার</h2>
+<p>এমন আসবাবপত্র বেছে নিন যা একের অধিক কাজে লাগে। যেমন- স্টোরেজ সুবিধা থাকা বক্স খাট, সোফা কাম বেড কিংবা ফোল্ডিং টেবিল। এগুলো ঘরের অতিরিক্ত জায়গা দখল না করেই অনেক জিনিস গুছিয়ে রাখে।</p>`
   },
   {
-    categorySlug: 'seasonal-style',
-    title: 'Summer Outfit Ideas: Styling Tops for Effortless Daily Looks',
-    slug: 'summer-outfit-ideas-styling-tops',
-    bannerImage: 'https://madameonline.com/cdn/shop/articles/ec6ca05bd2d31b554269b45eeb40272b.webp?v=1773469677',
-    tags: 'summer, outfit ideas, tops, styling, daily looks, warm weather',
-    metaDescription: 'Summer fits made simple. Style your favorite tops with easy outfit ideas that keep you cool, comfy, and effortlessly stylish.',
-    content: `<p>Summer fits made simple. Style your favorite tops with easy outfit ideas that keep you cool, comfy, and effortlessly stylish all season long.</p>
-
-<h2>Choosing the Right Tops for Summer</h2>
-
-<h3>Breathable Fabrics Are Key</h3>
-<p>Summer demands fabrics that let your skin breathe. Cotton, linen, and lightweight blends are your best friends. These materials wick away moisture and keep you cool even on the hottest days.</p>
-
-<h3>Colors That Beat the Heat</h3>
-<p>Light colors reflect sunlight and keep you cooler. Whites, pastels, and soft neutrals are summer essentials. Don't shy away from bright colors either — they add energy to your summer wardrobe.</p>
-
-<h2>Top Styling Ideas for Daily Wear</h2>
-
-<h3>Tops with Jeans</h3>
-<p>The simplest summer formula — a well-fitted top with your favorite pair of jeans. Choose light-wash or white denim for a summery feel. Roll up the hems and add sandals for a relaxed look.</p>
-
-<h3>Tops with Shorts</h3>
-<p>Pair breezy tops with denim or linen shorts for the ultimate summer comfort. A tucked-in blouse with high-waisted shorts creates a flattering silhouette that works for running errands or casual outings.</p>
-
-<h3>Tops with Skirts</h3>
-<p>A flowy midi skirt paired with a fitted top is perfect for summer lunches and gatherings. A-line skirts with crop tops create a playful yet put-together look for warmer days.</p>
-
-<h2>Summer Workwear</h2>
-<p>Choose structured tops in breathable fabrics for office days. Pair with tailored trousers or a pencil skirt. A light cardigan is perfect for air-conditioned offices. Stick to light colors and minimal layering for maximum comfort.</p>
-
-<h2>Accessorizing Summer Outfits</h2>
-<p>Keep accessories light and fun. Straw bags, oversized sunglasses, and delicate jewelry complement summer outfits perfectly. Comfortable sandals or white sneakers complete the look without adding heaviness.</p>
-
-<h2>Conclusion</h2>
-<p>Summer fashion is all about effortless style. With the right tops and simple styling, you can create looks that are comfortable, stylish, and perfect for any summer day.</p>`,
+    categorySlug: 'home-and-living',
+    title: 'বেডরুমের পরিবেশ আরামদায়ক করতে সঠিক বেডিং ও লাইটিং গাইড',
+    slug: 'bedroom-comfort-bedding-lighting-guide',
+    bannerImage: 'https://www.eghuri.com/public/uploads/category/1772872168-8189ca86d4d8296f81f9887532cce0b5.webp',
+    tags: 'bedroom decor, cotton bedsheet price, বেডরুম ডেকোরেশন, orthopedic pillow, warm lights bd, cozy bedroom tips',
+    metaDescription: 'সারাদিনের ক্লান্তি দূর করতে আপনার শোবার ঘরটি হওয়া চাই শান্ত ও আরামদায়ক। জানুন সঠিক কটন বেডশিট, অর্থোপেডিক পিলোপ ও ওয়ার্ম লাইটিং ট্রিকস।',
+    content: `<p>বেডরুম বা শোবার ঘর হলো আমাদের বিশ্রামের মূল জায়গা। তাই এই ঘরের পরিবেশ এমন হওয়া উচিত যা দেখলেই মন শান্ত হয়ে যায়। ঘরের বেডিং ম্যাটেরিয়াল এবং লাইটিং মেজাজ ঠিক রাখতে বড় ভূমিকা পালন করে।</p>
+<h2>১. ১০০% কটন বেডশিট বা চাদর</h2>
+<p>গরম প্রধান দেশে আরামদায়ক ঘুমের জন্য পিউর কটন বা সুতি চাদরের কোনো বিকল্প নেই। সিন্থেটিক ফেব্রিক গরমের দিনে শরীর ঘেমে অস্বস্তি তৈরি করে। হালকা কালারের বা ফ্লোরাল প্রিন্টের চাদর বেডরুমে ফ্রেশ লুক এনে দেয়।</p>
+<h3>২. সঠিক বালিশ বা পিলোর গুরুত্ব</h3>
+<p>ঘাড় ও পিঠের ব্যথা এড়াতে সঠিক উচ্চতা ও সফটনেসের বালিশ ব্যবহার করুন। যারা মেরুদণ্ডের সমস্যায় ভুগছেন তারা অর্থোপেডিক মেমোরি ফোম পিলো ব্যবহার করতে পারেন।</p>
+<h2>৩. ওয়ার্ম ও ডিম লাইটের আলো</h2>
+<p>শোবার ঘরে কড়া সাদা লাইটের চেয়ে ওয়ার্ম হোয়াইট বা হলুদ আলো বেশি আরামদায়ক। রাতে ঘুমানোর আগে বেডসাইড ল্যাম্প বা ডিম লাইট জ্বালিয়ে রাখলে তা মস্তিষ্কে ঘুমের হরমোন নিঃসরণে সাহায্য করে এবং গভীর ঘুম নিশ্চিত করে।</p>`
   },
+
+  // ==========================================
+  // 7. ELECTRONICS & GADGETS (2 Posts)
+  // ==========================================
+  {
+    categorySlug: 'electronics-and-gadgets',
+    title: '২০২৬ সালের সেরা কিছু বাজেট ফ্রেন্ডলি গ্যাজেটস যা সবার দরকার',
+    slug: 'best-budget-smart-gadgets-2026',
+    bannerImage: 'https://www.eghuri.com/',
+    tags: 'smart gadgets 2026, tech accessories bd, ইলেকট্রনিক্স গ্যাজেট, power bank price, wireless earbuds, budget tech store',
+    metaDescription: 'কম বাজেটের মধ্যে আপনার দৈনন্দিন জীবনকে সহজ করতে দরকারি কিছু গ্যাজেটের রিভিউ। পাওয়ার ব্যাংক, ওয়্যারলেস ইয়ারবাডস ও স্মার্টওয়াচ কিনতে পড়ুন।',
+    content: `<p>প্রযুক্তি আমাদের জীবনযাত্রাকে প্রতিনিয়ত আপডেট করছে। এখন স্মার্ট জীবনযাপনের জন্য অনেক বেশি টাকা খরচ করার প্রয়োজন হয় না। ২০২৬ সালে বাজারে এসেছে এমন কিছু চমৎকার স্মার্ট গ্যাজেট যা কম বাজেটের মধ্যেই দারুণ পারফরম্যান্স দিচ্ছে।</p>
+<h2>১. ওয়্যারলেস ইয়ারবাডস (TWS Earbuds)</h2>
+<p>তারের জটলা থেকে মুক্তি পেতে এখন সবাই ইয়ারবাডস পছন্দ করছেন। ভালো সাউন্ড কোয়ালিটি ও লং ব্যাটারি লাইফসহ বাজেট ফ্রেন্ডলি অনেক ইয়ারবাডস বাজারে অ্যাভেইলেবল, যা অফিস কল বা মিউজিক শোনার জন্য দারুণ।</p>
+<h3>২. ফাস্ট চার্জিং পাওয়ার ব্যাংক (Fast Charging Power Bank)</h3>
+<p>বাইরে চলাফেরার সময় ফোনের চার্জ শেষ হয়ে যাওয়া একটি বড় সমস্যা। একটি ১০,০০০ বা ২০,০০০ মিলিঅ্যাম্পিয়ারের ফাস্ট চার্জিং পাওয়ার ব্যাংক সাথে থাকলে যেকোনো জরুরি মুহূর্তে ফোন সচল রাখা সম্ভব।</p>
+<h2>৩. ফিটনেস ট্র্যাকার ও স্মার্টওয়াচ</h2>
+<p>আজকালকার স্মার্টওয়াচগুলো শুধু সময় দেখার জন্য নয়, এটি আপনার হার্ট রেট, দৈনিক হাঁটার স্টেপস এবং স্লিপ কোয়ালিটি ট্র্যাক করতে পারে। নিজের স্বাস্থ্যের প্রতি নজর রাখতে এটি একটি চমৎকার ইনভেস্টমেন্ট।</p>`
+  },
+  {
+    categorySlug: 'electronics-and-gadgets',
+    title: 'ইলেকট্রনিক্স ডিভাইসের স্থায়িত্ব ও ব্যাটারি লাইফ বাড়ানোর ৫টি উপায়',
+    slug: 'prolong-electronics-device-battery-life',
+    bannerImage: 'https://www.eghuri.com/',
+    tags: 'device care tips, phone battery hacks, ইলেকট্রনিক্স যত্ন, fast charger safety, tech maintenance, gadgets life hack',
+    metaDescription: 'আপনার সাধের স্মার্টফোন, ল্যাপটপ বা পাওয়ার ব্যাংকের ব্যাটারি দ্রুত নষ্ট হয়ে যাচ্ছে? ডিভাইসের স্থায়িত্ব দীর্ঘস্থায়ী করার ৫টি কার্যকরী টিপস জেনে নিন।',
+    content: `<p>স্মার্টফোন, ল্যাপটপ বা যেকোনো ইলেকট্রনিক্স গ্যাজেট দীর্ঘদিন ভালো রাখতে হলে তার সঠিক যত্ন নেওয়া প্রয়োজন। অনেক সময় আমাদের ছোট ছোট কিছু ভুলের কারণে দামি ডিভাইসগুলোর পারফরম্যান্স কমে যায় এবং ব্যাটারি ড্যামেজ হয়।</p>
+<h2>১. ওভারচার্জিং এড়িয়ে চলুন</h2>
+<p>অনেকেরই অভ্যাস থাকে রাতে ফোন চার্জে দিয়ে ঘুমিয়ে যাওয়া। এতে ডিভাইস ওভারহিট বা অতিরিক্ত গরম হতে পারে। ফোনের চার্জ সবসময় ২০% থেকে ৮০% এর মধ্যে রাখা ব্যাটারির হেলথ ভালো রাখার জন্য আদর্শ।</p>
+<h2>২. অরিজিনাল চার্জার ব্যবহার করুন</h2>
+<p>কম দামি বা লোকাল চার্জার ব্যবহার করলে তা ব্যাটারির ওপর অতিরিক্ত ভোল্টেজের চাপ সৃষ্টি করে। সবসময় ডিভাইসের সাথে থাকা অরিজিনাল এডাপ্টার ও ক্যাবল ব্যবহার করার চেষ্টা করুন।</p>
+<h3>৩. অতিরিক্ত তাপে ডিভাইস রাখবেন না</h3>
+<p>ইলেকট্রনিক্স পণ্যের সবচেয়ে বড় শত্রু হলো অতিরিক্ত তাপ। সরাসরি সূর্যের আলোতে বা বন্ধ গাড়ির ভেতরে মোবাইল কিংবা ল্যাপটপ রাখবেন না। গ্যাজেট সবসময় ঠাণ্ডা ও শুষ্ক স্থানে ব্যবহার করুন।</p>
+<h2>৪. নিয়মিত ক্যাশ মেমোরি ও সফটওয়্যার আপডেট</h2>
+<p>ডিভাইস ফাস্ট রাখতে অপ্রয়োজনীয় অ্যাপস এবং ক্যাশ ফাইল ডিলিট করুন। কোম্পানির দেওয়া সর্বশেষ সিকিউরিটি প্যাচ ও সফটওয়্যার আপডেটগুলো নিয়মিত ইনস্টল করলে ডিভাইস ল্যাগিং মুক্ত থাকে।</p>`
+  }
 ];
 
 async function main() {
   console.log('Seeding blog categories and posts...\n');
 
+  // Seed Categories
   for (const cat of blogCategories) {
     const category = await prisma.blogCategory.upsert({
       where: { slug: cat.slug },
@@ -390,6 +268,7 @@ async function main() {
     console.log(`  [Category] ${category.title} (${category.id})`);
   }
 
+  // Seed Posts
   let postCount = 0;
   for (const post of blogPosts) {
     const category = await prisma.blogCategory.findUnique({ where: { slug: post.categorySlug } });

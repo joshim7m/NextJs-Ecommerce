@@ -7,7 +7,7 @@ import { getCategories, createProduct } from '../../../../src/actions/products';
 import CategoryMultiSelect from '../../../../src/components/admin/CategoryMultiSelect';
 
 const emptyForm = {
-  title: '', slug: '', description: '', unite_price: '', sale_price: '', sku: '',
+  title: '', slug: '', description: '', metaDescription: '', tags: '', unite_price: '', sale_price: '', sku: '',
   quantity: '', status: 'draft',
 };
 
@@ -105,6 +105,14 @@ export default function CreateProductPage() {
           <div className="sm:col-span-2">
             <label className={labelCls}>Description</label>
             <textarea name="description" value={form.description} onChange={handleChange} rows={2} className={inputCls} />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelCls}>Meta Description <span className="text-slate-400 normal-case">(SEO — max 160 chars)</span></label>
+            <textarea name="metaDescription" value={form.metaDescription} onChange={handleChange} rows={2} maxLength={160} className={inputCls} placeholder="e.g. Buy soft polyester sleepwear set online at Radiant Picks with cash on delivery across Bangladesh." />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelCls}>Tags / Keywords <span className="text-slate-400 normal-case">(comma-separated, for SEO)</span></label>
+            <input name="tags" value={form.tags} onChange={handleChange} className={inputCls} placeholder="e.g. sleepwear, women nightwear, buy online BD, radiant picks" />
           </div>
           <div>
             <label className={labelCls}>Unit Price (৳)</label>

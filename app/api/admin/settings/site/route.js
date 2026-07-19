@@ -17,12 +17,12 @@ export async function GET() {
 export async function PUT(request) {
   try {
     const body = await request.json();
-    const { siteName, logo, favicon, mobile, email, address, copyrightText, announcementText } = body;
+    const { siteName, logo, favicon, mobile, email, address, copyrightText, announcementText, aboutCompany, aboutCompanyBn } = body;
 
     const settings = await prisma.siteSetting.upsert({
       where: { id: 'singleton' },
-      update: { siteName, logo, favicon, mobile, email, address, copyrightText, announcementText },
-      create: { id: 'singleton', siteName, logo, favicon, mobile, email, address, copyrightText, announcementText },
+      update: { siteName, logo, favicon, mobile, email, address, copyrightText, announcementText, aboutCompany, aboutCompanyBn },
+      create: { id: 'singleton', siteName, logo, favicon, mobile, email, address, copyrightText, announcementText, aboutCompany, aboutCompanyBn },
     });
 
     return NextResponse.json(settings);

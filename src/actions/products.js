@@ -24,13 +24,15 @@ export async function getCategories() {
 }
 
 export async function createProduct(data) {
-  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths } = data;
+  const { title, slug: rawSlug, description, metaDescription, tags, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths } = data;
   const slug = rawSlug?.trim();
   if (!title || !slug) throw new Error('Title and slug are required.');
 
   const product = await prisma.product.create({
     data: {
       title, slug, description,
+      metaDescription: metaDescription || null,
+      tags: tags || null,
       unite_price: parseFloat(unite_price),
       sale_price: sale_price ? parseFloat(sale_price) : null,
       sku: sku || null,
@@ -47,7 +49,7 @@ export async function createProduct(data) {
 }
 
 export async function updateProduct(id, data) {
-  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths, removeImageIds, variants, removedVariantIds } = data;
+  const { title, slug: rawSlug, description, metaDescription, tags, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths, removeImageIds, variants, removedVariantIds } = data;
   const slug = rawSlug?.trim();
 
   if (removeImageIds?.length) {
@@ -98,6 +100,8 @@ export async function updateProduct(id, data) {
     where: { id },
     data: {
       title, slug, description,
+      metaDescription: metaDescription || null,
+      tags: tags || null,
       unite_price: parseFloat(unite_price),
       sale_price: sale_price ? parseFloat(sale_price) : null,
       sku: sku || null,

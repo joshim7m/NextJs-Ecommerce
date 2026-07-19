@@ -31,6 +31,8 @@ model Product {
   slug              String          @unique
   sku               String          @unique
   description       String?
+  metaDescription   String?
+  tags              String?
   unite_price       Decimal
   sale_price        Decimal?
   quantity          Int?
@@ -140,6 +142,8 @@ model SiteSetting {
   address       String?
   copyrightText String?
   announcementText String?
+  aboutCompany  String?
+  aboutCompanyBn String? @map("aboutCompany_bn")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

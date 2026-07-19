@@ -25,6 +25,14 @@ export default function ProductInfo({ form, onChange, categories, selectedCatego
           <label className={labelCls}>Description</label>
           <textarea name="description" value={form.description} onChange={onChange} rows={2} className={inputCls} />
         </div>
+        <div className="sm:col-span-2">
+          <label className={labelCls}>Meta Description <span className="text-slate-400 normal-case">(SEO — shown in search results, 150–160 chars)</span></label>
+          <textarea name="metaDescription" value={form.metaDescription || ''} onChange={onChange} rows={2} maxLength={160} className={inputCls} placeholder="e.g. Buy soft polyester sleepwear set online at Radiant Picks with cash on delivery across Bangladesh." />
+        </div>
+        <div className="sm:col-span-2">
+          <label className={labelCls}>Tags / Keywords <span className="text-slate-400 normal-case">(comma-separated, for SEO)</span></label>
+          <input name="tags" value={form.tags || ''} onChange={onChange} className={inputCls} placeholder="e.g. sleepwear, women nightwear, buy online BD, radiant picks" />
+        </div>
         <div>
           <label className={labelCls}>Price (&#x9F3;)</label>
           <input name="unite_price" type="number" step="0.01" value={form.unite_price} onChange={onChange} className={inputCls} />

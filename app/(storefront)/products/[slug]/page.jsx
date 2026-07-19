@@ -21,21 +21,20 @@ export async function generateMetadata({ params }) {
   const price = Number(product.sale_price || product.unite_price).toLocaleString();
   const title = product.title;
   const description =
-    (product.description || `Buy ${product.title} online at Radiant Picks.`) +
-    ` ৳${price} — Shop now with cash on delivery across Bangladesh. ${category ? `Category: ${category}.` : ''}`;
+    product.metaDescription ||
+    ((product.description || `Buy ${product.title} online at Radiant Picks.`) +
+    ` ৳${price} — Shop now with cash on delivery across Bangladesh. ${category ? `Category: ${category}.` : ''}`);
+
+  const keywords = product.tags
+    ? product.tags.split(',').map(k => k.trim()).filter(Boolean)
+    : [product.title, category, 'lingerie Bangladesh', 'buy online BD', 'radiant picks'].filter(Boolean);
 
   const imageUrl = product.images?.[0]?.image_path || `${SITE_URL}/api/og?title=${encodeURIComponent(product.title)}&subtitle=${encodeURIComponent(`৳${price} — Shop now at Radiant Picks`)}&type=product&price=${encodeURIComponent(price)}`;
 
   return {
     title,
     description,
-    keywords: [
-      product.title,
-      category,
-      'lingerie Bangladesh',
-      'buy online BD',
-      'radiant picks',
-    ].filter(Boolean),
+    keywords,
     alternates: {
       canonical: `/products/${slug}`,
     },

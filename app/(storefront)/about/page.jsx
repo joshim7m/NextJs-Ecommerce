@@ -3,7 +3,7 @@ import prisma from '../../../src/lib/prisma';
 
 export const metadata = {
   title: 'About Us | Radiant Picks',
-  description: 'Learn about Radiant Picks — Bangladesh\'s favourite online destination for lingerie, bras, panties, nightwear, and women\'s intimate apparel.',
+  description: 'Learn about Radiant Picks — Bangladesh\'s favourite online destination for lingerie, sleepwear, beauty, kitchen essentials, and lifestyle products.',
   alternates: { canonical: '/about' },
 };
 
@@ -16,51 +16,115 @@ async function getSettings() {
   }
 }
 
-export default async function AboutPage() {
+const fallbackAbout = `Welcome to Radiant Picks — Bangladesh's favourite online destination for lingerie, sleepwear, beauty, kitchen essentials, and lifestyle products.
+
+## Our Mission
+
+We believe every customer deserves access to comfortable, high-quality products that make everyday living better. Our mission is to provide premium products at affordable prices, delivered with care across Bangladesh.
+
+## Why Choose Us
+
+- **Premium Quality:** We carefully select and curate our products to ensure the highest quality materials and craftsmanship.
+- **Cash on Delivery:** Shop with confidence with our cash on delivery option available across Bangladesh.
+- **Nationwide Shipping:** We deliver to Dhaka, Chittagong, Sylhet, and all areas across Bangladesh.
+- **Easy Returns:** Not satisfied? Our hassle-free return policy has you covered.
+- **Dedicated Support:** Reach us by phone, WhatsApp, or email — we're here to help.
+
+## Our Story
+
+Radiant Picks was born from a simple idea: everyone should have access to quality lifestyle products without the hassle of traditional shopping. We started as a small online store and have grown into one of Bangladesh's most trusted e-commerce destinations.
+
+Our team works tirelessly to bring you the latest trends, daily essentials, and everything in between — from lingerie and sleepwear to beauty products and kitchen gadgets.
+
+## Get in Touch
+
+Have questions? We'd love to hear from you. Visit our contact page or reach out to us directly. Your satisfaction is our priority.`;
+
+const fallbackAboutBn = `রেডিয়্যান্ট পিকসে স্বাগতম — বাংলাদেশের জনপ্রিয় অনলাইন গন্তব্য লিঙ্জেরি, স্লিপওয়্যার, সৌন্দর্য সামগ্রী, কিচেন এবং লাইফস্টাইল পণ্যের জন্য।
+
+## আমাদের মিশন
+
+আমরা বিশ্বাস করি প্রতিটি গ্রাহক উন্নত মানের আরামদায়ক পণ্যের অধিকারী, যা দৈনন্দিন জীবনকে আরও ভালো করে তোলে। আমাদের লক্ষ্য বাংলাদেশ জুড়ে সেবা প্রদান করা।
+
+## কেন আমাদের বেছে নেবেন
+
+- **মানসম্মত পণ্য:** সর্বোচ্চ মানের উপাদান নিশ্চিত করতে আমরা যত্ন সহকারে পণ্য নির্বাচন করি।
+- **ক্যাশ অন ডেলিভারি:** বাংলাদেশ জুড়ে ক্যাশ অন ডেলিভারি।
+- **সারা দেশে ডেলিভারি:** ঢাকা, চট্টগ্রাম, সিলেট ও সারা বাংলাদেশে।
+- **সহজ রিটার্ন:** অসন্তুষ্ট? আমাদের সহজ রিটার্ন নীতি আছে।
+- **সহায়তা:** ফোন, হোয়াটসঅ্যাপ বা ইমেইলে যোগাযোগ করুন।
+
+## আমাদের গল্প
+
+রেডিয়্যান্ট পিকস একটি সহজ ধারণা থেকে জন্মেছে: সকলেই গুণগত লাইফস্টাইল পণ্যে অ্যাক্সেস পাওয়ার যোগ্য। আমরা ছোট একটি অনলাইন দোকান থেকে শুরু করে বাংলাদেশের অন্যতম বিশ্বস্ত ই-কমার্স গন্তব্যে পরিণত হয়েছি।
+
+## যোগাযোগ করুন
+
+প্রশ্ন আছে? আমরা শুনতে চাই। আমাদের যোগাযোগ পৃষ্ঠা দেখুন। আপনার সন্তুষ্টি আমাদের অগ্রাধিকার।`;
+
+function renderAbout(text) {
+  if (!text) return null;
+  const lines = text.split('\n');
+  const elements = [];
+  let listItems = [];
+
+  const flushList = () => {
+    if (listItems.length) {
+      elements.push(
+        <ul key={`ul-${elements.length}`}>{listItems.map((li, i) => <li key={i} dangerouslySetInnerHTML={{ __html: formatInline(li) }} />)}</ul>
+      );
+      listItems = [];
+    }
+  };
+
+  const formatInline = (t) =>
+    t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+     .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
+
+  lines.forEach((line, i) => {
+    const trimmed = line.trim();
+    if (!trimmed) { flushList(); return; }
+    if (trimmed.startsWith('## ')) {
+      flushList();
+      elements.push(<h2 key={`h2-${i}`}>{trimmed.slice(3)}</h2>);
+    } else if (trimmed.startsWith('- ')) {
+      listItems.push(trimmed.slice(2));
+    } else {
+      flushList();
+      elements.push(<p key={`p-${i}`} dangerouslySetInnerHTML={{ __html: formatInline(trimmed) }} />);
+    }
+  });
+  flushList();
+  return elements;
+}
+
+export default async function AboutPage({ searchParams }) {
   const settings = await getSettings();
+  const params = await searchParams;
+  const lang = params?.lang === 'bn' ? 'bn' : 'en';
+
+  const aboutEn = settings.aboutCompany || fallbackAbout;
+  const aboutBn = settings.aboutCompanyBn || fallbackAboutBn;
+  const aboutText = lang === 'bn' ? aboutBn : aboutEn;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
-      {/* Breadcrumb */}
       <nav className="mb-8 flex items-center gap-2 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-[#2f0f6b] dark:hover:text-[#a78bfa] transition-colors">Home</Link>
         <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-        <span className="text-slate-600 dark:text-slate-300">About Us</span>
+        <span className="text-slate-600 dark:text-slate-300">{lang === 'bn' ? 'আমাদের সম্পর্কে' : 'About Us'}</span>
       </nav>
 
-      <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">About Radiant Picks</h1>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{lang === 'bn' ? 'রেডিয়্যান্ট পিকস সম্পর্কে' : 'About Radiant Picks'}</h1>
+        <div className="flex gap-1 rounded-lg border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
+          <Link href="/about" className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${lang === 'en' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}>English</Link>
+          <Link href="/about?lang=bn" className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${lang === 'bn' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}>বাংলা</Link>
+        </div>
+      </div>
 
       <div className="prose prose-slate mt-8 max-w-none prose-headings:text-slate-900 prose-a:text-[#2f0f6b] prose-p:leading-relaxed sm:prose-lg dark:prose-invert dark:prose-headings:text-white dark:prose-a:text-[#a78bfa]">
-        <p>
-          Welcome to Radiant Picks — Bangladesh&apos;s favourite online destination for lingerie, bras, panties, nightwear, and women&apos;s intimate apparel.
-        </p>
-
-        <h2>Our Mission</h2>
-        <p>
-          We believe every woman deserves access to comfortable, high-quality intimate wear that makes her feel confident and beautiful. Our mission is to provide premium lingerie and intimate apparel at affordable prices, delivered with discretion and care across Bangladesh.
-        </p>
-
-        <h2>Why Choose Us</h2>
-        <ul>
-          <li><strong>Premium Quality:</strong> We carefully select and curate our products to ensure the highest quality materials and craftsmanship.</li>
-          <li><strong>Discreet Packaging:</strong> Your privacy matters to us. All orders are shipped in plain, unmarked packaging.</li>
-          <li><strong>Cash on Delivery:</strong> Shop with confidence with our cash on delivery option available across Bangladesh.</li>
-          <li><strong>Nationwide Shipping:</strong> We deliver to Dhaka, Chittagong, Sylhet, and all areas across Bangladesh.</li>
-          <li><strong>Easy Returns:</strong> Not satisfied? Our hassle-free return policy has you covered.</li>
-        </ul>
-
-        <h2>Our Story</h2>
-        <p>
-          Radiant Picks was born from a simple idea: every woman should have access to beautiful, comfortable intimate wear without the hassle of traditional shopping. We started as a small online boutique and have grown into one of Bangladesh&apos;s most trusted destinations for women&apos;s intimate apparel.
-        </p>
-        <p>
-          Our team works tirelessly to bring you the latest trends, classic essentials, and everything in between — from everyday comfort to special occasion pieces.
-        </p>
-
-        <h2>Get in Touch</h2>
-        <p>
-          Have questions? We&apos;d love to hear from you. Visit our <Link href="/contact">contact page</Link> or reach out to us directly. Your satisfaction is our priority.
-        </p>
+        {renderAbout(aboutText)}
       </div>
     </div>
   );

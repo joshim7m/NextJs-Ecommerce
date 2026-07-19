@@ -107,6 +107,16 @@ async function main() {
 
     try {
       const catId = targetSlug ? catMap[targetSlug] : undefined;
+
+      const allTags = [...(p.tags || []), ...(p.tags_bn || [])];
+      const productTags = allTags.length
+        ? allTags.join(', ')
+        : p.name.split(/[–\-,]/)[0].trim().toLowerCase();
+
+      const metaEn = p.metaDescription || '';
+      const metaBn = p.metaDescription_bn || '';
+      const productMetaDesc = [metaEn, metaBn].filter(Boolean).join(' ') || null;
+
       await prisma.product.upsert({
         where: { slug: p.slug },
         update: {},
@@ -115,6 +125,8 @@ async function main() {
           slug: p.slug,
           sku: generateSku(),
           description: [p.description, p.description_bn].filter(Boolean).join('\n'),
+          metaDescription: productMetaDesc,
+          tags: productTags,
           unite_price: p.unitePrice,
           sale_price: p.salePrice || null,
           quantity: 10,

@@ -189,6 +189,8 @@ export default function SiteSettingsPage() {
     address: '',
     copyrightText: '',
     announcementText: '',
+    aboutCompany: '',
+    aboutCompanyBn: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -208,6 +210,8 @@ export default function SiteSettingsPage() {
           address: data.address || '',
           copyrightText: data.copyrightText || '',
           announcementText: data.announcementText || '',
+          aboutCompany: data.aboutCompany || '',
+          aboutCompanyBn: data.aboutCompanyBn || '',
         });
       })
       .catch(() => {})
@@ -331,6 +335,23 @@ export default function SiteSettingsPage() {
             onChange={(e) => setForm((prev) => ({ ...prev, address: e.target.value }))}
             placeholder="Enter your business address"
             rows={3}
+          />
+        </SectionCard>
+
+        <SectionCard title="About Company" description="Company description shown on the About page and for SEO.">
+          <InputField
+            label="About Company (English)"
+            value={form.aboutCompany}
+            onChange={(e) => setForm((prev) => ({ ...prev, aboutCompany: e.target.value }))}
+            placeholder="Tell customers about your company..."
+            rows={10}
+          />
+          <InputField
+            label="About Company (বাংলা)"
+            value={form.aboutCompanyBn}
+            onChange={(e) => setForm((prev) => ({ ...prev, aboutCompanyBn: e.target.value }))}
+            placeholder="আপনার কোম্পানি সম্পর্কে গ্রাহকদের জানান..."
+            rows={10}
           />
         </SectionCard>
 
