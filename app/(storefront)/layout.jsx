@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Header from '@/src/components/storefront/Header';
 import Footer from '@/src/components/storefront/Footer';
 import GoogleTagManager from '@/src/components/storefront/GoogleTagManager';
@@ -135,7 +136,9 @@ export default async function StorefrontLayout({ children }) {
   return (
     <>
       <GoogleTagManager />
-      <PageViewTracker />
+      <Suspense fallback={null}>
+        <PageViewTracker />
+      </Suspense>
       <div className="flex min-h-screen flex-col">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:bg-[#2f0f6b] focus:px-4 focus:py-2 focus:text-white focus:outline-none">Skip to content</a>
       <script
