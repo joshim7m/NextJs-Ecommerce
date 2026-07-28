@@ -1,5 +1,7 @@
 import Header from '@/src/components/storefront/Header';
 import Footer from '@/src/components/storefront/Footer';
+import GoogleTagManager from '@/src/components/storefront/GoogleTagManager';
+import PageViewTracker from '@/src/components/storefront/PageViewTracker';
 import prisma from '@/src/lib/prisma';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
@@ -131,7 +133,10 @@ export default async function StorefrontLayout({ children }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <>
+      <GoogleTagManager />
+      <PageViewTracker />
+      <div className="flex min-h-screen flex-col">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:bg-[#2f0f6b] focus:px-4 focus:py-2 focus:text-white focus:outline-none">Skip to content</a>
       <script
         type="application/ld+json"
@@ -156,6 +161,7 @@ export default async function StorefrontLayout({ children }) {
         copyrightText={settings.copyrightText}
         socialLinks={socialLinks}
       />
-    </div>
+      </div>
+    </>
   );
 }
