@@ -6,7 +6,7 @@ import ProductInfo from './partials/ProductInfo';
 import ProductTabs from './partials/ProductTabs';
 import RelatedProducts from './partials/RelatedProducts';
 
-export default function ProductDetailClient({ product, related }) {
+export default function ProductDetailClient({ product, related, whatsappNumber }) {
   const [variantIndex, setVariantIndex] = useState(0);
 
   const selectedVariant = product.variants?.[variantIndex] || null;
@@ -25,6 +25,7 @@ export default function ProductDetailClient({ product, related }) {
           selectedVariant={selectedVariant}
           variantIndex={variantIndex}
           onVariantChange={setVariantIndex}
+          whatsappNumber={whatsappNumber}
         />
       </div>
 

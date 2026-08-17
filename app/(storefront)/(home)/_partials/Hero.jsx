@@ -25,7 +25,7 @@ export default function Hero({ slides = [] }) {
 
   return (
     <section className="relative w-full overflow-hidden rounded-none sm:rounded-2xl">
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-100 sm:aspect-[2.8/1] sm:rounded-2xl">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100 sm:aspect-[2.8/1] sm:rounded-2xl">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
@@ -47,11 +47,12 @@ export default function Hero({ slides = [] }) {
               </div>
             )}
 
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-            <div className="absolute bottom-6 left-4 text-white sm:bottom-8 sm:left-8">
+            <div className="hidden absolute bottom-6 left-4 text-white sm:bottom-8 sm:left-8">
               {slide.title && (
-                <h2 className="text-xl font-bold drop-shadow-lg sm:text-3xl lg:text-5xl">
+                <h2 className="text-lg font-bold drop-shadow-lg sm:text-3xl lg:text-5xl">
                   {slide.title}
                 </h2>
               )}
@@ -76,7 +77,7 @@ export default function Hero({ slides = [] }) {
         ))}
 
         {slides.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2 sm:bottom-4">
+          <div className="hidden absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2 sm:bottom-4">
             {slides.map((_, index) => (
               <button
                 key={index}

@@ -129,4 +129,4 @@ npx prisma migrate reset --force --skip-seed
 
 npx prisma migrate deploy
 
-node prisma/seed-blog.js
+node prisma/seedBlog.js

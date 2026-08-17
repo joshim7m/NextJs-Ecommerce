@@ -12,6 +12,7 @@ const iconColors = {
   site: { bg: 'bg-sky-100', text: 'text-sky-600', darkBg: 'dark:bg-sky-900/30', darkText: 'dark:text-sky-400' },
   sliders: { bg: 'bg-purple-100', text: 'text-purple-600', darkBg: 'dark:bg-purple-900/30', darkText: 'dark:text-purple-400' },
   social: { bg: 'bg-rose-100', text: 'text-rose-600', darkBg: 'dark:bg-rose-900/30', darkText: 'dark:text-rose-400' },
+  notifications: { bg: 'bg-teal-100', text: 'text-teal-600', darkBg: 'dark:bg-teal-900/30', darkText: 'dark:text-teal-400' },
 };
 
 const navItems = [
@@ -29,6 +30,7 @@ const blogSubItems = [
 
 const settingsSubItems = [
   { label: 'Site Setting', href: '/admin/settings/site', icon: 'site' },
+  { label: 'Site Config', href: '/admin/settings/site-config', icon: 'notifications' },
   { label: 'Hero Sliders', href: '/admin/settings/hero-sliders', icon: 'sliders' },
   { label: 'Social Media', href: '/admin/settings/social', icon: 'social' },
 ];
@@ -83,6 +85,12 @@ function NavIcon({ icon }) {
       return (
         <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+        </svg>
+      );
+    case 'notifications':
+      return (
+        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
         </svg>
       );
     default:
@@ -189,7 +197,7 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
           >
             {pathname.startsWith('/admin/settings') && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b] dark:bg-[#a78bfa]" />}
             <ColorIcon icon="home" />
-            <span className="flex-1 text-left">Home Setting</span>
+            <span className="flex-1 text-left">Settings</span>
             <svg
               className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${settingsOpen ? 'rotate-180' : ''}`}
               fill="none"

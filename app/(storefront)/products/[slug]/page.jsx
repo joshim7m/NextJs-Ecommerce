@@ -12,6 +12,14 @@ async function getProduct(slug) {
   });
 }
 
+async function getSiteSettings() {
+  try {
+    return await prisma.siteSetting.findUnique({ where: { id: 'singleton' } }) || {};
+  } catch {
+    return {};
+  }
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getProduct(slug);
@@ -65,13 +73,14 @@ export async function generateMetadata({ params }) {
 
 export default async function ProductPage({ params }) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const [product, settings] = await Promise.all([getProduct(slug), getSiteSettings()]);
 
   if (!product) return notFound();
 
   const category = product.categories?.[0] || null;
+  const RELATED_COUNT = 6;
 
-  const related = category
+  let related = category
     ? await prisma.product.findMany({
         where: {
           status: 'publish',
@@ -79,10 +88,25 @@ export default async function ProductPage({ params }) {
           id: { not: product.id },
         },
         include: { images: true, variants: true },
-        take: 10,
+        take: RELATED_COUNT,
         orderBy: { createdAt: 'desc' },
       })
     : [];
+
+  if (related.length < RELATED_COUNT) {
+    const missing = RELATED_COUNT - related.length;
+    const relatedIds = related.map((r) => r.id);
+    const fallback = await prisma.product.findMany({
+      where: {
+        status: 'publish',
+        id: { notIn: [product.id, ...relatedIds] },
+      },
+      include: { images: true, variants: true },
+      take: missing,
+      orderBy: { createdAt: 'desc' },
+    });
+    related = [...related, ...fallback];
+  }
 
   const price = Number(product.sale_price || product.unite_price);
   const imageUrl = product.images?.[0]?.image_path || `${SITE_URL}/og-image.png`;
@@ -124,7 +148,7 @@ export default async function ProductPage({ params }) {
       />
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 sm:py-10">
         {/* Breadcrumbs */}
-        <nav className="mb-6 flex items-center gap-2 text-xs text-slate-400 sm:text-sm dark:text-slate-500" aria-label="Breadcrumb">
+        <nav className="mb-6 flex items-center gap-2 text-xs text-slate-400 sm:text-sm dark:text-slate-500 max-w-[330px] md:max-w-[550px] overflow-hidden" aria-label="Breadcrumb">
           <Link href="/" className="hover:text-[#2f0f6b] transition-colors dark:hover:text-[#a78bfa]">Home</Link>
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -139,12 +163,13 @@ export default async function ProductPage({ params }) {
               </svg>
             </>
           ) : null}
-          <span className="text-slate-600 truncate max-w-[160px] sm:max-w-xs dark:text-slate-300">{product.title}</span>
+          <span className="text-slate-600 truncate dark:text-slate-300">{product.title}</span>
         </nav>
 
         <ProductDetailClient
           product={JSON.parse(JSON.stringify(product))}
           related={JSON.parse(JSON.stringify(related))}
+          whatsappNumber={settings.whatsappNumber || ''}
         />
       </div>
     </>

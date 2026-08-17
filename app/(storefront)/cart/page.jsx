@@ -1,12 +1,37 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { loadCart, updateCartItem, removeCartItem } from '../../../src/lib/cartStorage';
+import { pushDataLayer } from '../../../src/lib/gtm';
 
 export default function CartPage() {
-  const [cart, setCart] = useState(() => loadCart());
+  const [cart, setCart] = useState([]);
+  const [hydrated, setHydrated] = useState(false);
   const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    setCart(loadCart());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated && cart.length > 0) {
+      pushDataLayer('view_cart', {
+        ecommerce: {
+          items: cart.map((item) => ({
+            item_id: item.sku,
+            item_name: item.title,
+            price: Number(item.price ?? 0),
+            item_variant: item.variantName,
+            quantity: item.quantity,
+          })),
+          value: cart.reduce((sum, item) => sum + Number(item.price ?? 0) * item.quantity, 0),
+          currency: 'BDT',
+        },
+      });
+    }
+  }, [hydrated]);
 
   const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => sum + Number(item.price ?? 0) * item.quantity, 0);

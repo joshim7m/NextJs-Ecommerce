@@ -1,5 +1,6 @@
 import './globals.css';
 import prisma from '@/src/lib/prisma';
+import ThemeInit from '@/src/components/ThemeInit';
 
 async function getSiteSettings() {
   try {
@@ -44,20 +45,11 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap"
           rel="stylesheet"
         />
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              try {
-                var theme = localStorage.getItem('theme');
-                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                }
-              } catch(e) {}
-            })();
-          `
-        }} />
       </head>
-      <body suppressHydrationWarning >{children}</body>
+      <body suppressHydrationWarning>
+        <ThemeInit />
+        {children}
+      </body>
     </html>
   );
 }

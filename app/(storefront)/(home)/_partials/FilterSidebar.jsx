@@ -73,7 +73,7 @@ export default function FilterSidebar({ categories }) {
           <h4 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Categories
           </h4>
-          <div className="space-y-1">
+          <div className="divide-y divide-indigo-100 dark:divide-transparent">
             <button
               type="button"
               onClick={() => handleCategoryChange(null)}
@@ -120,7 +120,7 @@ export default function FilterSidebar({ categories }) {
                   </div>
 
                   {isOpen && children.length > 0 && (
-                    <div className="ml-5 border-l-2 border-slate-100 pl-2 dark:border-slate-700">
+                    <div className="ml-5 divide-y divide-indigo-100 border-l-2 border-slate-100 pl-2 dark:divide-slate-700 dark:border-slate-700">
                       {children.map((child) => (
                         <button
                           key={child.id}

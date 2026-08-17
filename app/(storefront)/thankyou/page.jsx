@@ -1,12 +1,24 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { pushDataLayer } from '../../../src/lib/gtm';
 
 function ThankYouContent() {
   const searchParams = useSearchParams();
   const orderNo = searchParams.get('orderNo');
+
+  useEffect(() => {
+    const raw = sessionStorage.getItem('gtm_purchase');
+    if (raw) {
+      try {
+        const data = JSON.parse(raw);
+        pushDataLayer('purchase', { ecommerce: data });
+      } catch {}
+      sessionStorage.removeItem('gtm_purchase');
+    }
+  }, []);
 
   return (
     <div className="mx-auto max-w-lg rounded-xl border border-slate-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">

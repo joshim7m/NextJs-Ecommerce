@@ -83,7 +83,7 @@ export default function MobileFilter({ onClose }) {
 
   return (
     <div className="space-y-1 px-4 py-4">
-      <div className="space-y-1">
+      <div className="space-y-1 divide-y divide-indigo-100 dark:divide-transparent">
         <button
           type="button"
           onClick={() => handleCategoryChange(null)}
@@ -128,7 +128,7 @@ export default function MobileFilter({ onClose }) {
                 )}
               </div>
               {isOpen && children.length > 0 && (
-                <div className="ml-5 border-l-2 border-slate-100 pl-2 dark:border-slate-700">
+                <div className="ml-5 border-l-2 border-slate-100 pl-2 dark:border-slate-700 divide-y divide-indigo-100 dark:divide-transparent">
                   {children.map((child) => (
                     <button
                       key={child.id}

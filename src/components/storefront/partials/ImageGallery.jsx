@@ -47,7 +47,7 @@ export default function ImageGallery({ images, title, variantImageIndex }) {
       </div>
 
       {items.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-col sm:overflow-x-visible scrollbar-none">
+        <div className="flex flex-wrap gap-2 overflow-x-auto pb-1 sm:flex-col sm:overflow-x-visible scrollbar-none">
           {items.map((img, i) => (
             <button
               key={img.id}

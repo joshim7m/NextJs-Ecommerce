@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../src/lib/prisma';
+import { sendOrderAlert } from '../../../src/lib/telegram';
 
 export async function POST(request) {
   const body = await request.json();
-  const { name, mobile, address, shippingArea, items } = body;
+  const { name, mobile, address, shippingArea, items, deviceHash } = body;
 
   const ipAddress =
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -13,6 +14,34 @@ export async function POST(request) {
 
   if (!name || !mobile || !address || !shippingArea || !items?.length) {
     return NextResponse.json({ error: 'Missing required checkout fields.' }, { status: 400 });
+  }
+
+  if (deviceHash) {
+    const blockedDevice = await prisma.blockedDevice.findUnique({
+      where: { deviceHash },
+    });
+
+    if (blockedDevice) {
+      return NextResponse.json(
+        { error: 'You have been blocked from placing orders.' },
+        { status: 403 }
+      );
+    }
+
+    const pendingOrder = await prisma.orderDetails.findFirst({
+      where: {
+        deviceHash,
+        order: { orderStatus: 'pending' },
+      },
+      select: { order: { select: { orderNo: true } } },
+    });
+
+    if (pendingOrder) {
+      return NextResponse.json(
+        { error: `You already have a pending order #${pendingOrder.order.orderNo}. Please wait for it to be processed.` },
+        { status: 403 }
+      );
+    }
   }
 
   const deliveryCharge = shippingArea === 'Outside Dhaka' ? 120 : 50;
@@ -37,11 +66,13 @@ export async function POST(request) {
           shippingArea,
           deliveryCharge,
           ipAddress,
+          deviceHash: deviceHash || null,
         },
       },
       items: {
         create: items.map((item) => ({
-          productTitle: `${item.productSlug}-${item.sku || ''}`,
+          productTitle: item.title || item.productSlug,
+          sku: item.sku || null,
           itemImagePath: item.image || '',
           purchasePrice: Number(item.salePrice ?? item.price ?? 0),
           quantity: Number(item.quantity ?? 0),
@@ -51,6 +82,16 @@ export async function POST(request) {
       },
     },
   });
+
+  sendOrderAlert({
+    orderNo: order.orderNo,
+    total: order.total.toString(),
+    name,
+    mobile,
+    address,
+    shippingArea,
+    itemCount: items.length,
+  }).catch((err) => console.error('[telegram] unhandled alert error:', err));
 
   return NextResponse.json({ orderNo: order.orderNo, total: order.total.toString() });
 }

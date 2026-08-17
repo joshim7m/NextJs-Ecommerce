@@ -135,7 +135,7 @@ export default async function StorefrontLayout({ children }) {
 
   return (
     <>
-      <GoogleTagManager />
+      <GoogleTagManager gtmId={settings.gtmId} />
       <Suspense fallback={null}>
         <PageViewTracker />
       </Suspense>

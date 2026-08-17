@@ -107,17 +107,17 @@ export default async function BlogCategoriesPage() {
               >
                 {/* Image */}
                 <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">
-                  {cat.posts?.[0]?.bannerImage ? (
-                    <img
-                      src={cat.posts[0].bannerImage}
-                      alt={`${cat.title} articles`}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
-                    />
-                  ) : cat.image ? (
+                  {cat.image ? (
                     <img
                       src={cat.image}
                       alt={cat.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                  ) : cat.posts?.[0]?.bannerImage ? (
+                    <img
+                      src={cat.posts[0].bannerImage}
+                      alt={`${cat.title} articles`}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       loading="lazy"
                     />

@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loadCart, clearCart } from '../../../src/lib/cartStorage';
+import { pushDataLayer } from '../../../src/lib/gtm';
+import useDeviceFingerprint from '../../../src/hooks/useDeviceFingerprint';
 
 const MOBILE_REGEX = /^(013|014|015|016|017|018|019)\d{8}$/;
 
@@ -43,18 +45,53 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [cart, setCart] = useState([]);
   const [hydrated, setHydrated] = useState(false);
+  const deviceHash = useDeviceFingerprint();
 
   useEffect(() => {
     setCart(loadCart());
     setHydrated(true);
   }, []);
 
+  useEffect(() => {
+    if (deviceHash) {
+      fetch(`/api/checkout/check-blocked?deviceHash=${deviceHash}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.blocked) {
+            window.location.href = 'https://google.com';
+          }
+        })
+        .catch(() => {});
+    }
+  }, [deviceHash]);
+
+  useEffect(() => {
+    if (hydrated && cart.length > 0) {
+      const delivery = form.shippingArea === 'Outside Dhaka' ? 120 : 80;
+      const sub = cart.reduce((sum, item) => sum + Number(item.price ?? 0) * item.quantity, 0);
+      pushDataLayer('begin_checkout', {
+        ecommerce: {
+          items: cart.map((item) => ({
+            item_id: item.sku,
+            item_name: item.title,
+            price: Number(item.price ?? 0),
+            item_variant: item.variantName,
+            quantity: item.quantity,
+          })),
+          value: sub + delivery,
+          currency: 'BDT',
+          shipping: delivery,
+        },
+      });
+    }
+  }, [hydrated]);
+
   const [form, setForm] = useState({ name: '', mobile: '', address: '', shippingArea: 'Inside Dhaka' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const deliveryCharge = form.shippingArea === 'Outside Dhaka' ? 120 : 50;
+  const deliveryCharge = form.shippingArea === 'Outside Dhaka' ? 120 : 80;
   const subtotal = cart.reduce((sum, item) => sum + Number(item.price ?? 0) * item.quantity, 0);
   const total = subtotal + deliveryCharge;
 
@@ -95,7 +132,7 @@ export default function CheckoutPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, items: cart }),
+        body: JSON.stringify({ ...form, items: cart, deviceHash }),
       });
 
       if (!res.ok) {
@@ -104,6 +141,23 @@ export default function CheckoutPage() {
 
       const data = await res.json();
       if (!data.orderNo) throw new Error('Invalid response from server');
+
+      const delivery = form.shippingArea === 'Outside Dhaka' ? 120 : 80;
+      const sub = cart.reduce((sum, item) => sum + Number(item.price ?? 0) * item.quantity, 0);
+      sessionStorage.setItem('gtm_purchase', JSON.stringify({
+        transaction_id: data.orderNo,
+        value: Number(data.total),
+        currency: 'BDT',
+        shipping: delivery,
+        items: cart.map((item) => ({
+          item_id: item.sku,
+          item_name: item.title,
+          price: Number(item.price ?? 0),
+          item_variant: item.variantName,
+          quantity: item.quantity,
+        })),
+      }));
+
       clearCart();
       router.push(`/thankyou?orderNo=${data.orderNo}`);
     } catch (err) {
@@ -166,7 +220,7 @@ export default function CheckoutPage() {
               <div className="mt-3 space-y-2">
                 <label className="flex items-center gap-3">
                   <input type="radio" name="shippingArea" value="Inside Dhaka" checked={form.shippingArea === 'Inside Dhaka'} onChange={handleChange} className="h-4 w-4 text-[#2f0f6b] dark:text-[#a78bfa]" />
-                  <span className="text-sm">Inside Dhaka — 50 taka</span>
+                  <span className="text-sm">Inside Dhaka — 80 taka</span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input type="radio" name="shippingArea" value="Outside Dhaka" checked={form.shippingArea === 'Outside Dhaka'} onChange={handleChange} className="h-4 w-4 text-[#2f0f6b] dark:text-[#a78bfa]" />

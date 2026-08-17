@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { addToCart } from '../../../../src/lib/cartStorage';
 import { toggleWishlist, loadWishlist } from '../../../../src/lib/wishlistStorage';
+import { pushDataLayer } from '../../../../src/lib/gtm';
 
 function ProductCard({ product, index }) {
   const [loaded, setLoaded] = useState(false);
@@ -51,6 +52,18 @@ function ProductCard({ product, index }) {
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
+
+    pushDataLayer('add_to_cart', {
+      ecommerce: {
+        items: [{
+          item_id: product.sku,
+          item_name: product.title,
+          price: Number(price),
+          item_variant: variant ? (variant.variant_name || 'Default') : 'Default',
+          quantity: 1,
+        }],
+      },
+    });
   };
 
   return (
