@@ -14,6 +14,7 @@ const iconColors = {
   social: { bg: 'bg-rose-100', text: 'text-rose-600', darkBg: 'dark:bg-rose-900/30', darkText: 'dark:text-rose-400' },
   notifications: { bg: 'bg-teal-100', text: 'text-teal-600', darkBg: 'dark:bg-teal-900/30', darkText: 'dark:text-teal-400' },
   database: { bg: 'bg-cyan-100', text: 'text-cyan-600', darkBg: 'dark:bg-cyan-900/30', darkText: 'dark:text-cyan-400' },
+  transfer: { bg: 'bg-violet-100', text: 'text-violet-600', darkBg: 'dark:bg-violet-900/30', darkText: 'dark:text-violet-400' },
 };
 
 const navItems = [
@@ -34,6 +35,7 @@ const settingsSubItems = [
   { label: 'Site Config', href: '/admin/settings/site-config', icon: 'notifications' },
   { label: 'Hero Sliders', href: '/admin/settings/hero-sliders', icon: 'sliders' },
   { label: 'Social Media', href: '/admin/settings/social', icon: 'social' },
+  { label: 'Catalog I/O', href: '/admin/settings/catalog-import-export', icon: 'transfer' },
   { label: 'Backup DB', href: '/admin/settings/backup-db', icon: 'database' },
 ];
 
@@ -99,6 +101,12 @@ function NavIcon({ icon }) {
       return (
         <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+        </svg>
+      );
+    case 'transfer':
+      return (
+        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
         </svg>
       );
     default:
