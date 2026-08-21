@@ -1,140 +1,112 @@
 # UI Context & Design System
 
-This document defines the visual design language, component library, and user experience guidelines for the Cabinet Closet ecommerce application.
+This document defines the visual design language, component library, and user experience guidelines for the Radiant Picks ecommerce application.
 
 ## Design System Foundation
 
 ### Color Palette
-- **Primary:** TBD (define Tailwind primary color)
-- **Secondary:** TBD (define Tailwind secondary color)
-- **Neutral:** Tailwind gray scale (50, 100, 200, 300, 400, 500, 600, 700, 800, 900)
-- **Success:** Green (from Tailwind)
-- **Warning:** Amber (from Tailwind)
-- **Error/Danger:** Red (from Tailwind)
+- **Primary:** `brand.primary` — `#2f0f6b` (deep purple; headers, CTAs, prices, announcement bar)
+- **Secondary:** `brand.secondary` — `#435165` (slate blue; supporting accents)
+- **Neutral:** Tailwind gray scale
+- **Semantic:** Tailwind green (success), amber (warning), red (error/danger)
+- Defined in `tailwind.config.js`; CSS variables mirrored in `app/globals.css`
 
 ### Typography
-- **Font Family:** System default or defined in `tailwind.config.js`
-- **Headings:** Scales (text-4xl, text-3xl, text-2xl, text-xl, text-lg)
+- **Font Family:** Inter (Google Fonts, loaded in root layout)
+- **Headings:** text-4xl → text-lg scale
 - **Body Text:** text-base (16px), text-sm for secondary info
-- **Semantic Styling:** Bold for prices, muted for secondary info
+- **Semantic Styling:** Bold for prices (with ৳ symbol), muted for secondary info
 
 ### Spacing
-- Use Tailwind spacing scale: px, 2, 3, 4, 6, 8, 12, 16, 20, 24, etc.
-- Consistent padding and margin across components
-- Maintain visual rhythm with repeated spacing values
+- Tailwind spacing scale with consistent padding/margin rhythm across components
+
+## Dark Mode
+- Strategy: Tailwind `darkMode: 'class'`
+- **Storefront:** `ThemeInit` applies saved `localStorage.theme` or OS preference on load; toggle in Header flips `document.documentElement.classList` and persists
+- **Admin:** `ThemeProvider` context (`admin-theme` key, respects OS preference); sun/moon toggle in AdminHeader; all admin components carry paired light/dark classes
+- Ensure WCAG AA contrast in both modes
 
 ## Component Library
 
 ### Storefront Components (JSX + Tailwind)
-**Core Components:**
-- `Header` – Logo, navigation, search bar, cart icon
-- `Footer` – Links, contact info, regional info (Bangladesh focus)
-- `ProductCard` – Image, title, price, sale price, discount badge
-- `ProductGallery` – Image gallery with zoom, thumbnails
-- `VariantSelector` – Select size/color, show variant-specific price and inventory
-- `ProductGrid` – Responsive grid layout for product lists
-- `FilterSidebar` – Category filters, price range, sorting
-- `CartModal` – Mini-cart drawer or modal preview
-- `CheckoutForm` – Customer info, shipping address, delivery charge selection
+**Implemented:**
+- `Header` — logo, nav, live search autocomplete, dark toggle, wishlist/cart icons
+- `Footer` — links, contact info, social links, Bangladesh focus
+- `AnnouncementBar` — purple strip with tel: link (currently disabled in Header)
+- `CartDrawer` — slide-out mini cart
+- `ProductDetailClient` + partials: `ProductInfo` (variants, WhatsApp order button, share, wishlist), `ImageGallery`, `ProductTabs`, `RelatedProducts`
+- Homepage partials: `Hero` slider, `FilterSidebar`, `ProductGrid`, `SortBar`, `MobileCategoryChips`
+- Blog: `BlogCard`, `AdCard`, `LoadMorePosts`
+- `GoogleTagManager`, `PageViewTracker`, `MobileFilter`, `ThemeInit`, `ConfirmDialog`
 
-### Admin Components (JSX + TailwindCSS + ShadCN UI)
-**Admin-Specific Components:**
-- `DataTable` – Reusable table with sorting, filtering, actions
-- `FormField` – Label, input, error handling
-- `Modal` – Create/edit dialogs
-- `ConfirmDialog` – Confirm delete actions
-- `ImageUpload` – Drag-and-drop or file picker for product images
-- `VariantTable` – Inline variant editor with size, color, price, inventory
-- `StatusBadge` – Show order status, payment status, product status (draft/publish)
+### Admin Components (JSX + Tailwind)
+**Implemented:**
+- `ThemeProvider` + `useTheme` — admin dark mode context
+- `TipTapEditor` — rich text editor with toolbar (bold/italic/underline/strike/headings/lists/quote/code/link/image)
+- `CategoryMultiSelect`, `AdvertisementMultiSelect`
+- Shell: `AdminSidebar`, `AdminHeader`
 
 ## Visual Patterns
-
-### Glassmorphism (Optional)
-- Use semi-transparent backgrounds with blur for premium feel
-- Apply sparingly to headers, cards, or modal overlays
-- Maintain accessibility with sufficient contrast
-
-### Dark Mode
-- Support dark mode preference (Tailwind dark: class)
-- Ensure all colors meet WCAG AA contrast standards in both light and dark modes
-- Provide toggle in settings/profile
 
 ### Responsive Design
 - Mobile-first approach
 - Breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
-- Product grids: 1 column (mobile), 2 columns (tablet), 3-4 columns (desktop)
-- Admin UI: 1 column (mobile), full-width (tablet+)
+- Product grids: 1 column (mobile) → 2 (tablet) → 3–4 (desktop); mobile category chips and filter drawer replace sidebars on small screens
 
 ### Interactive States
-- Hover: Subtle color change, shadow, or scale
-- Focus: Clear focus ring (Tailwind focus: ring)
-- Active: Distinct background or border change
-- Disabled: Reduced opacity, disabled cursor
+- Hover: subtle color change, shadow, or scale
+- Focus: clear focus ring
+- Active/disabled: distinct background/border, reduced opacity
 
 ## Branding & Regional Considerations
 
 ### Bangladesh Focus
-- Use local language (Bengali) in secondary places (labels, help text) — English for MVP
-- Display prices in BDT with ৳ symbol where applicable
-- Show "Dhaka" vs "Outside Dhaka" shipping prominently
-- Include Bengali contact information in footer (future localization)
+- English UI with Bengali product/blog content
+- Prices displayed in BDT with ৳ symbol
+- "Inside Dhaka" vs "Outside Dhaka" shipping shown prominently at checkout
+- Contact via phone/WhatsApp emphasized (hotline bar, WhatsApp order buttons)
 
 ### Product Presentation
-- High-quality product images with consistent aspect ratios
-- Clear pricing hierarchy: original price (strikethrough if on sale), sale price, discount %
-- Variant badges (color swatches, size labels)
-- Stock status: in-stock (green), low-stock (amber), out-of-stock (gray/disabled)
+- Consistent aspect-ratio product images (aspect-square cards)
+- Pricing hierarchy: original price (strikethrough if on sale), sale price, discount %
+- Variant badges (size labels, color names)
+- Stock status indicators where applicable
 
 ## User Experience Guidelines
 
 ### Storefront UX
-- **Discovery:** Category navigation, product search, filters
-- **Product Detail:** Image gallery, variant selection, quantity, add-to-cart CTA
-- **Cart:** Review items, update quantity, remove items, proceed to checkout
-- **Checkout:** Multi-step or single-page form with address validation
-- **Order Confirmation:** Order number, estimated delivery, tracking (future)
+- **Discovery:** category navigation (sidebar/chips), live search overlay, sort bar
+- **Product Detail:** image gallery, variant selection, quantity, add-to-cart / buy-now / WhatsApp order CTAs
+- **Cart:** slide-out drawer review, quantity updates, proceed to checkout
+- **Checkout:** single-page form with BD phone validation and delivery charge selection
+- **Order Confirmation:** order number on thank-you page
 
 ### Admin UX
-- **Navigation:** Sidebar or top nav with clear sections (Dashboard, Categories, Products, Orders)
-- **Forms:** Clear labels, validation messages, save/cancel buttons
-- **Lists:** Search, filters, sortable columns, pagination, bulk actions (future)
-- **Feedback:** Toast notifications for success/error, loading states
+- **Navigation:** sidebar with sections (Dashboard, Products, Categories, Orders, Blog, Settings)
+- **Forms:** labeled fields, validation feedback, save/cancel actions
+- **Lists:** search and filters, inline edit/delete actions
+- **Feedback:** toasts for success/error, loading/skeleton states
 
 ## Accessibility
 
-### WCAG 2.1 AA Compliance
-- Keyboard navigation: Tab order, Enter/Space activation
-- Screen reader support: Semantic HTML, ARIA labels where needed
-- Color contrast: Minimum 4.5:1 for text, 3:1 for graphical elements
-- Form accessibility: Associated labels, error messages linked to inputs
-
-### Best Practices
-- Use semantic HTML (nav, article, section, etc.)
-- Provide alt text for all images
-- Use proper heading hierarchy (h1, h2, h3, etc.)
-- Test with screen readers (NVDA, JAWS)
+### WCAG 2.1 AA Targets
+- Keyboard navigation and visible focus states
+- Semantic HTML, ARIA labels where needed
+- Color contrast ≥ 4.5:1 for text in light and dark modes
+- Alt text for images, proper heading hierarchy
 
 ## Implementation Notes
 
 ### Tailwind Configuration
-- Customize `tailwind.config.js` with project colors, fonts, and spacing
-- Use CSS variables for theming if needed
-- Define dark mode strategy (class-based or system preference)
-
-### Component Patterns
-- Keep components small and focused
-- Pass styling through className props when flexibility is needed
-- Use composition for complex UIs
-- Avoid inline styles; use Tailwind utilities
+- `tailwind.config.js`: brand colors, Inter font, `darkMode: 'class'`, content paths (`./app`, `./components`, `./src`), `@tailwindcss/typography` plugin (blog prose)
 
 ### Performance
-- Lazy-load images with Next.js Image component
-- Use dynamic imports for large admin components
-- Optimize bundle size by tree-shaking unused ShadCN components
+- Next.js Image optimization; lazy-loaded images
+- Loading skeletons (`loading.js`) on data-heavy routes
+- Debounced search API calls
 
 ## Future Enhancements
-- Localization (Bengali language support)
-- Advanced theme customization
+- Bengali localization of UI chrome
+- Advanced product filters (price range refinement, ratings)
 - Animated transitions and micro-interactions
-- Custom product filters (advanced)
-- Mobile app version
+- Product reviews and recommendations

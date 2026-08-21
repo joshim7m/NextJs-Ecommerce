@@ -1,22 +1,22 @@
 # Project Progress Tracker
 
-A living document tracking the status of all project tasks for the Cabinet Closet ecommerce application.
+A living document tracking the status of all project tasks for the Radiant Picks ecommerce application.
 
-**Last Updated:** 2026-07-03 (Session 3)
+**Last Updated:** 2026-08-21 (Session 4 — documentation refresh)
 
 ## Project Phases
 
-### Phase 1: MVP Foundation (Current)
-Core storefront and admin functionality with dummy data.
+### Phase 1: MVP Foundation ✅ Complete
+Core storefront and admin functionality with real seeded catalog data.
 
-### Phase 2: User Accounts & Authentication
-Session-based auth, user registration, customer account management.
+### Phase 2: Hardening & Growth (Current)
+SEO, analytics, fraud prevention, WhatsApp ordering, DB tooling. Payment integration remains the major outstanding item.
 
 ### Phase 3: Payment Integration
-Third-party payment gateway integration (Stripe, bKash, Nagad, etc.).
+Third-party payment gateway (bKash, Nagad, cards).
 
-### Phase 4: Order & Inventory Management
-Advanced order tracking, inventory sync, fulfillment workflows.
+### Phase 4: Advanced Operations
+Inventory sync, fulfillment workflows, customer accounts, reviews.
 
 ---
 
@@ -24,13 +24,13 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Prisma schema (Categories, Products, Variants, Orders) | ✅ Done | See `schema.prisma`, aligned with `data-model.md` |
-| Database migrations | ✅ Done | Using `prisma migrate` workflow |
-| Seed script (categories, products, variants) | ✅ Done | 27 real products from Cabinet & Closet catalog in `prisma/seed.js` |
-| Seed script (admin user) | ✅ Done | Admin user seeded in `prisma/seed.js` |
-| Seed script (sample orders) | ✅ Done | 2 sample orders with items seeded |
-| PostgreSQL setup for development | ✅ Done | Local or cloud-based instance |
-| Prisma Client setup | ✅ Done | Wrapper in `src/lib/prisma.js` |
+| Prisma schema (17 models) | ✅ Done | See `schema.prisma`; documented in `data-model.md` |
+| Database migrations | ✅ Done | 14 migrations under `prisma/migrations/` |
+| Seed pipeline (scraper-based) | ✅ Done | `seed.js` → `seedSettings` + `seedCatalog` + `seedBlog`; see `seeding.md` |
+| Catalog scraper (`fetchCatalog.js`) | ✅ Done | Cheerio scraper for eghuri.com → `catalogData.json` |
+| Bengali content processing | ✅ Done | `processCatalog.js` EN→BN tags/meta; Bengali blog posts in `seedBlog.js` |
+| SiteSetting singleton | ✅ Done | Identity, contact, announcement, Telegram/GTM/WhatsApp config |
+| BlockedDevice table | ✅ Done | Fraud blocklist keyed by FingerprintJS hash |
 
 ---
 
@@ -40,98 +40,85 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Page | Status | Notes |
 |------|--------|-------|
-| Home (`/(storefront)/page.jsx`) | ✅ Done | Hero section with feature listing and CTA buttons |
-| Categories listing (`/(storefront)/categories/page.jsx`) | ✅ Done | Fetches from Prisma, links to category products |
-| Category products (`/(storefront)/categories/[slug]/page.jsx`) | ✅ Done | Server component with Prisma, product cards |
-| Product detail (`/(storefront)/products/[slug]/page.jsx`) | ✅ Done | Server-side fetch + ProductDetailClient component |
-| Cart (`/(storefront)/cart/page.jsx`) | ✅ Done | Real cart data from localStorage, qty controls, remove |
-| Checkout (`/(storefront)/checkout/page.jsx`) | ✅ Done | Name/mobile/address form, delivery charge, places order |
-| Thank You (`/(storefront)/thankyou/page.jsx`) | ✅ Done | Shows order number from query param |
-| Storefront Layout (`/(storefront)/layout.jsx`) | ✅ Done | Header, Footer, global layout with route groups |
+| Home (`(home)/page.jsx`) | ✅ Done | Hero slider, filter sidebar, product grid, sort bar, mobile category chips |
+| Products listing | ✅ Done | `/products` with sorting |
+| Product detail | ✅ Done | Gallery, variants, tabs, related products, WhatsApp order, share, wishlist |
+| Categories listing + detail | ✅ Done | Hierarchical browsing |
+| Cart page | ✅ Done | localStorage cart, qty controls |
+| Checkout | ✅ Done | BD phone validation, delivery charge, device-hash fraud checks |
+| Thank You | ✅ Done | Order number display |
+| Wishlist | ✅ Done | `/wishlist`, hydrated via `POST /api/wishlist` |
+| Blog listing/categories/post | ✅ Done | Load-more pagination, ad injection, reading time, related posts |
+| Static pages (about/contact/privacy/terms) | ✅ Done | |
+| 404 page | ✅ Done | Custom `not-found.jsx` |
+| Loading skeletons | ✅ Done | `loading.js` on home/products/categories routes |
 
 ### Components
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Header | ✅ Done | Logo, navigation, cart icon with proper links |
-| Footer | ✅ Done | Links, contact info, Bangladesh-specific branding |
-| ProductCard | ✅ Done | Used in category products page with image, title, price |
-| ProductGallery | ❌ Not Started | Image zoom, thumbnails, variant images |
-| VariantSelector | ✅ Done | Integrated into ProductDetailClient |
-| ProductGrid | ❌ Not Started | Responsive grid layout |
-| FilterSidebar | ❌ Not Started | Category, price, sort filters |
-| CartModal | ❌ Not Started | Mini-cart preview or drawer |
-| CheckoutForm | ✅ Done | Built into checkout page with delivery charge selection |
+| Header | ✅ Done | Live search autocomplete, dark toggle, wishlist/cart icons |
+| Footer | ✅ Done | Social links, Bangladesh branding |
+| CartDrawer | ✅ Done | Slide-out mini cart synced via `cart-updated` event |
+| AnnouncementBar | ⚠️ Built, disabled | Wired but commented out in Header |
+| ProductGallery / ImageGallery | ✅ Done | In product partials |
+| VariantSelector | ✅ Done | Inside `ProductInfo` |
+| FilterSidebar / MobileFilter | ✅ Done | Desktop sidebar + mobile drawer/chips |
+| GoogleTagManager + PageViewTracker | ✅ Done | SPA `page_view` events, Suspense-wrapped |
 
 ### Features
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Cart state (Context + localStorage) | ✅ Done | See `src/lib/cartStorage.js` — add, remove, update, clear |
-| Variant pricing logic | ✅ Done | Integrated in ProductDetailClient |
-| Discount display (amount & %) | ✅ Done | Shown in ProductDetailClient |
-| Delivery charge selection | ✅ Done | Checkout page with Inside/Outside Dhaka options |
-| Image optimization (Next.js Image) | ❌ Not Started | Remote URLs for MVP |
-| SEO (meta tags, structured data) | ❌ Not Started | Use Next.js head, JSON-LD |
+| Cart state (localStorage) | ✅ Done | `src/lib/cartStorage.js` |
+| Wishlist (localStorage) | ✅ Done | `src/lib/wishlistStorage.js` + hydration API |
+| Variant pricing logic | ✅ Done | Variant override or base price, discount amount/% |
+| Delivery charge selection | ✅ Done | Inside Dhaka ৳50 / Outside ৳120 |
+| Dark mode (storefront) | ✅ Done | Class strategy, persisted, OS preference fallback |
+| SEO (metadata, sitemap, robots, JSON-LD) | ✅ Done | Per-page metadata, dynamic sitemap, OG images via `/api/og` |
+| GTM analytics | ✅ Done | Configurable via SiteSetting `gtmId` |
+| WhatsApp ordering | ✅ Done | wa.me deep link with product/variant/price pre-fill |
+| Device fingerprinting | ✅ Done | FingerprintJS visitorId cached and sent at checkout |
+| Image optimization | ✅ Done | Next.js Image; uploads to `public/uploads/` |
 
 ---
 
 ## Admin Panel Development
 
-### Pages & Routes
-
-| Page | Status | Notes |
+| Task | Status | Notes |
 |------|--------|-------|
-| Admin Layout (`/admin/layout.jsx`) | ✅ Done | Header nav, container |
-| Dashboard (`/admin/dashboard/page.jsx`) | ✅ Done | Links to categories, products, orders |
-| Categories list (`/admin/categories/page.jsx`) | ✅ Done | Table with edit/delete |
-| Categories create/edit | ✅ Done | Form for category name, slug, image, description |
-| Products list (`/admin/products/page.jsx`) | ✅ Done | Table with filters, edit/delete |
-| Products create/edit | ✅ Done | Form with pricing, categories, image, status |
-| Orders list (`/admin/orders/page.jsx`) | ✅ Done | List with expandable details |
-| Orders detail | ✅ Done | Order info, items, customer details, status updates |
-
-### Components
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| DataTable | ❌ Not Started | Sortable, filterable list (admin only) |
-| FormField | ❌ Not Started | Label, input, validation (admin only) |
-| Modal | ❌ Not Started | Create/edit dialogs (admin only) |
-| ConfirmDialog | ❌ Not Started | Confirm delete actions (admin only) |
-| ImageUpload | ❌ Not Started | Drag-drop, file picker (admin only) |
-| VariantTable | ❌ Not Started | Inline variant editor (admin only) |
-| StatusBadge | ❌ Not Started | Order/product status indicator (admin only) |
-
-### Features
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Authentication (session-based) | ❌ Not Started | NextAuth or custom auth |
-| Role-based access control (admin/editor) | ❌ Not Started | Protect routes and API endpoints |
-| Category CRUD | ✅ Done | Create, read, update, delete via API |
-| Product CRUD with variants | ✅ Done | Create, read, update, delete via API |
-| Order status updates | ✅ Done | pending → processing → completed → cancelled |
-| Payment status tracking | ✅ Done | unpaid → paid → refund |
-| Search & filters in lists | ❌ Not Started | Text search, category filter, status filter |
+| JWT authentication (login/logout/me) | ✅ Done | `jose` HS256, httpOnly cookie, 8h expiry |
+| Route protection (`proxy.js`) | ✅ Done | Next 16 middleware equivalent guarding `/admin/:path*` |
+| Dashboard (stats + recent orders) | ✅ Done | |
+| Products CRUD with variants | ✅ Done | Variant generator, image diffing on update |
+| Multi-image upload | ✅ Done | `/api/admin/upload`, type whitelist, 5MB max |
+| Categories CRUD (hierarchical) | ✅ Done | Parent/child management |
+| Orders list/detail/search | ✅ Done | Status updates, item qty editing, totals recompute |
+| Device blocking/unblocking | ✅ Done | `BlockedDevice` + checkout rejection |
+| Blog categories/posts/advertisements CRUD | ✅ Done | Tiptap editor, ad linking multiselect |
+| Settings: site identity | ✅ Done | Name, logo, favicon, contact, announcement, about (EN/BN) |
+| Settings: site-config integrations | ✅ Done | Telegram token/chat (+test), GTM ID, WhatsApp number |
+| Settings: hero sliders CRUD | ✅ Done | |
+| Settings: social links CRUD | ✅ Done | |
+| Settings: DB backup/restore | ✅ Done | pg_dump download / .sql restore upload (**uncommitted**) |
+| Admin dark mode | ✅ Done | ThemeProvider context + toggle |
+| Role-based access (admin/editor separation) | ❌ Not Started | Single admin role enforced by proxy |
 
 ---
 
-## API Routes & Server Actions
+## API Routes
 
-| Endpoint/Action | Status | Notes |
-|-----------------|--------|-------|
-| `POST /api/checkout` | ✅ Done | Validate cart items, create order with delivery charge |
-| `GET /api/admin/categories` | ✅ Done | Fetch all categories |
-| `POST /api/admin/categories` | ✅ Done | Create category |
-| `PUT /api/admin/categories/[id]` | ✅ Done | Update category |
-| `DELETE /api/admin/categories/[id]` | ✅ Done | Delete category |
-| `GET /api/admin/products` | ✅ Done | Fetch all products with images, variants, categories |
-| `POST /api/admin/products` | ✅ Done | Create product |
-| `PUT /api/admin/products/[id]` | ✅ Done | Update product |
-| `DELETE /api/admin/products/[id]` | ✅ Done | Delete product |
-| `GET /api/admin/orders` | ✅ Done | Fetch all orders with details and items |
-| `PUT /api/admin/orders/[id]` | ✅ Done | Update order status and payment status |
+All endpoints implemented and documented in `docs/architecture.md`. Summary:
+
+| Group | Status | Notes |
+|-------|--------|-------|
+| Public storefront APIs (search, categories, recent products, wishlist, checkout, check-blocked, og) | ✅ Done | Checkout includes fraud checks + Telegram alert |
+| Admin auth APIs | ✅ Done | login/logout/me |
+| Admin catalog APIs (products, categories) | ✅ Done | Full CRUD |
+| Admin order APIs (list, detail, search, block/unblock) | ✅ Done | |
+| Admin settings APIs (site, site-config+test, hero-sliders, social) | ✅ Done | |
+| Admin upload API | ✅ Done | Multi-file → `public/uploads/` |
+| Admin backup API | ✅ Done | **Uncommitted work** |
 
 ---
 
@@ -139,12 +126,11 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Tailwind CSS configuration | ✅ Done | Brand colors (#2f0f6b primary, #435165 secondary), Inter font |
-| Global styles (`app/globals.css`) | ✅ Done | CSS variables for brand, resets, base styles, container |
-| Responsive design (mobile, tablet, desktop) | ✅ Done | Mobile-first grid layouts throughout |
-| Dark mode support | ❌ Not Started | Theme toggle in settings |
-| ShadCN UI setup (admin only) | ❌ Not Started | Install and configure component library |
-| Component library reusability | ❌ Not Started | Atomic components, consistent patterns |
+| Tailwind config (brand colors, Inter, typography plugin) | ✅ Done | `#2f0f6b` primary, `#435165` secondary |
+| Responsive mobile-first design | ✅ Done | Grids, drawers, chips across breakpoints |
+| Dark mode — storefront | ✅ Done | ThemeInit + Header toggle |
+| Dark mode — admin | ✅ Done | ThemeProvider + AdminHeader toggle |
+| ShadCN UI | ❌ Dropped | Decided against; plain React + Tailwind everywhere |
 
 ---
 
@@ -152,13 +138,12 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Unit tests (utilities, helpers) | ❌ Not Started | Jest + React Testing Library |
-| Component tests (reusable components) | ❌ Not Started | Test rendering, interaction |
-| Integration tests (API routes) | ❌ Not Started | Test data flow, database queries |
-| E2E tests (critical user flows) | ❌ Not Started | Playwright/Cypress: browse, cart, checkout, admin |
-| Accessibility audit (axe-core) | ❌ Not Started | Check contrast, keyboard nav, ARIA |
-| Manual QA (browser testing) | ❌ Not Started | Cross-browser, device testing |
-| Lint & type-checking | ❌ Not Started | ESLint, TypeScript (optional) |
+| Test framework setup | ❌ Not Started | No Jest/Vitest/Playwright configured |
+| Unit/component tests | ❌ Not Started | Priority: pricing logic, storage helpers, blog-ads injection |
+| Integration tests (API routes) | ❌ Not Started | Priority: `/api/checkout` |
+| E2E tests | ❌ Not Started | Browse→checkout, admin flows |
+| Accessibility audit | ❌ Not Started | axe-core + manual keyboard pass |
+| Build verification | ✅ Done | `npm run build` passing pre-deploy |
 
 ---
 
@@ -166,13 +151,13 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Environment variables (`.env.local`) | ❌ Not Started | Database URL, API keys, etc. |
-| Build configuration (next.config.js) | ❌ Not Started | Optimizations, plugins |
-| CI/CD setup (GitHub Actions) | ❌ Not Started | Lint, type-check, test, build |
-| Production database setup | ❌ Not Started | PostgreSQL on cloud provider |
-| Deployment target (Vercel, etc.) | ❌ Not Started | Configure production hosting |
-| Monitoring & logging | ❌ Not Started | Error tracking, performance monitoring |
-| Security review | ❌ Not Started | XSS, CSRF, SQL injection prevention |
+| Vercel deployment config | ✅ Done | Minimal `next.config.mjs`, `postinstall: prisma generate` |
+| Production database | ✅ Done | External PostgreSQL via `DATABASE_URL` |
+| Environment variables | ✅ Done | `.env` with DATABASE_URL (integration tokens live in DB) |
+| SEO infrastructure | ✅ Done | Sitemap, robots, OG images, JSON-LD |
+| CI/CD (GitHub Actions) | ❌ Not Started | Lint/build/test pipeline |
+| Monitoring & error tracking | ❌ Not Started | GTM analytics only; no error tracking yet |
+| Security review | ⏳ Partial | JWT guard + fraud checks done; formal review pending |
 
 ---
 
@@ -180,108 +165,84 @@ Advanced order tracking, inventory sync, fulfillment workflows.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| `docs/overview.md` | ✅ Done | Project goals, constraints |
-| `docs/architecture.md` | ✅ Done | High-level structure, routes, patterns |
-| `docs/data-model.md` | ✅ Done | Entity descriptions, schema |
-| `docs/frontend-architecture.md` | ✅ Done | Components, state, styling, images |
-| `docs/admin-panel.md` | ✅ Done | Admin features, UI patterns, security |
-| `docs/seeding.md` | ✅ Done | Seed strategy, sample data |
-| `docs/testing.md` | ✅ Done | Testing strategy, CI/CD |
-| `docs/ai-workflow-rules.md` | ✅ Done | AI agent constraints & patterns |
-| `docs/ui-context.md` | ✅ Done | Design system, components, UX |
-| `docs/progress-tracker.md` | ✅ Done | This file, task tracking |
+| All 10 docs refreshed to match codebase | ✅ Done | Session 2026-08-21: overview, architecture, data-model, frontend-architecture, admin-panel, seeding, ai-workflow-rules, ui-context, testing, progress-tracker |
 
 ---
 
 ## Key Blockers & Decisions
 
+### Resolved Decisions
+- **Auth:** Custom JWT via `jose` + `proxy.js` (Next 16 middleware replacement) — not NextAuth
+- **Image storage:** Local uploads to `public/uploads/` + remote URLs for seeded data
+- **Dark mode:** Implemented in both storefront and admin
+- **UI library:** ShadCN dropped; plain React + Tailwind throughout
+- **Product data:** Real scraped catalog from eghuri.com (not dummy data)
+
 ### Current Blockers
-- **Authentication:** Decide on NextAuth vs. custom session before admin pages
-- **Image Storage:** Clarify remote URL vs. local upload strategy
-- **Database:** Production PostgreSQL instance needed for seeding validation
+- None blocking development.
 
 ### Pending Decisions
-- Dark mode: Will it be included in MVP?
-- Payment integration timeline: Phase 2 or Phase 3?
-- Localization (Bengali): MVP or future phase?
-- Advanced features (wishlists, reviews, recommendations): MVP or later?
+- Payment gateway choice (bKash/Nagag/card) and timeline
+- Customer accounts (registration/login) — currently guest-only checkout
+- Bengali localization of UI chrome
+- Error tracking service (Sentry or similar)
 
 ---
 
 ## Next Steps
 
-1. ✅ Create comprehensive project documentation
-2. ✅ Set up Prisma schema and database migrations
-3. ✅ Create seed script with dummy data
-4. ✅ Implement core storefront pages (home, categories, products, cart, checkout)
-5. ✅ Implement core admin pages (categories, products, orders)
-6. ✅ Add checkout and order creation workflow
-7. ❌ Add authentication (NextAuth or custom session)
-8. ❌ Testing and QA
-9. ❌ Deployment
+1. Commit the Backup DB feature (`app/admin/settings/backup-db/`, `app/api/admin/backup/`, sidebar/layout changes)
+2. Re-enable or remove the AnnouncementBar in Header
+3. Payment gateway integration (Phase 3)
+4. Set up test framework + CI pipeline
+5. Customer accounts & order history
 
 ---
 
 ## Legend
 
 - ✅ **Done:** Task completed and verified
-- ⏳ **In Progress:** Currently being worked on
-- ❌ **Not Started:** Ready to begin or blocked
-- 🔴 **Blocked:** Unable to proceed without external input or dependency
+- ⏳ **In Progress / Partial:** Being worked on or incomplete
+- ⚠️ **Built, disabled:** Implemented but turned off
+- ❌ **Not Started:** Ready to begin
 
 ---
 
 ## Session Log
 
+### Session 2026-08-21 (Documentation Refresh)
+- Audited entire codebase against docs; found docs 7+ weeks stale (still "Cabinet Closet" planning phase)
+- Rewrote all 10 docs to reflect actual implementation:
+  - `overview.md`: Radiant Picks identity, current feature set, regional scope
+  - `architecture.md`: real folder structure, full route map (~30 API routes), JWT auth flow via `proxy.js`
+  - `data-model.md`: all 17 Prisma models verified against schema, migration summary
+  - `frontend-architecture.md`: actual components/hooks, localStorage sync events, GTM, SEO implementation
+  - `admin-panel.md`: complete admin surface incl. blog CMS, settings pages, device blocking, DB backup
+  - `seeding.md`: scraper pipeline (fetchCatalog → processCatalog → seedCatalog) + settings/blog seeds
+  - `ai-workflow-rules.md`: corrected conventions (no ShadCN, proxy.js auth, server actions/API split)
+  - `ui-context.md`: real brand tokens (#2f0f6b/#435165), Inter font, dark mode strategy
+  - `testing.md`: honest current state (no tests) + prioritized recommendations
+  - `progress-tracker.md`: statuses updated to reality, decisions log, this entry
+- Identified uncommitted Backup DB feature as next commit candidate
+
 ### Session 2026-07-03 (Initial)
 - Reviewed and rewrote 3 documentation files: `ai-workflow-rules.md`, `ui-context.md`, `progress-tracker.md`
-- Aligned all docs with core architecture and design principles
-- Created comprehensive task tracking and status overview
 
 ### Session 2026-07-03 (Development)
-- ✅ Verified database migrations and ran seed script (4 categories, 4 products with variants)
-- ✅ Reorganized app structure to use Next.js route groups: `(storefront)` for public routes
-- ✅ Created Header component with navigation (logo, shop link, cart icon) using Link component
-- ✅ Created Footer component with company info, links, support contact (Bangladesh-focused)
-- ✅ Set up jsconfig.json with `@` path alias for cleaner imports
-- ✅ Built storefront home page at localhost:3000/ (serving at 3001 due to port conflict)
-- ✅ Home page includes hero section, feature description, and CTA buttons linking to categories and cart
-- Updated progress tracker with completed database setup and storefront foundation tasks
-- Next: Build categories, product listing, product details, and cart pages
+- Verified migrations and seed script; reorganized to `(storefront)` route group
+- Created Header/Footer components; set up `@` path alias; built home page foundation
 
 ### Session 2026-07-03 (Bug Fixes & Feature Completion)
-- ✅ Removed duplicate admin route structure (`app/admin/admin/`)
-- ✅ Fixed broken storefront links (`/storefront/` → `/`)
-- ✅ Rebuilt categories listing page with Prisma data
-- ✅ Built product detail page with server-side Prisma fetch + ProductDetailClient
-- ✅ Built cart page with real localStorage cart data, quantity controls, remove
-- ✅ Built checkout page with form validation, delivery charge, order submission
-- ✅ Built thankyou page with order number display
-- ✅ Created all admin API routes (categories, products, orders CRUD)
-- ✅ Built admin categories page with inline create/edit/delete
-- ✅ Built admin products page with create/edit/delete and category assignment
-- ✅ Built admin orders page with expandable details and status updates
-- ✅ Updated all progress tracker status fields
+- Fixed duplicate admin routes and broken storefront links
+- Built categories, product detail, cart, checkout, thankyou pages
+- Created all admin API routes and admin CRUD pages
 
 ### Session 2026-07-03 (Storefront Redesign)
-- ✅ Updated Tailwind config with brand colors (#2f0f6b primary, #435165 secondary) and Inter font
-- ✅ Added CSS variables for brand colors in globals.css
-- ✅ Added Inter font from Google Fonts in root layout
-- ✅ Redesigned Header: hotline bar (purple bg with phone/WhatsApp), search bar, brand-colored logo/nav
-- ✅ Redesigned Home page: banner, filter sidebar (categories + price range), product grid with aspect-square cards
-- ✅ Updated category listing with brand colors and hover effects
-- ✅ Updated category products page with 4-column grid and brand-colored prices
-- ✅ Updated ProductDetailClient with brand-colored prices, variant buttons, and CTA
-- ✅ Updated Cart page with brand colors and improved layout
-- ✅ Updated Checkout page with brand colors and improved form design
-- ✅ Updated Thank You page with brand-colored order number
-- ✅ Updated Footer with brand purple bg and reference site content
-- ✅ Updated Admin layout with brand colors
+- Brand colors (#2f0f6b/#435165) + Inter font applied across storefront and admin
+- Redesigned header (hotline bar, search), home, category, product, cart, checkout, footer
 
 ### Session 2026-07-03 (Catalog & Seed Update)
-- ✅ Extracted full product catalog from reference site (27 products, 5 categories)
-- ✅ Updated seed file with real products, images, prices, and variants from Cabinet & Closet
-- ✅ Added real-time search API endpoint (`GET /api/search?q=...`)
-- ✅ Updated Header search overlay with debounced real-time results, keyboard navigation, loading spinner
-- ✅ Added "See all results" button in search overlay
-- ✅ Ran seed successfully — 5 categories, 27 products, 2 orders
+- Extracted real catalog (27 products, 5 categories) from reference site
+- Added live search API + header search overlay; ran seed successfully
+
+*(Sessions between 2026-07-03 and 2026-08-21 were tracked in git only; see `git log` for storefront v1.0.0, variants, dark mode, mobile-first redesign, SEO, GTM tracking, and WhatsApp ordering milestones.)*

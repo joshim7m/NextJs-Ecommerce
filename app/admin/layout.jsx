@@ -18,6 +18,7 @@ const pageTitles = {
   '/admin/settings/site': 'Site Setting',
   '/admin/settings/hero-sliders': 'Hero Sliders',
   '/admin/settings/social': 'Social Media',
+  '/admin/settings/backup-db': 'Backup DB',
 };
 
 export default function AdminLayout({ children }) {
