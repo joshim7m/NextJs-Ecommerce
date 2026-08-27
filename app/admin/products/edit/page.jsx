@@ -275,9 +275,17 @@ function EditProductForm() {
         </div>
       )}
 
-      <div>
-        <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition dark:text-slate-400 dark:hover:text-slate-300">&larr; Back to Products</Link>
-        <h1 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">Edit Product</h1>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <Link href="/admin/products" className="text-sm text-slate-500 hover:text-slate-700 transition dark:text-slate-400 dark:hover:text-slate-300">&larr; Back to Products</Link>
+          <h1 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">Edit Product</h1>
+        </div>
+        {form.slug && (
+          <Link href={`/products/${form.slug}`} target="_blank" className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+            Store View
+          </Link>
+        )}
       </div>
 
       <ProductInfo

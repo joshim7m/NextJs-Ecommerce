@@ -111,8 +111,8 @@ export default function AdminProductsPage() {
         <table className="w-full min-w-[700px] text-left text-sm">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/80 dark:border-slate-700 dark:bg-slate-900/50">
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-12"></th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Title</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-12">SN</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Product</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Price</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Categories</th>
@@ -121,24 +121,27 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-            {paginated.map((p) => (
+            {paginated.map((p, idx) => (
               <tr key={p.id} className="hover:bg-slate-50/50 transition-colors dark:hover:bg-slate-700/30">
-                <td className="w-[88px] px-4 py-2">
-                  {p.images?.[0]?.image_path ? (
-                    <div className="aspect-video w-12 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
-                      <img src={p.images[0].image_path} alt="" className="h-full w-full object-cover" />
+                <td className="px-2 py-3 text-sm text-slate-500 dark:text-slate-400 text-center">{(page - 1) * PER_PAGE + idx + 1}</td>
+                <td className="px-4 py-2 max-w-[300px]">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    {p.images?.[0]?.image_path ? (
+                      <div className="aspect-square w-10 shrink-0 overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
+                        <img src={p.images[0].image_path} alt="" className="h-full w-full object-cover" />
+                      </div>
+                    ) : (
+                      <div className="flex aspect-square w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-300 border border-slate-200 dark:bg-slate-700 dark:text-slate-600 dark:border-slate-600">
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <Link href={`/admin/products/edit?id=${p.id}`} className="block font-medium text-slate-900 hover:text-[#2f0f6b] transition dark:text-white dark:hover:text-[#a78bfa] truncate">{p.title}</Link>
+                      {p.sku && <p className="text-xs text-slate-400 mt-0.5 dark:text-slate-500 truncate">SKU: {p.sku}</p>}
                     </div>
-                  ) : (
-                    <div className="flex aspect-video w-12 items-center justify-center rounded-lg bg-slate-100 text-slate-300 border border-slate-200 dark:bg-slate-700 dark:text-slate-600 dark:border-slate-600">
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                      </svg>
-                    </div>
-                  )}
-                </td>
-                <td className="px-4 py-3 max-w-[200px] truncate">
-                  <Link href={`/admin/products/edit?id=${p.id}`} className="font-medium text-slate-900 hover:text-[#2f0f6b] transition dark:text-white dark:hover:text-[#a78bfa]">{p.title}</Link>
-                  {p.sku && <p className="text-xs text-slate-400 mt-0.5 dark:text-slate-500">SKU: {p.sku}</p>}
+                  </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
                   <span className="font-medium text-slate-900 dark:text-white">৳{Number(p.sale_price || p.unite_price).toLocaleString()}</span>

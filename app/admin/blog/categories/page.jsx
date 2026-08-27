@@ -149,33 +149,35 @@ export default function AdminBlogCategoriesPage() {
         <table className="w-full min-w-[650px] text-left text-sm">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/80 dark:border-slate-700 dark:bg-slate-900/50">
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Image</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Title</th>
+              <th className="px-2 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-12">SN</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Category</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Slug</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Author</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">Status</th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">Posts</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-            {paginated.map((cat) => (
+            {paginated.map((cat, idx) => (
               <tr key={cat.id} className="hover:bg-slate-50/50 transition-colors dark:hover:bg-slate-700/30">
-                <td className="w-[72px] px-4 py-3">
-                  {cat.image ? (
-                    <img src={cat.image} alt={cat.title} className="h-10 w-10 rounded-lg border border-slate-200 object-cover dark:border-slate-700" />
-                  ) : (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-sm font-semibold text-slate-400 dark:bg-slate-900/50 dark:text-slate-500">{cat.title.charAt(0).toUpperCase()}</div>
-                  )}
+                <td className="px-2 py-3 text-sm text-slate-500 dark:text-slate-400 text-center">{safePage * PER_PAGE + idx + 1}</td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    {cat.image ? (
+                      <img src={cat.image} alt={cat.title} className="h-10 w-10 shrink-0 rounded-lg border border-slate-200 object-cover dark:border-slate-700" />
+                    ) : (
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-sm font-semibold text-slate-400 dark:bg-slate-900/50 dark:text-slate-500">{cat.title.charAt(0).toUpperCase()}</div>
+                    )}
+                    <div className="flex flex-col">
+                      <button onClick={() => openEdit(cat)} className="text-left font-medium text-[#2f0f6b] hover:underline dark:text-[#a78bfa]">{cat.title}</button>
+                      <span className="text-xs text-slate-400 dark:text-slate-500">{cat._count?.posts ?? 0} posts</span>
+                    </div>
+                  </div>
                 </td>
-                <td className="px-4 py-3 font-medium text-slate-900 dark:text-white">{cat.title}</td>
                 <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{cat.slug}</td>
                 <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{cat.authorName || <span className="text-slate-300 dark:text-slate-600">&mdash;</span>}</td>
                 <td className="px-4 py-3 text-center">
                   <span className={`inline-flex h-5 min-w-[3.5rem] items-center justify-center rounded-full px-2 text-[11px] font-semibold ${cat.status === 'publish' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-900/30 dark:text-slate-400'}`}>{cat.status}</span>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-slate-100 px-2 text-xs font-medium text-slate-600 dark:bg-slate-900/30 dark:text-slate-400">{cat._count?.posts ?? 0}</span>
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex items-center gap-1">
@@ -190,7 +192,7 @@ export default function AdminBlogCategoriesPage() {
               </tr>
             ))}
             {paginated.length === 0 ? (
-              <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-400 dark:text-slate-500">{search ? 'No categories match your search.' : 'No categories yet.'}</td></tr>
+              <tr><td colSpan={6} className="px-4 py-10 text-center text-sm text-slate-400 dark:text-slate-500">{search ? 'No categories match your search.' : 'No categories yet.'}</td></tr>
             ) : null}
           </tbody>
         </table>
