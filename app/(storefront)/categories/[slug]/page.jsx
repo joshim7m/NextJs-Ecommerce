@@ -88,10 +88,11 @@ export default async function CategoryProductsPage({ params, searchParams }) {
       />
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 sm:py-12">
         <div className="relative mb-6 aspect-[3/2] overflow-hidden rounded-2xl bg-slate-200 sm:mb-8 sm:aspect-[4/1]">
-          <picture>
-            <source media="(min-width: 640px)" srcSet={`https://picsum.photos/seed/${slug}-banner/1400/350`} />
-            <img src={`https://picsum.photos/seed/${slug}-banner/600/400`} alt="" className="h-full w-full object-cover" />
-          </picture>
+          {category.image ? (
+            <img src={category.image} alt={category.name} className="h-full w-full object-cover" />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-r from-[#2f0f6b] to-[#5b21b6]" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
           <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-10">
             <Link href="/categories" className="mb-2 inline-flex w-fit items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm hover:bg-white/30 transition sm:text-xs">
