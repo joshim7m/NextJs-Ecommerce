@@ -17,7 +17,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export async function POST(request) {
   const formData = await request.formData();
   const files = formData.getAll('images');
-  const folder = formData.get('folder') || 'products';
+  const folder = String(formData.get('folder') || 'products').replace(/[^a-zA-Z0-9_-]/g, '');
   const uploaded = [];
   const errors = [];
 
@@ -25,7 +25,7 @@ export async function POST(request) {
     return NextResponse.json({ error: 'No files provided.' }, { status: 400 });
   }
 
-  const uploadDir = path.join(process.cwd(), 'public/uploads', folder);
+  const uploadDir = path.join(process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads'), folder);
   await mkdir(uploadDir, { recursive: true });
 
   for (const file of files) {
