@@ -190,7 +190,7 @@ function LoadMoreButton({ onClick, remaining }) {
   );
 }
 
-export default function ProductGrid({ products, pageSize = 12 }) {
+export default function ProductGrid({ products, pageSize = 12, columns = 4 }) {
   const [visible, setVisible] = useState(pageSize);
 
   const totalCount = products.length;
@@ -217,7 +217,7 @@ export default function ProductGrid({ products, pageSize = 12 }) {
 
   return (
     <div>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+      <div className={`grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 ${columns === 5 ? 'xl:grid-cols-5' : 'xl:grid-cols-4'}`}>
         {displayed.map((product, i) => (
           <div key={product.id} className="animate-fade-in">
             <ProductCard product={product} index={i} />

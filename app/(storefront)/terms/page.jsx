@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import WebPageJsonLd from '../../../src/components/storefront/WebPageJsonLd';
 
 export const metadata = {
   title: 'Terms of Service | Radiant Picks',
@@ -8,7 +9,9 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
+    <>
+      <WebPageJsonLd path="/terms" name="Terms of Service | Radiant Picks" />
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
       {/* Breadcrumb */}
       <nav className="mb-8 flex items-center gap-2 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-[#2f0f6b] dark:hover:text-[#a78bfa] transition-colors">Home</Link>
@@ -77,5 +80,6 @@ export default function TermsPage() {
         </p>
       </div>
     </div>
+    </>
   );
 }

@@ -8,18 +8,21 @@ import { CHUNK_SIZE, PRODUCT_COLUMNS } from './constants';
 import { exportWorkDir } from './paths';
 import { sanitizeFilename, isRemotePath, fetchRemoteImage } from './images';
 
-export async function buildCatalogZip() {
-  const workRoot = exportWorkDir();
+export async function buildCatalogZip({ workDir = exportWorkDir(), zipPath, onProgress } = {}) {
+  const workRoot = workDir;
   const buildDir = path.join(workRoot, 'build');
   const imageDir = path.join(buildDir, 'images');
   const csvPath = path.join(buildDir, 'products.csv');
-  const zipPath = path.join(workRoot, 'catalog-export.zip');
+  zipPath = zipPath || path.join(workRoot, 'catalog-export.zip');
 
   await mkdir(imageDir, { recursive: true });
 
   try {
     let processed = 0;
     let cursor;
+
+    const total = await prisma.product.count();
+    await onProgress?.({ total: total || 0, processed: 0 });
 
     const csvStream = stringify();
     const fileStream = createWriteStream(csvPath);
@@ -63,6 +66,7 @@ export async function buildCatalogZip() {
       }
 
       processed += products.length;
+      await onProgress?.({ total, processed });
     }
 
     csvStream.end();
@@ -92,7 +96,9 @@ async function exportImage(imageDir, productId, index, imagePath) {
       if (!buffer) return null;
       await writeFile(target, buffer);
     } else {
-      const localPath = path.join(process.cwd(), 'public', imagePath);
+      // image_path values are URLs under /uploads/... mapped to the UPLOAD_DIR disk folder.
+      const uploadRoot = process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads');
+      const localPath = path.join(uploadRoot, imagePath.replace(/^\/uploads\//, ''));
       await copyFile(localPath, target);
     }
     return filename;

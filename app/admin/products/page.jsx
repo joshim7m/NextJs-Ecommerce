@@ -28,6 +28,7 @@ export default function AdminProductsPage() {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [filterFeatured, setFilterFeatured] = useState('all');
 
   useEffect(() => {
     function handleClick(e) {
@@ -55,13 +56,14 @@ export default function AdminProductsPage() {
     }
     if (filterStatus !== 'all') list = list.filter((p) => p.status === filterStatus);
     if (filterCategory !== 'all') list = list.filter((p) => p.categories?.some((c) => c.slug === filterCategory));
+    if (filterFeatured !== 'all') list = list.filter((p) => (filterFeatured === 'featured' ? p.isFeatured : !p.isFeatured));
     return list;
-  }, [products, search, filterStatus, filterCategory]);
+  }, [products, search, filterStatus, filterCategory, filterFeatured]);
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE) || 1;
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
-  useEffect(() => { setPage(1); }, [search, filterStatus, filterCategory]);
+  useEffect(() => { setPage(1); }, [search, filterStatus, filterCategory, filterFeatured]);
 
   const refetch = () => Promise.all([getProducts(), getCategories()]).then(([p, c]) => { setProducts(p); setCategories(c); });
 
@@ -101,8 +103,13 @@ export default function AdminProductsPage() {
             <option value="all">Category</option>
             {categories.map((c) => <option key={c.id} value={c.slug}>{c.name}</option>)}
           </select>
-          {(filterStatus !== 'all' || filterCategory !== 'all' || search) && (
-            <button onClick={() => { setFilterStatus('all'); setFilterCategory('all'); setSearch(''); }} className="shrink-0 px-2 text-sm text-slate-500 hover:text-slate-700 transition dark:text-slate-400 dark:hover:text-slate-300">Clear</button>
+          <select value={filterFeatured} onChange={(e) => setFilterFeatured(e.target.value)} className="flex-1 sm:flex-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]">
+            <option value="all">Featured</option>
+            <option value="featured">Featured</option>
+            <option value="not-featured">Not featured</option>
+          </select>
+          {(filterStatus !== 'all' || filterCategory !== 'all' || filterFeatured !== 'all' || search) && (
+            <button onClick={() => { setFilterStatus('all'); setFilterCategory('all'); setFilterFeatured('all'); setSearch(''); }} className="shrink-0 px-2 text-sm text-slate-500 hover:text-slate-700 transition dark:text-slate-400 dark:hover:text-slate-300">Clear</button>
           )}
         </div>
       </div>
@@ -139,6 +146,12 @@ export default function AdminProductsPage() {
                     )}
                     <div className="min-w-0 flex-1">
                       <Link href={`/admin/products/edit?id=${p.id}`} className="block font-medium text-slate-900 hover:text-[#2f0f6b] transition dark:text-white dark:hover:text-[#a78bfa] truncate">{p.title}</Link>
+                      {p.isFeatured ? (
+                        <span className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                          <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z" /></svg>
+                          Featured
+                        </span>
+                      ) : null}
                       {p.sku && <p className="text-xs text-slate-400 mt-0.5 dark:text-slate-500 truncate">SKU: {p.sku}</p>}
                     </div>
                   </div>
@@ -201,7 +214,7 @@ export default function AdminProductsPage() {
               </tr>
             ))}
             {paginated.length === 0 ? (
-              <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-400">{search || filterStatus !== 'all' || filterCategory !== 'all' ? 'No products match your filters.' : 'No products yet.'}</td></tr>
+              <tr><td colSpan={7} className="px-4 py-10 text-center text-sm text-slate-400">{search || filterStatus !== 'all' || filterCategory !== 'all' || filterFeatured !== 'all' ? 'No products match your filters.' : 'No products yet.'}</td></tr>
             ) : null}
           </tbody>
         </table>

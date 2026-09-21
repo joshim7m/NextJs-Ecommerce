@@ -107,12 +107,10 @@ export default async function HomePage({ searchParams }) {
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 sm:py-6">
         <Hero slides={heroSlides} />
 
-        <MobileCategoryChips parentCats={parentCats} />
-
         <div className="mt-4 flex flex-col gap-4 sm:mt-8 sm:gap-6 lg:flex-row">
           <FilterSidebar categories={categories} />
           <div className="flex-1">
-            <SortBar productCount={products.length} />
+            
             <ProductGrid products={serialized} />
           </div>
         </div>

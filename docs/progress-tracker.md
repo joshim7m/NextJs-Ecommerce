@@ -24,7 +24,7 @@ Inventory sync, fulfillment workflows, customer accounts, reviews.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Prisma schema (17 models) | ✅ Done | See `schema.prisma`; documented in `data-model.md` |
+| Prisma schema (17 models) | ✅ Done | See `schema.prisma`; documented in `data-model.md`. `Product.isFeatured` added via migration `20260920133728_add_product_is_featured` |
 | Database migrations | ✅ Done | 14 migrations under `prisma/migrations/` |
 | Seed pipeline (scraper-based) | ✅ Done | `seed.js` → `seedSettings` + `seedCatalog` + `seedBlog`; see `seeding.md` |
 | Catalog scraper (`fetchCatalog.js`) | ✅ Done | Cheerio scraper for eghuri.com → `catalogData.json` |
@@ -91,6 +91,7 @@ Inventory sync, fulfillment workflows, customer accounts, reviews.
 | Route protection (`proxy.js`) | ✅ Done | Next 16 middleware equivalent guarding `/admin/:path*` |
 | Dashboard (stats + recent orders) | ✅ Done | |
 | Products CRUD with variants | ✅ Done | Variant generator, image diffing on update |
+| Featured products flag | ✅ Done | `isFeatured` checkbox in product create/edit; badge on products list |
 | Multi-image upload | ✅ Done | `/api/admin/upload`, type whitelist, 5MB max |
 | Categories CRUD (hierarchical) | ✅ Done | Parent/child management |
 | Orders list/detail/search | ✅ Done | Status updates, item qty editing, totals recompute |

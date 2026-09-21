@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import prisma from '../../../src/lib/prisma';
+import WebPageJsonLd from '../../../src/components/storefront/WebPageJsonLd';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
 
 export const metadata = {
   title: 'Contact Us | Radiant Picks',
@@ -19,8 +22,29 @@ async function getSettings() {
 export default async function ContactPage() {
   const settings = await getSettings();
 
+  const businessName = settings?.siteName || 'Radiant Picks';
+  const businessAddress =
+    settings?.address || '6/C, Unite-2, Confidence Center, Shahjadpur, Gulshan, Dhaka-1212';
+
+  const localBusinessJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${SITE_URL}/#localbusiness`,
+    name: businessName,
+    url: `${SITE_URL}/contact`,
+    description: 'Online store in Bangladesh, cash on delivery nationwide.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: businessAddress,
+      addressLocality: 'Dhaka',
+      addressCountry: 'BD',
+    },
+  };
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
+    <>
+      <WebPageJsonLd path="/contact" name={`Contact Us | ${businessName}`} extra={localBusinessJsonLd} />
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
       {/* Breadcrumb */}
       <nav className="mb-8 flex items-center gap-2 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-[#2f0f6b] dark:hover:text-[#a78bfa] transition-colors">Home</Link>
@@ -107,5 +131,6 @@ export default async function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

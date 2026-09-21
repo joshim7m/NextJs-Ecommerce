@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { loadCart } from '../../lib/cartStorage';
 import CartDrawer from './CartDrawer';
 import AnnouncementBar from './AnnouncementBar';
@@ -22,6 +22,12 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
   const [cartCount, setCartCount] = useState(0);
   const [dark, setDark] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const MENU_LINKS = [
+    { href: '/new-arrivals', label: 'New Arrivals' },
+    { href: '/hot-sales', label: 'Hot Sales' },
+  ];
 
   useEffect(() => {
     setDark(document.documentElement.classList.contains('dark'));
@@ -80,13 +86,13 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
   }, [searchOpen]);
 
   useEffect(() => {
-    if (searchOpen) {
+    if (searchOpen || mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
     return () => { document.body.style.overflow = ''; };
-  }, [searchOpen]);
+  }, [searchOpen, mobileMenuOpen]);
 
   const fetchResults = useCallback(async (q) => {
     if (!q.trim()) {
@@ -148,17 +154,35 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
       {/* Main header */}
       <div className="border-b border-slate-200/50 dark:border-slate-700/50">
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-2 px-4 sm:h-14 sm:px-6 lg:px-8">
-          {/* Logo */}
-          <Link href="/" className="shrink-0">
-            {logo ? (
-              <img src={logo} alt={siteName || 'Store'} className="h-10 sm:h-14 object-contain" />
-            ) : (
-              <span className="text-base font-bold text-[#2f0f6b] dark:text-[#a78bfa] sm:text-xl">
-                {siteName || 'Radiant Picks'}
-              </span>
-            )}
-          </Link>
+          {/* Logo + desktop menu (hugging, vertically centered) */}
+          <div className="flex items-center gap-4">
+            <Link href="/" className="shrink-0">
+              {logo ? (
+                <img src={logo} alt={siteName || 'Store'} className="h-10 sm:h-14 object-contain" />
+              ) : (
+                <span className="text-base font-bold text-[#2f0f6b] dark:text-[#a78bfa] sm:text-xl">
+                  {siteName || 'Radiant Picks'}
+                </span>
+              )}
+            </Link>
 
+            {/* Desktop menu */}
+            <nav className="hidden md:flex items-center gap-1">
+              {MENU_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                    pathname === link.href
+                      ? 'text-[#2f0f6b] dark:text-[#a78bfa]'
+                      : 'text-slate-600 hover:text-[#2f0f6b] dark:text-slate-300 dark:hover:text-[#a78bfa]'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
 
           {/* Right side icons */}
           <div className="flex items-center gap-1 sm:gap-1.5">
@@ -179,7 +203,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
             {/* Wishlist */}
             <Link
               href="/wishlist"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
+              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title="Wishlist"
               aria-label="Wishlist"
             >
@@ -212,7 +236,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
             <button
               type="button"
               onClick={toggleTheme}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
+              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
             >
@@ -250,12 +274,112 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {mobileMenuOpen ? (
-        <div className="border-b border-slate-200 bg-white md:hidden dark:border-slate-700 dark:bg-slate-900">
-          <MobileFilter onClose={() => setMobileMenuOpen(false)} />
+      {/* Mobile menu — left drawer */}
+      <div className={`md:hidden fixed inset-0 z-[100] ${mobileMenuOpen ? 'visible' : 'invisible'}`} aria-hidden={!mobileMenuOpen}>
+        {/* Backdrop */}
+        <div
+          onClick={() => setMobileMenuOpen(false)}
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+            mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        />
+
+        {/* Drawer panel */}
+        <div
+          className={`absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col bg-slate-50 shadow-xl transition-transform duration-300 ease-out dark:bg-slate-900 ${
+            mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex items-center justify-between bg-gradient-to-r from-[#2f0f6b] to-[#4c1d95] px-4 py-4 dark:from-[#1a093f] dark:to-[#2a1257]">
+            <span className="text-sm font-semibold uppercase tracking-wider text-white/90">Menu</span>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition"
+              aria-label="Close menu"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-2 px-4 py-3">
+              <Link
+                href="/new-arrivals"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center justify-between rounded-lg px-3 py-3 text-left text-sm font-semibold transition ${
+                  pathname === '/new-arrivals'
+                    ? 'ring-2 ring-violet-400 ring-offset-1 dark:ring-offset-slate-900'
+                    : ''
+                } bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-900/40 dark:text-violet-300 dark:hover:bg-violet-900/60`}
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  New Arrivals
+                </span>
+              </Link>
+              <Link
+                href="/hot-sales"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center justify-between rounded-lg px-3 py-3 text-left text-sm font-semibold transition ${
+                  pathname === '/hot-sales'
+                    ? 'ring-2 ring-rose-400 ring-offset-1 dark:ring-offset-slate-900'
+                    : ''
+                } bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:hover:bg-rose-900/60`}
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="h-4 w-4 shrink-0 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6L12 2z" />
+                  </svg>
+                  Hot Sales
+                </span>
+              </Link>
+            </div>
+
+            {/* Categories */}
+            <div className="px-4 pb-4">
+              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Categories</h4>
+              <Suspense fallback={<div className="px-4 py-3"><div className="h-5 w-5 animate-spin rounded-full border-2 border-[#2f0f6b] border-t-transparent dark:border-[#a78bfa]" /></div>}>
+                <MobileFilter onClose={() => setMobileMenuOpen(false)} />
+              </Suspense>
+            </div>
+          </div>
+
+          {/* Pinned quick actions */}
+          <div className="sticky bottom-0 inset-x-0 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+            <Link
+              href="/wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-100 transition dark:text-slate-300 dark:hover:bg-slate-800"
+            >
+              <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              Wishlist
+            </Link>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex w-full items-center gap-3 border-t border-slate-200 px-4 py-3 text-left text-sm font-medium text-slate-600 hover:bg-slate-100 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+            >
+              {dark ? (
+                <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+              {dark ? 'Switch to light mode' : 'Switch to dark mode'}
+            </button>
+          </div>
         </div>
-      ) : null}
+      </div>
 
       {/* Search overlay */}
       {searchOpen ? (

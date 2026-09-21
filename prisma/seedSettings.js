@@ -46,6 +46,11 @@ async function main() {
       announcementText: 'Call or WhatsApp: 01945090085',
       aboutCompany: `Welcome to Radiant Picks, your trusted online hub for premium lifestyle products in Bangladesh. We bring you a curated collection of modern apparel, comfortable sleepwear, premium lingerie, stylish footwear, beauty essentials, and smart home gadgets.`,
       aboutCompanyBn: `রেডিয়্যান্ট পিকস (Radiant Picks)-এ আপনাকে স্বাগতম—যা বাংলাদেশে প্রিমিয়াম লাইফস্টাইল পণ্য কেনাকাটার একটি নির্ভরযোগ্য অনলাইন মাধ্যম। আমরা নিয়ে এসেছি আধুনিক পোশাক, আরামদায়ক স্লিপওয়্যার, এক্সক্লুসিভ লিঞ্জেরি, ট্রেন্ডি জুতো, রূপচর্চার সামগ্রী এবং স্মার্ট কিচেন ও হোম গ্যাজেটসের চমৎকার কালেকশন।`,
+
+      telegramBotToken: '8977559529:AAHBAeReqlbiAvpFWqF__58C0nzG4uTE2uA',
+      telegramChatId: '7545635440',
+      gtmId: 'GTM-5CW9J5HQ',
+      whatsappNumber: '+8801945090085'
     },
   });
   console.log('  ✓ Site settings');

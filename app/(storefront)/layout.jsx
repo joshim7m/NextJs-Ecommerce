@@ -82,7 +82,11 @@ export async function generateMetadata() {
         'max-snippet': -1,
       },
     },
-    verification: {},
+    verification: {
+      // Google Search Console (set GOOGLE_SITE_VERIFICATION in the environment
+      // to the sitename from the GSC "HTML meta tag" verification method).
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
   };
 }
 
@@ -135,6 +139,7 @@ export default async function StorefrontLayout({ children }) {
 
   return (
     <>
+      <link rel="alternate" type="application/rss+xml" title={`${siteName} Blog`} href={`${SITE_URL}/feed.xml`} />
       <GoogleTagManager gtmId={settings.gtmId} />
       <Suspense fallback={null}>
         <PageViewTracker />

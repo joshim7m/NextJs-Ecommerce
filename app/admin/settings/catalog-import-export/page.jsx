@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 function Toast({ toast, onClose }) {
   if (!toast) return null;
@@ -56,6 +56,8 @@ export default function CatalogImportExportPage() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [report, setReport] = useState(null);
   const [showErrors, setShowErrors] = useState(false);
+  const [jobs, setJobs] = useState({ exports: [], imports: [] });
+  const [reportedJobId, setReportedJobId] = useState(null);
   const fileInputRef = useRef(null);
 
   const showToast = (type, message) => {
@@ -63,32 +65,65 @@ export default function CatalogImportExportPage() {
     setTimeout(() => setToast(null), 4000);
   };
 
+  const loadJobs = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/catalog/jobs');
+      if (res.ok) setJobs(await res.json());
+    } catch {
+      /* transient poll error: keep the last snapshot */
+    }
+  }, []);
+
+  const jobsActive = [...jobs.exports, ...jobs.imports].some(
+    (j) => j.status === 'queued' || j.status === 'processing'
+  );
+
+  useEffect(() => {
+    loadJobs();
+  }, [loadJobs]);
+
+  useEffect(() => {
+    if (!jobsActive) return;
+    const timer = setInterval(loadJobs, 2500);
+    return () => clearInterval(timer);
+  }, [jobsActive, loadJobs]);
+
+  // Surface the import report once the queued import job completes.
+  useEffect(() => {
+    if (!reportedJobId) return;
+    const job = jobs.imports.find((j) => j.id === reportedJobId);
+    if (job && job.status === 'completed') {
+      setReport({
+        imported: job.imported ?? 0,
+        skipped: job.skipped ?? 0,
+        errors: Array.isArray(job.errors) ? job.errors : [],
+      });
+      showToast('success', `Import finished: ${job.imported ?? 0} imported, ${job.skipped ?? 0} skipped`);
+      setReportedJobId(null);
+    }
+  }, [jobs, reportedJobId]);
+
+  const formatDateTime = (value) => {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime())
+      ? ''
+      : date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  };
+
   const handleExport = async () => {
     setExporting(true);
     try {
-      const res = await fetch('/api/admin/catalog/export');
+      const res = await fetch('/api/admin/catalog/export/start', { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Export failed');
       }
 
-      const blob = await res.blob();
-      const disposition = res.headers.get('Content-Disposition') || '';
-      const match = disposition.match(/filename="?(.+?)"?$/);
-      const filename = match ? match[1] : 'catalog-export.zip';
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      showToast('success', 'Catalog exported successfully');
+      showToast('success', 'Export started — progress will update below');
+      loadJobs();
     } catch (err) {
-      showToast('error', err.message || 'Failed to export catalog');
+      showToast('error', err.message || 'Failed to start export');
     } finally {
       setExporting(false);
     }
@@ -131,12 +166,9 @@ export default function CatalogImportExportPage() {
         throw new Error(data.error || 'Import failed');
       }
 
-      setReport({
-        imported: data.imported ?? 0,
-        skipped: data.skipped ?? 0,
-        errors: data.errors ?? [],
-      });
-      showToast('success', `Import finished: ${data.imported ?? 0} imported, ${data.skipped ?? 0} skipped`);
+      showToast('success', 'Import started — progress will update below');
+      setReportedJobId(data.id);
+      loadJobs();
       setSelectedFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -190,7 +222,7 @@ export default function CatalogImportExportPage() {
               {exporting ? (
                 <>
                   <Spinner />
-                  Building ZIP... this may take a while
+                  Starting export...
                 </>
               ) : (
                 <>
@@ -309,6 +341,139 @@ export default function CatalogImportExportPage() {
             )}
           </div>
         )}
+
+        {/* Recent Jobs */}
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent Jobs</h2>
+            <button
+              type="button"
+              onClick={loadJobs}
+              className="text-sm font-medium text-cyan-600 hover:text-cyan-700 dark:text-cyan-400"
+            >
+              Refresh
+            </button>
+          </div>
+
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                  <th className="py-2 pr-4 font-medium">Type</th>
+                  <th className="py-2 pr-4 font-medium">Started</th>
+                  <th className="py-2 pr-4 font-medium">Status</th>
+                  <th className="py-2 pr-4 font-medium">Progress</th>
+                  <th className="py-2 pr-4 font-medium">Result</th>
+                  <th className="py-2 font-medium" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                {jobs.exports.map((job) => (
+                  <tr key={job.id}>
+                    <td className="py-2.5 pr-4 font-medium text-slate-700 dark:text-slate-200">Export</td>
+                    <td className="py-2.5 pr-4 text-slate-500 dark:text-slate-400">{formatDateTime(job.createdAt)}</td>
+                    <td className="py-2.5 pr-4">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          job.status === 'completed'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
+                            : job.status === 'failed'
+                              ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                              : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+                        }`}
+                      >
+                        {job.status}
+                      </span>
+                    </td>
+                    <td className="py-2.5 pr-4">
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-32 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
+                          <div
+                            className="h-full rounded-full bg-cyan-500 transition-all"
+                            style={{
+                              width: job.total ? `${Math.min(100, ((job.processed || 0) / job.total) * 100)}%` : '0%',
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {job.processed ?? 0}/{job.total ?? 0}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 pr-4 text-xs text-slate-500 dark:text-slate-400">
+                      {job.error ? (
+                        <span title={job.error} className="block max-w-xs truncate text-red-600 dark:text-red-400">
+                          {job.error}
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="py-2.5 text-right">
+                      {job.status === 'completed' && job.filePath ? (
+                        <a
+                          href={`/api/admin/catalog/export/${job.id}/download`}
+                          className="inline-flex items-center gap-1 rounded-lg bg-cyan-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-600"
+                        >
+                          Download ZIP
+                        </a>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+                {jobs.imports.map((job) => (
+                  <tr key={job.id}>
+                    <td className="py-2.5 pr-4 font-medium text-slate-700 dark:text-slate-200">Import</td>
+                    <td className="py-2.5 pr-4 text-slate-500 dark:text-slate-400">{formatDateTime(job.createdAt)}</td>
+                    <td className="py-2.5 pr-4">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          job.status === 'completed'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
+                            : job.status === 'failed'
+                              ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                              : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+                        }`}
+                      >
+                        {job.status}
+                      </span>
+                    </td>
+                    <td className="py-2.5 pr-4">
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-32 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
+                          <div
+                            className="h-full rounded-full bg-amber-500 transition-all"
+                            style={{
+                              width: job.totalRows
+                                ? `${Math.min(100, ((job.processed || 0) / job.totalRows) * 100)}%`
+                                : '0%',
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {job.processed ?? 0}/{job.totalRows ?? 0}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 pr-4 text-xs text-slate-500 dark:text-slate-400">
+                      {job.error ? (
+                        <span title={job.error} className="block max-w-xs truncate text-red-600 dark:text-red-400">
+                          {job.error}
+                        </span>
+                      ) : job.status === 'completed' ? (
+                        `${job.imported ?? 0} imported, ${job.skipped ?? 0} skipped`
+                      ) : null}
+                    </td>
+                    <td className="py-2.5" />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {jobs.exports.length === 0 && jobs.imports.length === 0 ? (
+              <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                No export/import jobs yet.
+              </p>
+            ) : null}
+          </div>
+        </div>
 
         {/* Info */}
         <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-800 dark:bg-sky-900/20">

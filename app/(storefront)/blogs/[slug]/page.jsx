@@ -8,18 +8,22 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = await prisma.blogPost.findUnique({
-    where: { slug },
-    include: { category: true },
-  });
+  const [post, settings] = await Promise.all([
+    prisma.blogPost.findUnique({
+      where: { slug },
+      include: { category: true },
+    }),
+    prisma.siteSetting.findUnique({ where: { id: 'singleton' } }).catch(() => null),
+  ]);
 
   if (!post || post.status !== 'publish') return {};
 
+  const siteName = settings?.siteName || 'Radiant Picks';
   const description = post.metaDescription || post.content.replace(/<[^>]+>/g, '').slice(0, 160);
   const imageUrl = post.bannerImage || `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}&type=website`;
 
   return {
-    title: `${post.title} | Radiant Picks Blog`,
+    title: `${post.title} | ${siteName} Blog`,
     description,
     keywords: post.tags || undefined,
     alternates: { canonical: `/blogs/${post.slug}` },
@@ -29,7 +33,7 @@ export async function generateMetadata({ params }) {
       title: post.title,
       description,
       url: `${SITE_URL}/blogs/${post.slug}`,
-      siteName: 'Radiant Picks',
+      siteName,
       publishedTime: post.createdAt.toISOString(),
       modifiedTime: post.updatedAt.toISOString(),
       authors: post.category?.authorName ? [post.category.authorName] : undefined,
@@ -97,6 +101,9 @@ export default async function BlogPostPage({ params }) {
   if (!data) return notFound();
 
   const { post, related, ads, contentWithAds, readingTime, wordCount } = data;
+  const settings = await prisma.siteSetting
+    .findUnique({ where: { id: 'singleton' } })
+    .catch(() => null);
   const date = new Date(post.createdAt).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
@@ -118,8 +125,8 @@ export default async function BlogPostPage({ params }) {
     } : undefined,
     publisher: {
       '@type': 'Organization',
-      name: 'Radiant Picks',
-      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
+      name: settings?.siteName || 'Radiant Picks',
+      logo: { '@type': 'ImageObject', url: settings?.logo || `${SITE_URL}/logo.png` },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -146,7 +153,7 @@ export default async function BlogPostPage({ params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-      <article itemScope itemType="https://schema.org/BlogPosting">
+      <article>
         {/* Breadcrumb */}
         <div className="border-b border-slate-100 bg-white/80 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/80">
           <nav className="mx-auto flex max-w-4xl items-center gap-2 px-4 py-3 text-xs text-slate-400 sm:px-6" aria-label="Breadcrumb">
@@ -160,7 +167,7 @@ export default async function BlogPostPage({ params }) {
               </>
             )}
             <svg className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            <span className="truncate text-slate-500 dark:text-slate-400" itemProp="headline">{post.title}</span>
+            <span className="truncate text-slate-500 dark:text-slate-400">{post.title}</span>
           </nav>
         </div>
 
@@ -168,7 +175,7 @@ export default async function BlogPostPage({ params }) {
           {/* Banner */}
           {post.bannerImage && (
             <div className="mb-8 overflow-hidden rounded-xl shadow-sm dark:shadow-slate-800/50">
-              <img src={post.bannerImage} alt={post.title} className="w-full h-[220px] sm:h-[400px] object-cover" itemProp="image" />
+              <img src={post.bannerImage} alt={post.title} className="w-full h-[220px] sm:h-[400px] object-cover" />
             </div>
           )}
 
@@ -179,26 +186,26 @@ export default async function BlogPostPage({ params }) {
                 <Link
                   href={`/blogs/category/${post.category.slug}`}
                   className="inline-block rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-3.5 py-1 text-xs font-semibold text-white shadow-sm hover:shadow-md transition"
-                  itemProp="articleSection"
+                 
                 >{post.category.title}</Link>
               )}
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight sm:text-4xl sm:leading-tight" itemProp="headline">{post.title}</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight sm:text-4xl sm:leading-tight">{post.title}</h1>
 
             <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               {post.category?.authorName && (
-                <span className="inline-flex items-center gap-2" itemProp="author" itemScope itemType="https://schema.org/Person">
+                <span className="inline-flex items-center gap-2">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 text-sm font-bold text-white shadow-sm">
                     {post.category.authorName.charAt(0).toUpperCase()}
                   </span>
-                  <span className="font-medium text-slate-700 dark:text-slate-300" itemProp="name">{post.category.authorName}</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{post.category.authorName}</span>
                 </span>
               )}
-              <time dateTime={post.createdAt} className="inline-flex items-center gap-1.5 text-slate-500 dark:text-slate-400" itemProp="datePublished">
+              <time dateTime={post.createdAt} className="inline-flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                 <svg className="h-4 w-4 text-violet-500 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 {date}
               </time>
-              <meta itemProp="dateModified" content={post.updatedAt} />
+              <meta />
               <span className="hidden md:inline-flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                 <svg className="h-4 w-4 text-emerald-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6l4 2" /><circle cx="12" cy="12" r="10" /></svg>
                 {readingTime} min read
@@ -210,7 +217,7 @@ export default async function BlogPostPage({ params }) {
           <div
             className="prose prose-slate max-w-none prose-headings:text-slate-900 prose-a:text-[#2f0f6b] prose-img:rounded-lg prose-p:leading-relaxed sm:prose-lg dark:prose-invert dark:prose-headings:text-white dark:prose-a:text-[#a78bfa] dark:prose-strong:text-white"
             dangerouslySetInnerHTML={{ __html: contentWithAds }}
-            itemProp="articleBody"
+           
           />
 
           {/* Fallback ads */}
@@ -225,7 +232,7 @@ export default async function BlogPostPage({ params }) {
 
           {/* Tags */}
           {post.tags && (
-            <div className="mt-6 flex flex-wrap gap-1.5" itemProp="keywords">
+            <div className="mt-6 flex flex-wrap gap-1.5">
               {post.tags.split(',').map((tag) => {
                 const colors = [
                   'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',

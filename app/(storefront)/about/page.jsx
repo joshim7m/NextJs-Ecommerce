@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import prisma from '../../../src/lib/prisma';
+import WebPageJsonLd from '../../../src/components/storefront/WebPageJsonLd';
 
 export const metadata = {
   title: 'About Us | Radiant Picks',
@@ -108,7 +109,9 @@ export default async function AboutPage({ searchParams }) {
   const aboutText = lang === 'bn' ? aboutBn : aboutEn;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
+    <>
+      <WebPageJsonLd path="/about" name="About Us | Radiant Picks" />
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
       <nav className="mb-8 flex items-center gap-2 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-[#2f0f6b] dark:hover:text-[#a78bfa] transition-colors">Home</Link>
         <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -127,5 +130,6 @@ export default async function AboutPage({ searchParams }) {
         {renderAbout(aboutText)}
       </div>
     </div>
+    </>
   );
 }

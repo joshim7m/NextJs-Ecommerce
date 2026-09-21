@@ -5,10 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCategories, createProduct } from '../../../../src/actions/products';
 import CategoryMultiSelect from '../../../../src/components/admin/CategoryMultiSelect';
+import { getYouTubeId } from '../../../../src/components/storefront/partials/ImageGallery';
+
+const isValidYouTubeUrl = (url) => !url || Boolean(getYouTubeId(url));
 
 const emptyForm = {
-  title: '', slug: '', description: '', metaDescription: '', tags: '', unite_price: '', sale_price: '', sku: '',
-  quantity: '', status: 'draft',
+  title: '', slug: '', description: '', metaDescription: '', videoUrl: '', tags: '', unite_price: '', sale_price: '', sku: '',
+  quantity: '', status: 'draft', isFeatured: false,
 };
 
 export default function CreateProductPage() {
@@ -29,7 +32,7 @@ export default function CreateProductPage() {
   }, [previews]);
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
+  const videoError = !!form.videoUrl.trim() && !isValidYouTubeUrl(form.videoUrl);
   const generateSlug = () => {
     const slug = form.title
       .toLowerCase()
@@ -58,6 +61,7 @@ export default function CreateProductPage() {
 
   const handleSave = async () => {
     if (!form.title || !form.slug) return;
+    if (videoError) return;
     setSaving(true);
     try {
       let imagePaths = [];
@@ -111,6 +115,13 @@ export default function CreateProductPage() {
             <textarea name="metaDescription" value={form.metaDescription} onChange={handleChange} rows={2} maxLength={160} className={inputCls} placeholder="e.g. Buy soft polyester sleepwear set online at Radiant Picks with cash on delivery across Bangladesh." />
           </div>
           <div className="sm:col-span-2">
+            <label className={labelCls}>YouTube Video URL <span className="text-slate-400 normal-case">(optional — shown in the product gallery)</span></label>
+            <input name="videoUrl" value={form.videoUrl} onChange={handleChange} className={`${inputCls} ${videoError ? 'border-red-400 focus:border-red-500 focus:ring-red-400' : ''}`} placeholder="https://www.youtube.com/watch?v=..." />
+            {videoError && (
+              <p className="mt-1 text-xs text-red-500 dark:text-red-400">Please enter a valid YouTube URL (e.g. https://www.youtube.com/watch?v=VIDEO_ID).</p>
+            )}
+          </div>
+          <div className="sm:col-span-2">
             <label className={labelCls}>Tags / Keywords <span className="text-slate-400 normal-case">(comma-separated, for SEO)</span></label>
             <input name="tags" value={form.tags} onChange={handleChange} className={inputCls} placeholder="e.g. sleepwear, women nightwear, buy online BD, radiant picks" />
           </div>
@@ -139,6 +150,18 @@ export default function CreateProductPage() {
               <option value="draft">Draft</option>
               <option value="publish">Published</option>
             </select>
+          </div>
+          <div>
+            <label className={labelCls}>Featured</label>
+            <label className="mt-1 flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.isFeatured}
+                onChange={(e) => setForm((prev) => ({ ...prev, isFeatured: e.target.checked }))}
+                className="h-4 w-4 rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-700"
+              />
+              <span className="text-sm font-medium text-slate-900 dark:text-white">Featured product</span>
+            </label>
           </div>
           <div className="sm:col-span-2">
             <label className={labelCls}>Images</label>

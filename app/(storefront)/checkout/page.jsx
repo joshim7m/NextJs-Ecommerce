@@ -13,33 +13,41 @@ function validate(form) {
 
   const name = form.name.trim();
   if (!name) {
-    errors.name = 'Name is required.';
+    errors.name = 'নাম দেওয়া আবশ্যক।';
   } else if (name.length < 3) {
-    errors.name = 'Name must be at least 3 characters.';
+    errors.name = 'নাম কমপক্ষে ৩ অক্ষরের হতে হবে।';
   } else if (name.length > 20) {
-    errors.name = 'Name must be under 20 characters.';
+    errors.name = 'নাম ২০ অক্ষরের কম হতে হবে।';
   } else if (!/^[A-Za-z\s]+$/.test(name)) {
-    errors.name = 'Only letters and spaces allowed.';
+    errors.name = 'শুধুমাত্র ইংরেজি অক্ষর ও স্পেস ব্যবহার করা যাবে।';
   }
 
   const mobile = form.mobile.trim();
   if (!mobile) {
-    errors.mobile = 'Mobile number is required.';
+    errors.mobile = 'মোবাইল নম্বর দেওয়া আবশ্যক।';
   } else if (!MOBILE_REGEX.test(mobile)) {
-    errors.mobile = 'Enter a valid BD mobile number (e.g. 017XXXXXXXX).';
+    errors.mobile = 'সঠিক মোবাইল নম্বর দিন (যেমন: 017XXXXXXXX)।';
   }
 
   const address = form.address.trim();
   if (!address) {
-    errors.address = 'Address is required.';
+    errors.address = 'ঠিকানা দেওয়া আবশ্যক।';
   } else if (address.length < 20) {
-    errors.address = 'Address must be at least 20 characters.';
+    errors.address = 'ঠিকানা কমপক্ষে ২০ অক্ষরের হতে হবে।';
   } else if (address.length > 100) {
-    errors.address = 'Address must be under 100 characters.';
+    errors.address = 'ঠিকানা ১০০ অক্ষরের কম হতে হবে।';
   }
 
   return errors;
 }
+
+const AREA_LABELS = {
+  'Inside Dhaka': 'ঢাকার ভিতরে',
+  'Outside Dhaka': 'ঢাকার বাইরে',
+};
+
+const BN_DIGITS = { 0: '০', 1: '১', 2: '২', 3: '৩', 4: '৪', 5: '৫', 6: '৬', 7: '৭', 8: '৮', 9: '৯' };
+const toBn = (value) => String(value).replace(/\d/g, (d) => BN_DIGITS[d]);
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -108,9 +116,9 @@ export default function CheckoutPage() {
   async function tryReadError(res) {
     try {
       const data = await res.json();
-      return data.error || 'Checkout failed';
+      return data.error || 'চেকআউট ব্যর্থ হয়েছে';
     } catch {
-      return `Checkout failed (${res.status})`;
+      return `চেকআউট ব্যর্থ হয়েছে (${res.status})`;
     }
   }
 
@@ -123,7 +131,7 @@ export default function CheckoutPage() {
     if (Object.keys(fieldErrors).length > 0) return;
 
     if (cart.length === 0) {
-      setErrorMsg('Your cart is empty.');
+      setErrorMsg('আপনার কার্ট খালি আছে।');
       return;
     }
 
@@ -190,10 +198,11 @@ export default function CheckoutPage() {
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <form onSubmit={handleSubmit} className="mx-auto max-w-lg lg:max-w-5xl lg:grid lg:grid-cols-[1fr_420px] lg:gap-8">
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 dark:border-slate-700 dark:bg-slate-800">
-          <h1 className="text-xl font-bold text-slate-900 sm:text-2xl dark:text-slate-100">Checkout</h1>
+    <section className="min-h-[calc(100vh-3rem)] sm:min-h-[calc(100vh-3.5rem)]">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <form onSubmit={handleSubmit} className="mx-auto max-w-lg lg:max-w-5xl lg:grid lg:grid-cols-[1fr_420px] lg:gap-8">
+          <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 dark:border-slate-700 dark:bg-slate-800">
+            <h1 className="text-xl font-bold text-slate-900 sm:text-2xl dark:text-slate-100">চেকআউট</h1>
 
           {errorMsg ? (
             <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">{errorMsg}</div>
@@ -201,47 +210,52 @@ export default function CheckoutPage() {
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name *</label>
-              <input id="name" name="name" value={form.name} onChange={handleChange} className={`mt-1.5 w-full rounded-xl border p-3 text-sm dark:text-slate-200 dark:placeholder:text-slate-400 ${errors.name ? 'border-red-400 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-slate-200 bg-slate-50 dark:border-slate-600 dark:bg-slate-700'}`} placeholder="Your name" />
+              <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">নাম *</label>
+              <input id="name" name="name" value={form.name} onChange={handleChange} className={`mt-1.5 w-full rounded-xl border p-3 text-sm dark:text-slate-200 dark:placeholder:text-slate-400 ${errors.name ? 'border-red-400 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-slate-200 bg-slate-50 dark:border-slate-600 dark:bg-slate-700'}`} placeholder="আপনার নাম" />
               {errors.name ? <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{errors.name}</p> : null}
             </div>
             <div>
-              <label htmlFor="mobile" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Mobile *</label>
+              <label htmlFor="mobile" className="block text-sm font-medium text-slate-700 dark:text-slate-300">মোবাইল *</label>
               <input id="mobile" name="mobile" value={form.mobile} onChange={handleChange} className={`mt-1.5 w-full rounded-xl border p-3 text-sm dark:text-slate-200 dark:placeholder:text-slate-400 ${errors.mobile ? 'border-red-400 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-slate-200 bg-slate-50 dark:border-slate-600 dark:bg-slate-700'}`} placeholder="01XXXXXXXXX" />
               {errors.mobile ? <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{errors.mobile}</p> : null}
             </div>
             <div>
-              <label htmlFor="address" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Address *</label>
-              <textarea id="address" name="address" value={form.address} onChange={handleChange} rows="3" className={`mt-1.5 w-full rounded-xl border p-3 text-sm dark:text-slate-200 dark:placeholder:text-slate-400 ${errors.address ? 'border-red-400 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-slate-200 bg-slate-50 dark:border-slate-600 dark:bg-slate-700'}`} placeholder="Street address, building, floor" />
+              <label htmlFor="address" className="block text-sm font-medium text-slate-700 dark:text-slate-300">ঠিকানা *</label>
+              <textarea id="address" name="address" value={form.address} onChange={handleChange} rows="3" className={`mt-1.5 w-full rounded-xl border p-3 text-sm dark:text-slate-200 dark:placeholder:text-slate-400 ${errors.address ? 'border-red-400 bg-red-50 dark:border-red-500 dark:bg-red-900/20' : 'border-slate-200 bg-slate-50 dark:border-slate-600 dark:bg-slate-700'}`} placeholder="রাস্তার নাম, বাড়ি, ফ্লোর" />
               {errors.address ? <p className="mt-1 text-xs font-medium text-red-600 dark:text-red-400">{errors.address}</p> : null}
             </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-600 dark:bg-slate-700">
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Delivery</p>
-              <div className="mt-3 space-y-2">
-                <label className="flex items-center gap-3">
-                  <input type="radio" name="shippingArea" value="Inside Dhaka" checked={form.shippingArea === 'Inside Dhaka'} onChange={handleChange} className="h-4 w-4 text-[#2f0f6b] dark:text-[#a78bfa]" />
-                  <span className="text-sm">Inside Dhaka — 80 taka</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input type="radio" name="shippingArea" value="Outside Dhaka" checked={form.shippingArea === 'Outside Dhaka'} onChange={handleChange} className="h-4 w-4 text-[#2f0f6b] dark:text-[#a78bfa]" />
-                  <span className="text-sm">Outside Dhaka — 120 taka</span>
-                </label>
+            <div>
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">ডেলিভারি এলাকা *</p>
+              <div className="mt-1.5 grid grid-cols-2 gap-2">
+                {[
+                  { value: 'Inside Dhaka', charge: 80 },
+                  { value: 'Outside Dhaka', charge: 120 },
+                ].map((opt) => {
+                  const active = form.shippingArea === opt.value;
+                  return (
+                    <label
+                      key={opt.value}
+                      className={`relative flex cursor-pointer items-center justify-between rounded-xl border px-3 py-2.5 text-sm transition ${
+                        active
+                          ? 'border-[#2f0f6b] bg-[#2f0f6b]/10 text-[#2f0f6b] font-semibold dark:border-[#a78bfa] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300 dark:hover:border-slate-500'
+                      }`}
+                    >
+                      <input type="radio" name="shippingArea" value={opt.value} checked={active} onChange={handleChange} className="sr-only" />
+                      <span className="truncate">{AREA_LABELS[opt.value]}</span>
+                      <span className="shrink-0 pl-2 font-semibold">৳{toBn(opt.charge)}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full rounded-xl bg-[#2f0f6b] px-6 py-3 text-sm font-semibold text-white hover:bg-[#2f0f6b]/90 active:scale-[0.98] transition disabled:opacity-50 dark:bg-[#a78bfa] dark:text-slate-900"
-          >
-            {submitting ? 'Processing...' : 'Place Order'}
-          </button>
         </div>
 
         <aside className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-sm lg:mt-0 dark:border-slate-700 dark:bg-slate-800">
           <div className="border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4 dark:border-slate-700">
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Order Summary</h2>
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">অর্ডার সামারি</h2>
           </div>
           <div className="divide-y divide-slate-100 dark:divide-slate-700">
             {cart.map((item, i) => (
@@ -257,7 +271,7 @@ export default function CheckoutPage() {
                     <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     {item.variantName ? <>{item.variantName} &times; {item.quantity}</> : <>&times; {item.quantity}</>}
                   </p>
-                  <p className="text-sm font-semibold text-[#2f0f6b] whitespace-nowrap dark:text-[#a78bfa]">৳ {(Number(item.price ?? 0) * item.quantity).toLocaleString()}</p>
+                  <p className="text-sm font-semibold text-[#2f0f6b] whitespace-nowrap dark:text-[#a78bfa]">৳ {toBn((Number(item.price ?? 0) * item.quantity).toLocaleString())}</p>
                   </div>
                 </div>
                 
@@ -266,21 +280,50 @@ export default function CheckoutPage() {
           </div>
           <div className="space-y-1.5 border-t border-slate-100 px-4 py-4 sm:px-6 dark:border-slate-700">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">৳ {subtotal.toLocaleString()}</span>
+              <span className="text-slate-600 dark:text-slate-400">সাবটোটাল</span>
+              <span className="font-medium text-slate-900 dark:text-slate-100">৳ {toBn(subtotal.toLocaleString())}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600 dark:text-slate-400">Delivery</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">৳ {deliveryCharge}</span>
+              <span className="text-slate-600 dark:text-slate-400">ডেলিভারি চার্জ</span>
+              <span className="font-medium text-slate-900 dark:text-slate-100">৳ {toBn(deliveryCharge)}</span>
             </div>
             <hr className="border-slate-200 dark:border-slate-600" />
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">Total</span>
-              <span className="text-lg font-bold text-[#2f0f6b] dark:text-[#a78bfa]">৳ {total.toLocaleString()}</span>
+              <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">সর্বমোট</span>
+              <span className="text-lg font-bold text-[#2f0f6b] dark:text-[#a78bfa]">৳ {toBn(total.toLocaleString())}</span>
             </div>
+          </div>
+          <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-[#2f0f6b] to-[#4c1d95] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[#2f0f6b]/25 hover:shadow-[#2f0f6b]/40 hover:shadow-md active:scale-[0.98] transition disabled:opacity-50 dark:bg-gradient-to-r dark:from-[#a78bfa] dark:to-[#c4b5fd] dark:text-slate-900 dark:shadow-[#a78bfa]/25"
+            >
+              <span className="mt-0.5 pointer-events-none absolute inset-y-0 -left-full w-1/2 skew-x-[-20deg] bg-white/10 transition-all duration-700 group-hover:left-full" />
+              {submitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8 8 8 0 018 8h-2a6 6 0 00-6-6 6 6 0 00-6 6H4z" />
+                  </svg>
+                  প্রসেসিং...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  অর্ডারটি কনফার্ম করুন
+                  <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+              )}
+            </button>
           </div>
         </aside>
       </form>
+      </div>
     </section>
   );
 }

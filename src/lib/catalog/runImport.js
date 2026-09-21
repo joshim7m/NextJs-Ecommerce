@@ -5,10 +5,10 @@ import { parse } from 'csv-parse';
 import ExcelJS from 'exceljs';
 import AdmZip from 'adm-zip';
 import prisma from '@/src/lib/prisma';
-import { CHUNK_SIZE, VALID_PRODUCT_STATUSES } from './constants';
+import { CHUNK_SIZE, VALID_PRODUCT_STATUSES, STATUS_ALIASES } from './constants';
 import { sanitizeFilename, isRemotePath, fetchRemoteImage } from './images';
 
-export async function importCatalogFile(filePath, originalName, workDir) {
+export async function importCatalogFile(filePath, originalName, workDir, { onCount, onProgress } = {}) {
   const extension = path.extname(originalName).toLowerCase();
 
   if (extension === '.zip') {
@@ -21,15 +21,47 @@ export async function importCatalogFile(filePath, originalName, workDir) {
       throw new Error('products.csv not found in the uploaded archive.');
     }
 
-    return importProducts(productFile, extractedDir);
+    await onCount?.({ total: await countRows(productFile, '.csv') });
+    return importProducts(productFile, extractedDir, { onProgress });
   }
 
   const fileType = await detectFileType(filePath, extension);
 
+  await onCount?.({ total: await countRows(filePath, extension) });
+
   if (fileType === 'categories') {
-    return importCategories(filePath, extension);
+    return importCategories(filePath, extension, { onProgress });
   }
-  return importProducts(filePath, '');
+  return importProducts(filePath, '', { onProgress });
+}
+
+async function countRows(filePath, extension) {
+  if (extension === '.xlsx') {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(filePath);
+    const sheet = workbook.worksheets[0];
+    return Math.max(0, sheet.rowCount - 1);
+  }
+
+  let count = 0;
+  let headerSkipped = false;
+
+  await new Promise((resolve, reject) => {
+    const parser = parse({ bom: true, trim: true });
+    createReadStream(filePath).pipe(parser);
+    parser.on('data', (row) => {
+      if (!headerSkipped) {
+        headerSkipped = true;
+        return;
+      }
+      count++;
+      void row;
+    });
+    parser.on('end', resolve);
+    parser.on('error', reject);
+  });
+
+  return count;
 }
 
 async function detectFileType(filePath, extension) {
@@ -116,7 +148,7 @@ async function* rowStream(filePath, extension) {
   if (batch.length) yield batch;
 }
 
-async function importProducts(filePath, extractedDir) {
+async function importProducts(filePath, extractedDir, { onProgress } = {}) {
   const extension = path.extname(filePath).toLowerCase();
   const existingSkus = new Set(
     (
@@ -132,17 +164,23 @@ async function importProducts(filePath, extractedDir) {
 
   let imported = 0;
   let skipped = 0;
+  let processed = 0;
 
   for await (const batch of rowStream(filePath, extension)) {
     for (const { row, rowNumber } of batch) {
-      const sku = clean(row.sku);
+      const title = clean(row.title);
+
+      // This schema requires a unique SKU; rows without one get a deterministic
+      // generated SKU from (slug, row number) — stable across re-imports so
+      // re-uploading the same file dedupes instead of duplicating products.
+      // (Must be resolved before the dedupe check so existing rows are skipped.)
+      const sku = clean(row.sku) || (title ? `AUTO-${slugify(title).toUpperCase()}-${rowNumber}` : null);
 
       if (sku && existingSkus.has(sku)) {
         skipped++;
         continue;
       }
 
-      const title = clean(row.title);
       const unitPrice = priceOf(row.unit_price);
 
       if (!title) {
@@ -156,9 +194,10 @@ async function importProducts(filePath, extractedDir) {
         continue;
       }
 
-      const status = (clean(row.status) || 'draft').toLowerCase();
-      if (!VALID_PRODUCT_STATUSES.includes(status)) {
-        errors.push({ row: rowNumber, message: `Invalid status "${status}". Allowed: ${VALID_PRODUCT_STATUSES.join(', ')}.` });
+      const rawStatus = (clean(row.status) || 'draft').toLowerCase();
+      const status = STATUS_ALIASES[rawStatus];
+      if (!status || !VALID_PRODUCT_STATUSES.includes(status)) {
+        errors.push({ row: rowNumber, message: `Invalid status "${rawStatus}". Allowed: active, publish, draft, inactive.` });
         skipped++;
         continue;
       }
@@ -182,8 +221,10 @@ async function importProducts(filePath, extractedDir) {
         },
       });
 
+      // Laravel format: primary `Category` + extra `Categories` are merged by name.
+      const categoryNames = [...new Set([...splitList(row.category), ...splitList(row.categories)])];
       const categoryIds = [];
-      for (const name of splitList(row.categories)) {
+      for (const name of categoryNames) {
         const categorySlug = slugify(name);
         const category = await prisma.category.upsert({
           where: { slug: categorySlug },
@@ -205,17 +246,21 @@ async function importProducts(filePath, extractedDir) {
       await importProductImages(product, extractedDir, row.images, rowNumber, errors);
       imported++;
     }
+
+    processed += batch.length;
+    await onProgress?.({ processed, imported, skipped, errors });
   }
 
   return { imported, skipped, errors };
 }
 
-async function importCategories(filePath, extension) {
+async function importCategories(filePath, extension, { onProgress } = {}) {
   const seenSlugs = new Set((await prisma.category.findMany({ select: { slug: true } })).map((c) => c.slug));
   const errors = [];
 
   let imported = 0;
   let skipped = 0;
+  let processed = 0;
 
   for await (const batch of rowStream(filePath, extension)) {
     for (const { row, rowNumber } of batch) {
@@ -259,6 +304,9 @@ async function importCategories(filePath, extension) {
 
       imported++;
     }
+
+    processed += batch.length;
+    await onProgress?.({ processed, imported, skipped, errors });
   }
 
   return { imported, skipped, errors };
@@ -278,10 +326,12 @@ async function importProductImages(product, extractedDir, imagesColumn, rowNumbe
 
     const ext = path.extname(sanitizeFilename(name)) || '.jpg';
     const filename = `${product.id}-${index}${ext}`;
-    const target = path.join(process.cwd(), 'public', 'uploads', 'products', filename);
+    // Store under UPLOAD_DIR (the folder served by app/uploads/[...path]) — same as the admin upload route.
+    const productsDir = path.resolve(process.env.UPLOAD_DIR || path.join(process.cwd(), 'uploads'), 'products');
+    const target = path.join(productsDir, filename);
 
     try {
-      await mkdir(path.dirname(target), { recursive: true });
+      await mkdir(productsDir, { recursive: true });
 
       if (source.remote) {
         const buffer = await fetchRemoteImage(source.url);

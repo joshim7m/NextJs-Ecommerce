@@ -7,6 +7,9 @@ import { getProduct, getCategories, updateProduct } from '../../../../src/action
 import ProductInfo from './partials/product-info';
 import VariantGenerator from './partials/variant-generator';
 import ManageVariant from './partials/manage-variant';
+import { getYouTubeId } from '../../../../src/components/storefront/partials/ImageGallery';
+
+const isValidYouTubeUrl = (url) => !url || Boolean(getYouTubeId(url));
 
 const emptyForm = {
   title: '', slug: '', description: '', metaDescription: '', tags: '', unite_price: '', sale_price: '', sku: '',
@@ -53,12 +56,14 @@ function EditProductForm() {
         slug: product.slug,
         description: product.description || '',
         metaDescription: product.metaDescription || '',
+        videoUrl: product.videoUrl || '',
         tags: product.tags || '',
         unite_price: product.unite_price.toString(),
         sale_price: product.sale_price?.toString() || '',
         sku: product.sku?.toString() || '',
         quantity: product.quantity?.toString() || '',
         status: product.status,
+        isFeatured: Boolean(product.isFeatured),
       });
       setSelectedCategories(product.categories || []);
       setExistingImages(product.images || []);
@@ -94,6 +99,7 @@ function EditProductForm() {
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const videoError = !!form.videoUrl?.trim() && !isValidYouTubeUrl(form.videoUrl);
   const generateSlug = () => {
     const slug = form.title
       .toLowerCase()
@@ -191,6 +197,7 @@ function EditProductForm() {
 
   const handleSave = async () => {
     if (!form.title || !form.slug || !id) return;
+    if (videoError) return;
     setSaving(true);
     setToast(null);
     try {
@@ -291,6 +298,8 @@ function EditProductForm() {
       <ProductInfo
         form={form}
         onChange={handleChange}
+        onFeaturedChange={(e) => setForm((prev) => ({ ...prev, isFeatured: e.target.checked }))}
+        videoUrlError={videoError}
         onGenerateSlug={generateSlug}
         onGenerateSku={generateSku}
         categories={categories}

@@ -56,16 +56,17 @@ export default function CartPage() {
   };
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Your Cart</h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-300">Review the selected items before checkout.</p>
+    <section className="min-h-[calc(100vh-3rem)] sm:min-h-[calc(100vh-3.5rem)]">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">আপনার কার্ট</h1>
+        <p className="mt-2 text-slate-600 dark:text-slate-300">চেকআউট করার আগে নির্বাচিত পণ্যগুলো দেখে নিন।</p>
 
         {cart.length === 0 ? (
           <div className="mt-8 rounded-xl border border-slate-200 bg-white p-10 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800">
-            <p className="text-slate-500 dark:text-slate-400">Your cart is empty.</p>
+            <p className="text-slate-500 dark:text-slate-400">আপনার কার্ট খালি আছে।</p>
             <Link href="/categories" className="mt-4 inline-block rounded-xl bg-[#2f0f6b] px-6 py-3 text-white hover:bg-[#2f0f6b]/90 transition dark:bg-[#a78bfa] dark:text-slate-900">
-              Browse products
+              পণ্য দেখুন
             </Link>
           </div>
         ) : (
@@ -96,7 +97,7 @@ export default function CartPage() {
                   </div>
                   <div className="text-right shrink-0">
                     <p className="font-semibold text-[#2f0f6b] dark:text-[#a78bfa]">৳ {Number(item.price ?? 0).toLocaleString()}</p>
-                    <button onClick={() => handleRemove(index)} className="mt-2 text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">Remove</button>
+                    <button onClick={() => handleRemove(index)} className="mt-2 text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">মুছে ফেলুন</button>
                   </div>
                 </div>
               </div>
@@ -104,7 +105,7 @@ export default function CartPage() {
 
             <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
               <div className="flex items-center justify-between">
-                <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">Subtotal</p>
+                <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">সাবটোটাল</p>
                 <p className="text-lg font-semibold text-[#2f0f6b] dark:text-[#a78bfa]">৳ {subtotal.toLocaleString()}</p>
               </div>
             </div>
@@ -113,10 +114,11 @@ export default function CartPage() {
               href="/checkout"
               className="inline-flex rounded-xl bg-[#2f0f6b] px-6 py-4 text-white hover:bg-[#2f0f6b]/90 transition dark:bg-[#a78bfa] dark:text-slate-900"
             >
-              Proceed to Checkout
+              চেকআউট করুন
             </Link>
           </div>
         )}
+        </div>
       </div>
     </section>
   );

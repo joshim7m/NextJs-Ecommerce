@@ -1,6 +1,6 @@
 import CategoryMultiSelect from '../../../../../src/components/admin/CategoryMultiSelect';
 
-export default function ProductInfo({ form, onChange, categories, selectedCategories, onCategoriesChange, existingImages, newPreviews, onRemoveExisting, onRemoveNew, onAdd, onGenerateSlug, onGenerateSku }) {
+export default function ProductInfo({ form, onChange, onFeaturedChange, videoUrlError, categories, selectedCategories, onCategoriesChange, existingImages, newPreviews, onRemoveExisting, onRemoveNew, onAdd, onGenerateSlug, onGenerateSku }) {
   const inputCls = "mt-1 w-full rounded-lg border border-slate-200 p-2.5 text-sm focus:border-[#2f0f6b] focus:outline-none focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]";
   const labelCls = "block text-xs font-medium text-slate-500 uppercase tracking-wider dark:text-slate-400";
   const btnCls = "rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 transition disabled:opacity-40 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700";
@@ -30,6 +30,13 @@ export default function ProductInfo({ form, onChange, categories, selectedCatego
           <textarea name="metaDescription" value={form.metaDescription || ''} onChange={onChange} rows={2} maxLength={160} className={inputCls} placeholder="e.g. Buy soft polyester sleepwear set online at Radiant Picks with cash on delivery across Bangladesh." />
         </div>
         <div className="sm:col-span-2">
+          <label className={labelCls}>YouTube Video URL <span className="text-slate-400 normal-case">(optional — shown in the product gallery)</span></label>
+          <input name="videoUrl" value={form.videoUrl || ''} onChange={onChange} className={`${inputCls} ${videoUrlError ? 'border-red-400 focus:border-red-500 focus:ring-red-400' : ''}`} placeholder="https://www.youtube.com/watch?v=..." />
+          {videoUrlError && (
+            <p className="mt-1 text-xs text-red-500 dark:text-red-400">Please enter a valid YouTube URL (e.g. https://www.youtube.com/watch?v=VIDEO_ID).</p>
+          )}
+        </div>
+        <div className="sm:col-span-2">
           <label className={labelCls}>Tags / Keywords <span className="text-slate-400 normal-case">(comma-separated, for SEO)</span></label>
           <input name="tags" value={form.tags || ''} onChange={onChange} className={inputCls} placeholder="e.g. sleepwear, women nightwear, buy online BD, radiant picks" />
         </div>
@@ -54,39 +61,55 @@ export default function ProductInfo({ form, onChange, categories, selectedCatego
           <label className={labelCls}>Stock</label>
           <input name="quantity" type="number" value={form.quantity} onChange={onChange} className={inputCls} />
         </div>
-        <div>
-          <label className={labelCls}>Status</label>
-          <select name="status" value={form.status} onChange={onChange} className={inputCls}>
-            <option value="draft">Draft</option>
-            <option value="publish">Published</option>
-          </select>
+      </div>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>Status</label>
+            <select name="status" value={form.status} onChange={onChange} className={inputCls}>
+              <option value="draft">Draft</option>
+              <option value="publish">Published</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Featured</label>
+            <label className="flex items-center gap-3 cursor-pointer pt-3">
+              <input
+                type="checkbox"
+                checked={Boolean(form.isFeatured)}
+                onChange={onFeaturedChange}
+                className="h-4 w-4 rounded border-slate-300 text-[#2f0f6b] focus:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-700"
+              />
+              <span className="text-sm font-medium text-slate-900 dark:text-white">Featured product</span>
+            </label>
+          </div>
         </div>
-        <div className="">
+        <div>
           <label className={labelCls}>Categories</label>
           <CategoryMultiSelect categories={categories} selected={selectedCategories || []} onChange={onCategoriesChange} />
         </div>
-        <div className="">
-          <label className={labelCls}>Images</label>
-          <div className="mt-1 flex flex-wrap gap-3">
-            {existingImages.map((img) => (
-              <div key={img.id} className="relative group">
-                <img src={img.image_path} alt="" className="h-20 w-20 rounded-lg border border-slate-200 object-cover dark:border-slate-700" />
-                <button type="button" onClick={() => onRemoveExisting(img.id)} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition hover:bg-red-600">&times;</button>
-              </div>
-            ))}
-            {newPreviews.map((src, i) => (
-              <div key={`new-${i}`} className="relative group">
-                <img src={src} alt="" className="h-20 w-20 rounded-lg border-2 border-dashed border-[#2f0f6b] object-cover" />
-                <button type="button" onClick={() => onRemoveNew(i)} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition hover:bg-red-600">&times;</button>
-              </div>
-            ))}
-            <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b] transition dark:border-slate-600 dark:hover:border-[#a78bfa] dark:hover:text-[#a78bfa]">
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
-              </svg>
-              <input type="file" multiple accept="image/*" onChange={onAdd} className="hidden" />
-            </label>
-          </div>
+      </div>
+      <div className="mt-4">
+        <label className={labelCls}>Images</label>
+        <div className="mt-1 flex flex-wrap gap-3">
+          {existingImages.map((img) => (
+            <div key={img.id} className="relative group">
+              <img src={img.image_path} alt="" className="h-20 w-20 rounded-lg border border-slate-200 object-cover dark:border-slate-700" />
+              <button type="button" onClick={() => onRemoveExisting(img.id)} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition hover:bg-red-600">&times;</button>
+            </div>
+          ))}
+          {newPreviews.map((src, i) => (
+            <div key={`new-${i}`} className="relative group">
+              <img src={src} alt="" className="h-20 w-20 rounded-lg border-2 border-dashed border-[#2f0f6b] object-cover" />
+              <button type="button" onClick={() => onRemoveNew(i)} className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 group-hover:opacity-100 transition hover:bg-red-600">&times;</button>
+            </div>
+          ))}
+          <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-slate-400 hover:border-[#2f0f6b] hover:text-[#2f0f6b] transition dark:border-slate-600 dark:hover:border-[#a78bfa] dark:hover:text-[#a78bfa]">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+            </svg>
+            <input type="file" multiple accept="image/*" onChange={onAdd} className="hidden" />
+          </label>
         </div>
       </div>
     </div>

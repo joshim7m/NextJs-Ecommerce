@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useMemo } from 'react';
 
 const colors = [
@@ -15,21 +15,6 @@ const colors = [
 ];
 
 export default function MobileCategoryChips({ parentCats }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const selectedCategory = searchParams.get('category') || null;
-
-  const buildHref = (slug) => {
-    const sp = new URLSearchParams(searchParams.toString());
-    if (slug === null || slug === undefined) {
-      sp.delete('category');
-    } else {
-      sp.set('category', slug);
-    }
-    const qs = sp.toString();
-    return qs ? `?${qs}` : '/';
-  };
-
   const colored = useMemo(() => {
     if (!parentCats) return [];
     return parentCats.map((cat, i) => ({
@@ -40,34 +25,23 @@ export default function MobileCategoryChips({ parentCats }) {
 
   return (
     <div className="mt-4 mb-4 flex items-center gap-3 overflow-x-auto lg:hidden scrollbar-none">
-      <button
-        type="button"
-        onClick={() => router.push(buildHref(null))}
-        className={`shrink-0 rounded-full px-5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
-          !selectedCategory
-            ? 'bg-slate-800 text-white ring-2 ring-slate-400 shadow-lg dark:bg-white dark:text-slate-900 dark:ring-slate-400'
-            : 'border border-slate-300 bg-white text-slate-600 hover:bg-slate-100 hover:shadow-md dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
-        }`}
+      <Link
+        href="/"
+        className="shrink-0 rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium whitespace-nowrap text-slate-600 transition-all duration-300 ease-out hover:scale-105 hover:shadow-md active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
       >
         <span>All</span>
-      </button>
-      {colored.map(({ cat, color }) => {
-        const active = selectedCategory === cat.slug;
-        return (
-          <button
-            key={cat.id}
-            type="button"
-            onClick={() => router.push(buildHref(cat.slug))}
-            className={`shrink-0 rounded-full px-5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
-              active
-                ? `${color.bg} ${color.text} ${color.ring} ring-2 shadow-lg`
-                : `${color.border} ${color.text} bg-white hover:${color.bg} hover:shadow-md dark:${color.darkBg} dark:${color.darkText} dark:${color.darkBorder} dark:border dark:bg-transparent`
-            }`}
-          >
-            {cat.name}
-          </button>
-        );
-      })}
+      </Link>
+      {colored.map(({ cat, color }) => (
+        <Link
+          key={cat.id}
+          href={`/categories/${cat.slug}`}
+          className={`shrink-0 rounded-full px-5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
+            `${color.border} ${color.text} bg-white hover:${color.bg} hover:shadow-md dark:${color.darkBg} dark:${color.darkText} dark:${color.darkBorder} dark:border dark:bg-transparent`
+          }`}
+        >
+          {cat.name}
+        </Link>
+      ))}
     </div>
   );
 }

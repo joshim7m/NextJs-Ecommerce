@@ -1,70 +1,29 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useState, useMemo } from 'react';
 
 export default function FilterSidebar({ categories }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const selectedCategory = searchParams.get('category') || null;
   const currentMaxPrice = Number(searchParams.get('maxPrice') || 100000);
-
   const [localRange, setLocalRange] = useState([0, currentMaxPrice]);
-  const [expandedParents, setExpandedParents] = useState(new Set());
 
   const parentCats = useMemo(
     () => categories.filter((c) => !c.parentId),
     [categories],
   );
 
-  const childMap = useMemo(() => {
-    const map = {};
-    for (const c of categories) {
-      if (c.parentId) {
-        if (!map[c.parentId]) map[c.parentId] = [];
-        map[c.parentId].push(c);
-      }
-    }
-    return map;
-  }, [categories]);
-
-  const buildHref = (params) => {
-    const sp = new URLSearchParams(searchParams.toString());
-    Object.entries(params).forEach(([key, value]) => {
-      if (value === null || value === undefined || value === '' || value === '0') {
-        sp.delete(key);
-      } else {
-        sp.set(key, value);
-      }
-    });
-    const qs = sp.toString();
-    return qs ? `?${qs}` : '/';
-  };
-
-  const handleCategoryChange = (slug) => {
-    router.push(buildHref({ category: slug }));
-  };
-
-  const toggleParent = (slug) => {
-    setExpandedParents((prev) => {
-      const next = new Set(prev);
-      if (next.has(slug)) next.delete(slug);
-      else next.add(slug);
-      return next;
-    });
+  const buildHref = () => {
+    const maxPrice = String(localRange[1]);
+    return maxPrice ? `?maxPrice=${maxPrice}` : '/';
   };
 
   const applyPrice = () => {
-    router.push(buildHref({ maxPrice: String(localRange[1]) }));
+    router.push(buildHref());
   };
-
-  const btnClass = (isActive) =>
-    `block w-full rounded-lg px-3 py-2 text-left text-sm transition ${
-      isActive
-        ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900'
-        : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700'
-    }`;
 
   const filterPanel = (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
@@ -74,72 +33,22 @@ export default function FilterSidebar({ categories }) {
             Categories
           </h4>
           <div className="divide-y divide-indigo-100 dark:divide-transparent">
-            <button
-              type="button"
-              onClick={() => handleCategoryChange(null)}
-              className={btnClass(!selectedCategory)}
+            <Link
+              href="/"
+              className="block w-full rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100 transition dark:text-slate-300 dark:hover:bg-slate-700"
             >
               All
-            </button>
+            </Link>
 
-            {parentCats.map((parent) => {
-              const children = childMap[parent.id] || [];
-              const isParentSelected = selectedCategory === parent.slug;
-              const isOpen = expandedParents.has(parent.slug);
-
-              return (
-                <div key={parent.id}>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleCategoryChange(parent.slug)}
-                      className={`flex-1 rounded-lg px-3 py-2 text-left text-sm transition ${
-                        isParentSelected
-                          ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900'
-                          : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      {parent.name}
-                    </button>
-                    {children.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => toggleParent(parent.slug)}
-                        className="shrink-0 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-                      >
-                        <svg
-                          className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-90' : ''}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-
-                  {isOpen && children.length > 0 && (
-                    <div className="ml-5 divide-y divide-indigo-100 border-l-2 border-slate-100 pl-2 dark:divide-slate-700 dark:border-slate-700">
-                      {children.map((child) => (
-                        <button
-                          key={child.id}
-                          type="button"
-                          onClick={() => handleCategoryChange(child.slug)}
-                          className={`block w-full rounded-lg px-3 py-2 text-left text-sm transition ${
-                            selectedCategory === child.slug
-                              ? 'bg-[#2f0f6b] text-white dark:bg-[#a78bfa] dark:text-slate-900'
-                              : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                          }`}
-                        >
-                          {child.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {parentCats.map((parent) => (
+              <Link
+                key={parent.id}
+                href={`/categories/${parent.slug}`}
+                className="block w-full rounded-lg px-3 py-2 text-left text-sm text-slate-600 hover:bg-slate-100 transition dark:text-slate-300 dark:hover:bg-slate-700"
+              >
+                {parent.name}
+              </Link>
+            ))}
           </div>
         </div>
 
