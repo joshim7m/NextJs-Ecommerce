@@ -1,6 +1,8 @@
 import prisma from '../../../src/lib/prisma';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
 
 export async function generateMetadata() {

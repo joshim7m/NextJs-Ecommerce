@@ -2,6 +2,8 @@ import prisma from '../../../src/lib/prisma';
 import ProductGrid from '../(home)/_partials/ProductGrid';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Hot Sales — Featured Products | Radiant Picks',
   description:
