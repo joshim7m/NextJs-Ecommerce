@@ -148,7 +148,7 @@ export default async function ProductPage({ params }) {
       />
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 sm:py-10">
         {/* Breadcrumbs */}
-        <nav className="mb-6 flex items-center gap-2 text-xs text-slate-400 sm:text-sm dark:text-slate-500 max-w-[330px] md:max-w-[550px] overflow-hidden" aria-label="Breadcrumb">
+        <nav className="mb-6 hidden sm:flex items-center gap-2 text-xs text-slate-400 sm:text-sm dark:text-slate-500 max-w-[330px] md:max-w-[550px] overflow-hidden" aria-label="Breadcrumb">
           <Link href="/" className="hover:text-[#2f0f6b] transition-colors dark:hover:text-[#a78bfa]">Home</Link>
           <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

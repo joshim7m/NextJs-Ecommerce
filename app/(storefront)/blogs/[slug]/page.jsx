@@ -156,7 +156,7 @@ export default async function BlogPostPage({ params }) {
       <article>
         {/* Breadcrumb */}
         <div className="border-b border-slate-100 bg-white/80 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/80">
-          <nav className="mx-auto flex max-w-4xl items-center gap-2 px-4 py-3 text-xs text-slate-400 sm:px-6" aria-label="Breadcrumb">
+          <nav className="mx-auto hidden sm:flex max-w-4xl items-center gap-2 px-4 py-3 text-xs text-slate-400 sm:px-6" aria-label="Breadcrumb">
             <Link href="/" className="hover:text-[#2f0f6b] dark:hover:text-[#a78bfa] transition-colors">Home</Link>
             <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             <Link href="/blogs" className="hover:text-[#2f0f6b] dark:hover:text-[#a78bfa] transition-colors">Blog</Link>
