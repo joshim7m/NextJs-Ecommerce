@@ -2,7 +2,16 @@
 
 A living document tracking the status of all project tasks for the Radiant Picks ecommerce application.
 
-**Last Updated:** 2026-08-21 (Session 4 — documentation refresh)
+**Last Updated:** 2026-09-23 (Light-mode pastel makeover)
+
+## Session 2026-09-23 — Colorful Light Mode ("Romantic Pastel")
+- Doc first: added "Light Mode Palette — Romantic Pastel" tokens & rules to `ui-context.md`
+- `globals.css`: pastel gradient page background, `.bg-brand-gradient` / `.bg-brand-gradient-hover` utilities (ignored in dark mode)
+- header icon buttons violet-tinted + gradient accent strip; footer gradient light mode
+- Hero pastel overlays + gradient CTA; product cards violet tints, gradient Add-to-Cart/Load-More
+- FilterSidebar, MobileCategoryChips, SortBar, CartDrawer, AdCard, AnnouncementBar, MobileFilter tinted
+- Product detail, blog cards, categories, contact pages tinted; cart/checkout/wishlist/thankyou gradient CTAs
+- Dark mode untouched (dark: variants preserved); `next build` passes
 
 ## Project Phases
 

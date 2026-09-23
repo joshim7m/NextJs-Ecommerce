@@ -40,15 +40,15 @@ export default function Hero({ slides = [] }) {
                 loading={index === 0 ? 'eager' : 'lazy'}
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#2f0f6b] to-purple-800 text-white">
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-violet-700 via-[#7c3aed] to-fuchsia-600 text-white">
                 <div className="text-center">
                   <p className="text-lg font-medium opacity-60">Slide {index + 1}</p>
                 </div>
               </div>
             )}
 
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#1e0a3c]/70 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#2f0f6b]/80 via-[#3b1373]/20 to-transparent" />
 
             <div className="hidden absolute bottom-6 left-4 text-white sm:bottom-8 sm:left-8">
               {slide.title && (
@@ -64,7 +64,7 @@ export default function Hero({ slides = [] }) {
               {slide.buttonText && slide.buttonLink && (
                 <Link
                   href={slide.buttonLink}
-                  className="pointer-events-auto mt-3 inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-[#2f0f6b] shadow-sm transition hover:bg-white/90 sm:mt-4"
+                  className="pointer-events-auto mt-3 inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-md transition bg-brand-gradient-hover sm:mt-4"
                 >
                   {slide.buttonText}
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

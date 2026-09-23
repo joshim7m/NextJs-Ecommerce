@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { loadCart, updateCartItem, removeCartItem } from '../../lib/cartStorage';
 
@@ -46,7 +47,7 @@ export default function CartDrawer({ open, onClose }) {
     setCart(loadCart());
   };
 
-  return (
+  return createPortal(
     <>
       {open && (
         <div className="fixed inset-0 z-[110] bg-black/40 transition-opacity" onClick={onClose} />
@@ -61,7 +62,7 @@ export default function CartDrawer({ open, onClose }) {
         aria-label="Shopping cart"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-700">
+        <div className="flex items-center justify-between border-b border-violet-100 px-5 py-4 dark:border-slate-700">
           <div>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Cart</h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">{itemCount} {itemCount === 1 ? 'item' : 'items'}</p>
@@ -122,7 +123,7 @@ export default function CartDrawer({ open, onClose }) {
                         <button
                           type="button"
                           onClick={() => handleQty(i, -1)}
-                          className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+                          className="flex h-7 w-7 items-center justify-center rounded-md border border-violet-200 text-sm text-violet-700 hover:bg-violet-50 transition dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
                           −
                         </button>
@@ -130,7 +131,7 @@ export default function CartDrawer({ open, onClose }) {
                         <button
                           type="button"
                           onClick={() => handleQty(i, 1)}
-                          className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+                          className="flex h-7 w-7 items-center justify-center rounded-md border border-violet-200 text-sm text-violet-700 hover:bg-violet-50 transition dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
                           +
                         </button>
@@ -157,7 +158,7 @@ export default function CartDrawer({ open, onClose }) {
 
         {/* Footer */}
         {cart.length > 0 && (
-          <div className="border-t border-slate-100 px-5 py-4 dark:border-slate-700">
+          <div className="border-t border-violet-100 px-5 py-4 dark:border-slate-700">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-sm text-slate-600 dark:text-slate-300">Subtotal</span>
               <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">৳{subtotal.toLocaleString()}</span>
@@ -165,20 +166,21 @@ export default function CartDrawer({ open, onClose }) {
             <Link
               href="/checkout"
               onClick={onClose}
-              className="mb-2 flex w-full items-center justify-center rounded-xl bg-[#2f0f6b] px-6 py-3 text-sm font-semibold text-white hover:bg-[#2f0f6b]/90 transition dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90"
+              className="mb-2 flex w-full items-center justify-center rounded-xl bg-brand-gradient px-6 py-3 text-sm font-semibold text-white shadow-sm transition bg-brand-gradient-hover dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90"
             >
               Checkout
             </Link>
             <Link
               href="/cart"
               onClick={onClose}
-              className="flex w-full items-center justify-center rounded-xl border-2 border-[#2f0f6b] px-6 py-3 text-sm font-semibold text-[#2f0f6b] hover:bg-[#2f0f6b]/5 transition dark:border-[#a78bfa] dark:text-[#a78bfa] dark:hover:bg-[#a78bfa]/10"
+              className="flex w-full items-center justify-center rounded-xl border-2 border-violet-400 px-6 py-3 text-sm font-semibold text-violet-700 hover:bg-violet-50 transition dark:border-[#a78bfa] dark:text-[#a78bfa] dark:hover:bg-[#a78bfa]/10"
             >
               View Cart
             </Link>
           </div>
         )}
       </div>
-    </>
+    </>,
+    document.body
   );
 }

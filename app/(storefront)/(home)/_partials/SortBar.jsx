@@ -49,7 +49,7 @@ export default function SortBar({ productCount }) {
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-[#2f0f6b] hover:text-[#2f0f6b] sm:px-4"
+          className="flex items-center gap-2 rounded-lg border border-violet-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-violet-400 hover:text-[#2f0f6b] hover:bg-violet-50 sm:px-4"
         >
           {current.icon('h-4 w-4 shrink-0')}
           <span className="hidden sm:inline">{current.label}</span>
@@ -59,7 +59,7 @@ export default function SortBar({ productCount }) {
         </button>
 
         {open && (
-          <div className="absolute right-0 top-full z-30 mt-1 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+          <div className="absolute right-0 top-full z-30 mt-1 w-44 overflow-hidden rounded-xl border border-violet-200 bg-white py-1 shadow-lg">
             {SORT_OPTIONS.map((opt) => {
               const isActive = currentSort === opt.value;
               return (

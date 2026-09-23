@@ -103,7 +103,7 @@ export default async function BlogCategoriesPage() {
               <Link
                 key={cat.id}
                 href={`/blogs/category/${cat.slug}`}
-                className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 dark:border-slate-700 dark:bg-slate-800"
+                className="group overflow-hidden rounded-xl border border-violet-200/70 bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 hover:border-violet-300 dark:border-slate-700 dark:bg-slate-800"
               >
                 {/* Image */}
                 <div className="relative h-40 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800">

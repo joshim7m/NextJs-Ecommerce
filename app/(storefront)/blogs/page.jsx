@@ -151,7 +151,7 @@ export default async function BlogListingPage({ searchParams }) {
           <aside className="w-full shrink-0 lg:w-80" aria-label="Blog sidebar">
             <div className="space-y-8 lg:sticky lg:top-24">
               {/* Categories */}
-              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+              <div className="rounded-xl border border-violet-200/70 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Categories</h2>
                 <ul className="space-y-1.5">
                   <li>
@@ -192,7 +192,7 @@ export default async function BlogListingPage({ searchParams }) {
               </div>
 
               {/* Recent Posts */}
-              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+              <div className="rounded-xl border border-violet-200/70 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
                 <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Recent Posts</h2>
                 <div className="space-y-4">
                   {recentPosts.map((post) => (

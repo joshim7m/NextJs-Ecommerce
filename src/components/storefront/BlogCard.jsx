@@ -6,7 +6,7 @@ export default function BlogCard({ post, horizontal = true }) {
 
   if (!horizontal) {
     return (
-      <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50 dark:hover:shadow-lg dark:hover:shadow-slate-900/30">
+      <article className="group flex flex-col overflow-hidden rounded-xl border border-violet-200/70 bg-white shadow-sm transition hover:shadow-md hover:border-violet-300 dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50 dark:hover:shadow-lg dark:hover:shadow-slate-900/30">
         <Link href={`/blogs/${post.slug}`} className="block overflow-hidden">
           {post.bannerImage ? (
             <img src={post.bannerImage} alt={post.title} className="h-48 w-full object-cover transition duration-300 group-hover:scale-105" loading="lazy" />
@@ -44,7 +44,7 @@ export default function BlogCard({ post, horizontal = true }) {
   }
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50 dark:hover:shadow-lg dark:hover:shadow-slate-900/30 md:flex-row">
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-violet-200/70 bg-white shadow-sm transition hover:shadow-md hover:border-violet-300 dark:border-slate-700 dark:bg-slate-800 dark:shadow-slate-900/50 dark:hover:shadow-lg dark:hover:shadow-slate-900/30 md:flex-row">
       <Link href={`/blogs/${post.slug}`} className="block w-full shrink-0 overflow-hidden md:w-72">
         {post.bannerImage ? (
           <img src={post.bannerImage} alt={post.title} className="h-48 w-full object-cover transition duration-300 group-hover:scale-105 md:h-full" loading="lazy" />

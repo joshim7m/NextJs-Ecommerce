@@ -29,7 +29,7 @@ export default function ProductDetailClient({ product, related, whatsappNumber }
         />
       </div>
 
-      <div className="mt-10 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 dark:border-slate-700 dark:bg-slate-800">
+      <div className="mt-10 rounded-xl border border-violet-200/70 bg-white p-5 shadow-sm sm:p-8 dark:border-slate-700 dark:bg-slate-800">
         <ProductTabs product={product} selectedVariant={selectedVariant} />
       </div>
 

@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback, Suspense } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { loadCart } from '../../lib/cartStorage';
+import { loadWishlist } from '../../lib/wishlistStorage';
 import CartDrawer from './CartDrawer';
 import AnnouncementBar from './AnnouncementBar';
 import MobileFilter from './MobileFilter';
@@ -20,7 +22,9 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
   const [recentProducts, setRecentProducts] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
   const [dark, setDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -31,6 +35,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
 
   useEffect(() => {
     setDark(document.documentElement.classList.contains('dark'));
+    setMounted(true);
   }, []);
 
   const toggleTheme = () => {
@@ -45,9 +50,16 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
     const handler = () => setCartCount(loadCart().reduce((s, i) => s + i.quantity, 0));
     window.addEventListener('storage', handler);
     window.addEventListener('cart-updated', handler);
+
+    setWishlistCount(loadWishlist().length);
+    const wishlistHandler = () => setWishlistCount(loadWishlist().length);
+    window.addEventListener('wishlist-updated', wishlistHandler);
+    window.addEventListener('storage', wishlistHandler);
+
     return () => {
       window.removeEventListener('storage', handler);
       window.removeEventListener('cart-updated', handler);
+      window.removeEventListener('wishlist-updated', wishlistHandler);
     };
   }, []);
   const searchInputRef = useRef(null);
@@ -148,11 +160,13 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm dark:bg-slate-900">
+    <header className="sticky top-0 z-50 bg-header-gradient shadow-sm backdrop-blur-md dark:bg-slate-900">
+      {/* Gradient accent strip — light mode only */}
+      <div className="h-0.5 bg-brand-gradient dark:hidden" />
       {/* <AnnouncementBar text={announcementText} mobile={mobile} /> */}
 
       {/* Main header */}
-      <div className="border-b border-slate-200/50 dark:border-slate-700/50">
+      <div className="border-b border-violet-200/60 dark:border-slate-700/50">
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-2 px-4 sm:h-14 sm:px-6 lg:px-8">
           {/* Logo + desktop menu (hugging, vertically centered) */}
           <div className="flex items-center gap-4">
@@ -175,7 +189,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
                   className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
                     pathname === link.href
                       ? 'text-[#2f0f6b] dark:text-[#a78bfa]'
-                      : 'text-slate-600 hover:text-[#2f0f6b] dark:text-slate-300 dark:hover:text-[#a78bfa]'
+                      : 'text-slate-700 hover:text-violet-700 dark:text-slate-300 dark:hover:text-[#a78bfa]'
                   }`}
                 >
                   {link.label}
@@ -190,7 +204,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700 shadow-sm hover:bg-violet-100 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title="Search (Ctrl+K)"
               aria-label="Search"
             >
@@ -203,20 +217,25 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
             {/* Wishlist */}
             <Link
               href="/wishlist"
-              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
+              className="relative hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700 shadow-sm hover:bg-violet-100 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title="Wishlist"
               aria-label="Wishlist"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
+              {wishlistCount > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white leading-none bg-brand-gradient dark:bg-[#a78bfa]">
+                  {wishlistCount > 99 ? '99+' : wishlistCount}
+                </span>
+              )}
             </Link>
 
             {/* Cart */}
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
+              className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700 shadow-sm hover:bg-violet-100 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title="Cart"
               aria-label="Cart"
             >
@@ -226,7 +245,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[#2f0f6b] px-1 text-[10px] font-bold text-white leading-none dark:bg-[#a78bfa]">
+                <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white leading-none bg-brand-gradient dark:bg-[#a78bfa]">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               )}
@@ -236,7 +255,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
             <button
               type="button"
               onClick={toggleTheme}
-              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
+              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700 shadow-sm hover:bg-violet-100 hover:text-[#2f0f6b] transition sm:h-8 sm:w-8 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-[#a78bfa]"
               title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
             >
@@ -274,23 +293,26 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
         </div>
       </div>
 
-      {/* Mobile menu — left drawer */}
-      <div className={`md:hidden fixed inset-0 z-[100] ${mobileMenuOpen ? 'visible' : 'invisible'}`} aria-hidden={!mobileMenuOpen}>
+      {/* Mobile menu — left drawer (portaled to body; blurred header would
+          otherwise become the containing block for position: fixed) */}
+      {mounted &&
+        createPortal(
+      <div className={`md:hidden fixed inset-0 z-[130] ${mobileMenuOpen ? 'visible' : 'invisible'}`} aria-hidden={!mobileMenuOpen}>
         {/* Backdrop */}
         <div
           onClick={() => setMobileMenuOpen(false)}
-          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-[#1e0a3c]/60 backdrop-blur-sm transition-opacity duration-300 ${
             mobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         />
 
         {/* Drawer panel */}
         <div
-          className={`absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col bg-slate-50 shadow-xl transition-transform duration-300 ease-out dark:bg-slate-900 ${
+          className={`absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out dark:bg-slate-900 ${
             mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          <div className="flex items-center justify-between bg-gradient-to-r from-[#2f0f6b] to-[#4c1d95] px-4 py-4 dark:from-[#1a093f] dark:to-[#2a1257]">
+          <div className="flex items-center justify-between bg-gradient-to-r from-[#7c3aed] to-[#c026d3] px-4 py-4 dark:from-[#1a093f] dark:to-[#2a1257]">
             <span className="text-sm font-semibold uppercase tracking-wider text-white/90">Menu</span>
             <button
               type="button"
@@ -350,7 +372,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
           </div>
 
           {/* Pinned quick actions */}
-          <div className="sticky bottom-0 inset-x-0 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+          <div className="sticky bottom-0 inset-x-0 border-t border-violet-200 bg-violet-50/70 dark:border-slate-700 dark:bg-slate-900">
             <Link
               href="/wishlist"
               onClick={() => setMobileMenuOpen(false)}
@@ -379,10 +401,13 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
             </button>
           </div>
         </div>
-      </div>
+      </div>,
+        document.body
+      )}
 
-      {/* Search overlay */}
-      {searchOpen ? (
+      {/* Search overlay (portaled to body) */}
+      {searchOpen && mounted
+        ? createPortal(
         <div
           ref={overlayRef}
           className="fixed inset-0 z-[100] bg-black/50 sm:flex sm:items-start sm:justify-center sm:pt-[15vh]"
@@ -397,7 +422,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
           >
             {/* Search header on mobile */}
             <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-4 sm:hidden dark:border-slate-700">
-              <div className="flex flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 focus-within:border-[#2f0f6b] focus-within:ring-1 focus-within:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-800 dark:focus-within:border-[#a78bfa] dark:focus-within:ring-[#a78bfa]">
+              <div className="flex flex-1 items-center gap-3 rounded-xl border border-violet-200 bg-violet-50/60 px-4 py-3 focus-within:border-[#2f0f6b] focus-within:ring-1 focus-within:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-800 dark:focus-within:border-[#a78bfa] dark:focus-within:ring-[#a78bfa]">
                 <svg className="h-5 w-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-4.34-4.34" />
                   <circle cx="11" cy="11" r="8" />
@@ -447,7 +472,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                   placeholder="Search for products in the store"
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 py-3 pl-10 pr-4 text-sm outline-none focus:border-[#2f0f6b] focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-800 dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
+                  className="w-full rounded-lg border border-violet-200 bg-violet-50/60 py-3 pl-10 pr-4 text-sm outline-none focus:border-[#2f0f6b] focus:ring-1 focus:ring-[#2f0f6b] dark:border-slate-600 dark:bg-slate-800 dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]"
                   autoComplete="off"
                 />
                 <button
@@ -543,6 +568,7 @@ export default function Header({ siteName, logo, mobile, announcementText }) {
             </div>
           </div>
         </div>
+      , document.body
       ) : null}
 
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />

@@ -93,7 +93,7 @@ export default function WishlistPage() {
           <p className="mt-1 text-slate-500 dark:text-slate-400">Save products you love to your wishlist.</p>
           <Link
             href="/products"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#2f0f6b] px-6 py-3 text-sm font-bold text-white hover:bg-[#2f0f6b]/90 transition dark:bg-[#a78bfa] dark:text-slate-900"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-gradient px-6 py-3 text-sm font-bold text-white shadow-sm transition bg-brand-gradient-hover dark:bg-[#a78bfa] dark:text-slate-900"
           >
             Browse Products
           </Link>

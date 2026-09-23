@@ -4,7 +4,7 @@ export default function AdCard({ ad }) {
       href={ad.productLink || '#'}
       target={ad.productLink ? '_blank' : undefined}
       rel={ad.productLink ? 'noopener noreferrer' : undefined}
-      className="group flex items-stretch overflow-hidden rounded-lg border border-slate-200 bg-gradient-to-r from-white to-slate-50 transition hover:shadow-md hover:border-amber-300 dark:border-slate-600 dark:from-slate-800 dark:to-slate-800/80 dark:hover:border-amber-500/50"
+      className="group flex items-stretch overflow-hidden rounded-lg border border-slate-200 bg-gradient-to-r from-white via-violet-50 to-fuchsia-50 transition hover:shadow-md hover:border-fuchsia-300 dark:border-slate-600 dark:from-slate-800 dark:to-slate-800/80 dark:hover:border-amber-500/50"
     >
       {ad.image && (
         <div className="flex w-24 shrink-0 sm:w-28">

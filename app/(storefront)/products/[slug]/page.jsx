@@ -146,7 +146,7 @@ export default async function ProductPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 sm:py-10">
+      <div className="mx-auto max-w-7xl px-2 py-6 sm:px-6 lg:px-8 sm:py-10">
         {/* Breadcrumbs */}
         <nav className="mb-6 hidden sm:flex items-center gap-2 text-xs text-slate-400 sm:text-sm dark:text-slate-500 max-w-[330px] md:max-w-[550px] overflow-hidden" aria-label="Breadcrumb">
           <Link href="/" className="hover:text-[#2f0f6b] transition-colors dark:hover:text-[#a78bfa]">Home</Link>

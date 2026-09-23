@@ -68,7 +68,7 @@ function ProductCard({ product, index }) {
 
   return (
     <div
-      className="group relative rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg overflow-hidden dark:border-slate-700 dark:bg-slate-800"
+      className="group relative rounded-xl border border-violet-200/70 bg-white shadow-sm transition-all hover:shadow-lg hover:border-violet-300 overflow-hidden dark:border-slate-700 dark:bg-slate-800"
       style={{ animationDelay: `${(index % 12) * 60}ms` }}
     >
       <Link href={`/products/${product.slug}`} className="block">
@@ -134,7 +134,7 @@ function ProductCard({ product, index }) {
            className={`mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all active:scale-95 sm:text-sm ${
              added
                ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-               : 'border-[#2f0f6b] bg-white text-[#2f0f6b] hover:bg-[#2f0f6b] hover:text-white dark:border-[#a78bfa] dark:bg-slate-800 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900'
+               : 'border-transparent bg-brand-gradient text-white shadow-sm bg-brand-gradient-hover dark:border-[#a78bfa] dark:bg-slate-800 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900'
            }`}
         >
           {added ? (
@@ -180,7 +180,7 @@ function LoadMoreButton({ onClick, remaining }) {
       <button
         type="button"
         onClick={onClick}
-        className={`w-full rounded-xl border-2 border-[#2f0f6b] bg-white px-6 py-3 text-sm font-semibold text-[#2f0f6b] transition-all hover:bg-[#2f0f6b] hover:text-white active:scale-95 dark:border-[#a78bfa] dark:bg-slate-800 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900 sm:w-auto sm:px-10 sm:py-3.5 ${
+        className={`w-full rounded-xl border-transparent px-6 py-3 text-sm font-semibold text-white transition-all active:scale-95 bg-brand-gradient bg-brand-gradient-hover dark:border-[#a78bfa] dark:bg-slate-800 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa] dark:hover:text-slate-900 sm:w-auto sm:px-10 sm:py-3.5 ${
           isVisible ? 'opacity-100' : 'opacity-0'
         }`}
       >
@@ -203,7 +203,7 @@ export default function ProductGrid({ products, pageSize = 12, columns = 4 }) {
 
   if (!totalCount) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-800">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-violet-200/70 bg-violet-50/60 px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-800">
         <svg className="mb-4 h-12 w-12 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>

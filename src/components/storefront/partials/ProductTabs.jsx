@@ -26,7 +26,7 @@ export default function ProductTabs({ product, selectedVariant }) {
           </div>
         ) : null}
         {product.variants?.map((v, i) => (
-          <div key={v.id} className="rounded-lg border border-slate-200 p-3 dark:border-slate-600">
+          <div key={v.id} className="rounded-lg border border-violet-200/70 p-3 dark:border-slate-600">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Variant {i + 1}
             </p>

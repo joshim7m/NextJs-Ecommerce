@@ -27,7 +27,7 @@ export default function MobileCategoryChips({ parentCats }) {
     <div className="mt-4 mb-4 flex items-center gap-3 overflow-x-auto lg:hidden scrollbar-none">
       <Link
         href="/"
-        className="shrink-0 rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium whitespace-nowrap text-slate-600 transition-all duration-300 ease-out hover:scale-105 hover:shadow-md active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+        className="shrink-0 rounded-full border border-violet-300 bg-violet-50 px-5 py-3 text-sm font-medium whitespace-nowrap text-violet-700 transition-all duration-300 ease-out hover:scale-105 hover:shadow-md active:scale-95 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
       >
         <span>All</span>
       </Link>

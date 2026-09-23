@@ -20,7 +20,7 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
   const brandName = siteName || 'Cabinet & Closet';
 
   return (
-    <footer className="bg-[#1a0a3e] text-slate-300">
+    <footer className="bg-slate-900 text-slate-100 dark:bg-[#1a0a3e] dark:text-slate-300">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
@@ -32,7 +32,7 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Shop</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-fuchsia-200 dark:text-slate-500">Shop</h4>
             <ul className="space-y-3 text-sm">
               <li><Link href="/categories" className="transition hover:text-white">All Categories</Link></li>
               <li><Link href="/products" className="transition hover:text-white">All Products</Link></li>
@@ -42,7 +42,7 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
 
           {/* Company */}
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Company</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-fuchsia-200 dark:text-slate-500">Company</h4>
             <ul className="space-y-3 text-sm">
               <li><Link href="/about" className="transition hover:text-white">About Us</Link></li>
               <li><Link href="/contact" className="transition hover:text-white">Contact Us</Link></li>
@@ -53,12 +53,12 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
 
           {/* Contact */}
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Contact</h4>
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-fuchsia-200 dark:text-slate-500">Contact</h4>
             <ul className="space-y-3 text-sm">
               {mobile && (
                 <li>
                   <a href={`tel:${mobile}`} className="flex items-center gap-2 transition hover:text-white">
-                    <svg className="h-4 w-4 shrink-0 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4 shrink-0 text-fuchsia-200 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                     {mobile}
@@ -68,7 +68,7 @@ export default function Footer({ siteName, mobile, email, address, copyrightText
               {email && (
                 <li>
                   <a href={`mailto:${email}`} className="flex items-center gap-2 transition hover:text-white">
-                    <svg className="h-4 w-4 shrink-0 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4 shrink-0 text-fuchsia-200 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     {email}

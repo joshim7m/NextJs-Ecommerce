@@ -53,7 +53,7 @@ export default function NotFoundContent({ allProducts }) {
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}
-                className="group rounded-lg border border-slate-200 bg-white p-2 shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800"
+                className="group rounded-lg border border-violet-200/70 bg-white p-2 shadow-sm transition hover:shadow-md hover:border-violet-300 dark:border-slate-700 dark:bg-slate-800"
               >
                 <div className="mb-1.5 aspect-square overflow-hidden rounded-md bg-slate-100 dark:bg-slate-700">
                   {product.image ? (

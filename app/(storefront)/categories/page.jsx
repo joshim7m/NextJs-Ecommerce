@@ -72,7 +72,7 @@ export default async function CategoryListingPage() {
               <Link
                 key={category.id}
                 href={`/categories/${category.slug}`}
-                className="group flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#2f0f6b] focus:ring-offset-2"
+                className="group flex flex-col items-center rounded-2xl border border-violet-100 bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-violet-300 focus:outline-none focus:ring-2 focus:ring-[#2f0f6b] focus:ring-offset-2"
               >
                 <div className="mb-3 aspect-square w-full overflow-hidden rounded-xl bg-slate-100">
                   {category.image ? (
@@ -102,7 +102,7 @@ export default async function CategoryListingPage() {
         </div>
 
         {categories.length === 0 && (
-          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center">
+          <div className="rounded-xl border border-violet-200/70 bg-violet-50/60 p-12 text-center">
             <p className="text-slate-500">No categories available yet.</p>
           </div>
         )}

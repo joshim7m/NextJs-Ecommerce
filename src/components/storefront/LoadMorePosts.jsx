@@ -35,7 +35,7 @@ export default function LoadMorePosts({ initialPosts, total, perPage, categoryId
           <button
             onClick={loadMore}
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-6 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-[#2f0f6b]/30 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg border border-violet-200 bg-white px-6 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-violet-50 hover:border-violet-400 disabled:opacity-50"
           >
             {loading ? (
               <>

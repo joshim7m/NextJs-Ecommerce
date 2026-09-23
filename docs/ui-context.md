@@ -11,6 +11,24 @@ This document defines the visual design language, component library, and user ex
 - **Semantic:** Tailwind green (success), amber (warning), red (error/danger)
 - Defined in `tailwind.config.js`; CSS variables mirrored in `app/globals.css`
 
+### Light Mode Palette — "Romantic Pastel" (storefront)
+The storefront light mode is intentionally colorful and soft. Dark mode uses its own existing violet palette and is NOT affected by these values. All tokens are defined in `app/globals.css` (light `:root` block) and applied via light-mode-only Tailwind classes in components.
+
+| Token | Value | Usage |
+|---|---|---|
+| Page background | `#f8fafc` → `#f5f3ff` / `#fdf2f8` gradient wash (`.bg-page-pastel`) | `body` in light mode |
+| Brand gradient | violet `#7c3aed` → fuchsia `#d946ef` (`.bg-brand-gradient`) | Primary buttons, CTAs, badges |
+| Footer (light) | solid navy `bg-slate-900` (`#0f172a`) | Footer background; dark mode keeps `#1a0a3e` |
+| Primary accent | `#2f0f6b` brand purple (text/contrast) | Headings, prices, link color |
+| Pastel surfaces | `bg-violet-50/70`, `bg-fuchsia-50`, `bg-rose-50` | Card tints, chips, section backgrounds |
+| Sale/danger accent | rose (`rose-500/600`) | Sale badges, hot-sales accents |
+| Success accent | green (existing) | Added-to-cart feedback, in-stock |
+
+Rules:
+- Gradient buttons are reserved for the single primary CTA per view (Add to Cart, checkout); secondary actions stay bordered/outlined
+- Pastel tints are backgrounds/hover states only — body text stays slate for WCAG AA contrast
+- Every pastel style is a light-mode class only; never modify existing `dark:` variants of the same element
+
 ### Typography
 - **Font Family:** Inter (Google Fonts, loaded in root layout)
 - **Headings:** text-4xl → text-lg scale
