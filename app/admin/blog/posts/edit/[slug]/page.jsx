@@ -196,6 +196,7 @@ export default function EditBlogPostPage({ params }) {
           <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-2 dark:text-slate-400">Content</label>
           <TipTapEditor
             content={form.content}
+            uploadFolder="blog"
             onChange={(html) => setForm((prev) => ({ ...prev, content: html }))}
           />
         </div>

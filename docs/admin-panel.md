@@ -19,8 +19,8 @@ A CMS-style admin interface at `/admin` managing the full store: catalog, orders
 | `/admin/login` | Credential login form |
 | `/admin/dashboard` | Stats cards (orders, revenue, products) + recent orders |
 | `/admin/products` | Product table with search/filters, edit/delete |
-| `/admin/products/create` | Create product: pricing, categories multi-select, multi-image upload, status |
-| `/admin/products/edit` | Edit product with variant generator and per-variant management (size/color/prices/inventory/image/default flag) |
+| `/admin/products/create` | Create product: pricing, categories multi-select, multi-image upload, status. Description + Specifications are collapsible rich-text sections (tables, headings, lists, images); pasted images are re-hosted to `/uploads/<folder>/` and stored as URLs, not inline base64 or third-party hotlinks. Leaving the editor empty stores `null`, not `<p></p>`, so the storefront shows its "No description available." fallback. |
+| `/admin/products/edit` | Edit product with variant generator and per-variant management (size/color/prices/inventory/image/default flag). Same collapsible rich-text Description + Specifications sections. |
 | `/admin/categories` | Hierarchical category CRUD (parent/child) |
 | `/admin/orders` | Order list with search |
 | `/admin/orders/[orderNo]` | Order detail: customer/shipping info, items, totals; update order status; edit item quantities; delete items; block/unblock customer device |

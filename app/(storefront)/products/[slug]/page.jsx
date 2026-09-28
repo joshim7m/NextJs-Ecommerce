@@ -2,6 +2,10 @@ import prisma from '../../../../src/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ProductDetailClient from '../../../../src/components/storefront/ProductDetailClient';
+import { getAutoRelated } from '../../../../src/lib/recommendations';
+// Product.description is rich-text HTML from the admin editor. Meta tags and JSON-LD
+// need plain text, otherwise tags leak into search snippets and structured data.
+import { stripHtml } from '@/src/lib/richText';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
 
@@ -30,7 +34,7 @@ export async function generateMetadata({ params }) {
   const title = product.title;
   const description =
     product.metaDescription ||
-    ((product.description || `Buy ${product.title} online at Radiant Picks.`) +
+    ((stripHtml(product.description) || `Buy ${product.title} online at Radiant Picks.`) +
     ` ৳${price} — Shop now with cash on delivery across Bangladesh. ${category ? `Category: ${category}.` : ''}`);
 
   const keywords = product.tags
@@ -80,33 +84,10 @@ export default async function ProductPage({ params }) {
   const category = product.categories?.[0] || null;
   const RELATED_COUNT = 6;
 
-  let related = category
-    ? await prisma.product.findMany({
-        where: {
-          status: 'publish',
-          categories: { some: { id: category.id } },
-          id: { not: product.id },
-        },
-        include: { images: true, variants: true },
-        take: RELATED_COUNT,
-        orderBy: { createdAt: 'desc' },
-      })
-    : [];
-
-  if (related.length < RELATED_COUNT) {
-    const missing = RELATED_COUNT - related.length;
-    const relatedIds = related.map((r) => r.id);
-    const fallback = await prisma.product.findMany({
-      where: {
-        status: 'publish',
-        id: { notIn: [product.id, ...relatedIds] },
-      },
-      include: { images: true, variants: true },
-      take: missing,
-      orderBy: { createdAt: 'desc' },
-    });
-    related = [...related, ...fallback];
-  }
+  // Same six cards as before, now scored by shared category / tags / price band
+  // with a featured-then-newest backfill, so the rail is never short while
+  // stock exists. Shared with the cart and checkout bundle.
+  const related = await getAutoRelated({ seedIds: [product.id], limit: RELATED_COUNT });
 
   const price = Number(product.sale_price || product.unite_price);
   const imageUrl = product.images?.[0]?.image_path || `${SITE_URL}/og-image.png`;
@@ -115,7 +96,7 @@ export default async function ProductPage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.title,
-    description: product.description || `Buy ${product.title} at Radiant Picks`,
+    description: stripHtml(product.description) || `Buy ${product.title} at Radiant Picks`,
     image: imageUrl,
     sku: product.sku,
     brand: {

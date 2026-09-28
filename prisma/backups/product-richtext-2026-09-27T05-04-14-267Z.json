@@ -1,0 +1,713 @@
+{
+  "takenAt": "2026-09-27T05:04:14.268Z",
+  "note": "Product.description / Product.specification captured before the empty-rich-text cleanup. Restore with prisma.product.update({ where: { id }, data: { description, specification } }).",
+  "rows": [
+    {
+      "id": "e9748e95-c36c-46fe-8328-1c8e81c21887",
+      "slug": "t-pants-low-waist-womens-sexy-underwear",
+      "title": "T-Pants Low-Waist Women's Sexy Underwear",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "dfc3cef3-12f3-4084-8202-d09864bc4ca1",
+      "slug": "t-pants-low-waist-womens-sexy-underwear-",
+      "title": "T-Pants Low-Waist Women's Sexy Underwear",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "9203e802-c67e-4fa3-a9cd-86ded7f4299e",
+      "slug": "t-pants-low-waist-womens-sexy-underwear-p3",
+      "title": "T-Pants Low-Waist Women's Sexy Underwear p3",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "4c01fa69-b1ef-4abc-9fa0-880a3a53718d",
+      "slug": "t-pants-low-waist-womens-sexy-underwear-p2",
+      "title": "T-Pants Low-Waist Women's Sexy Underwear P2",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "4f1c51ac-0379-46a2-939e-5af5662ba791",
+      "slug": "t-pants-low-waist-womens-sexy-underwear-p1",
+      "title": "T-Pants Low-Waist Women's Sexy Underwear P1",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "53a2ea6d-2858-4f2c-8046-9b2e09526669",
+      "slug": "sexy-halter-one-piece-temptation-nightwear-bodysuit",
+      "title": "Sexy Halter One-Piece Temptation Nightwear Bodysuit",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "085b8c79-526d-408e-ad22-8fa8eccc2910",
+      "slug": "alluring-hip-hugging-thin-lingerie-dress",
+      "title": "Alluring Hip-Hugging Thin Lingerie Dress",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "57ca9caf-f949-4d87-b2a3-037d184d1606",
+      "slug": "womens-sexy-solid-pattern-wire-free-low-rise-adjustable-strap-bikini-swimsuit",
+      "title": "Women's Sexy Solid Pattern Wire-Free Low-Rise Adjustable Strap Bikini Swimsuit",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "d6d8f767-66ec-497f-8655-4eeb9b7bd4fe",
+      "slug": "dormila-pure-desire-sexy-slit-lingerie-dress",
+      "title": "Dormila Pure Desire Sexy Slit Lingerie Dress",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "499a503b-af53-4107-bf3b-ccf14f39ea35",
+      "slug": "plus-size-see-through-striped-one-piece-lingerie",
+      "title": "Plus Size See-Through Striped One-Piece Lingerie",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "c1efdc40-d824-4421-9802-fa972acdd001",
+      "slug": "womens-polyester-sleeveless-shorts-sleepwear-set-soft-and-comfortable-home-wear",
+      "title": "Women's Polyester Sleeveless Shorts Sleepwear Set – Soft & Comfortable Home Wear",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "49c5183a-9988-4821-b706-84db059b15e5",
+      "slug": "pearl-massage-sexy-lingerie-rose-flower-three-piece-set-premium-sheer-lace-nig",
+      "title": "Pearl Massage Sexy Lingerie Rose Flower Three-Piece Set – Premium Sheer Lace Nig",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "8345d6de-0e3a-4d3d-8285-f3eaf58d1682",
+      "slug": "mango-cup-breast-pads-push-up-and-anti-exposure-stickers",
+      "title": "Mango Cup Breast Pads, Push-Up and Anti-Exposure Stickers",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "c1ce1f43-ce91-4d67-b757-c78ff64a8fe0",
+      "slug": "sexy-leopard-print-strappy-harness-bra-three-piece-bodysuit-lingerie-hot-erotic",
+      "title": "Sexy Leopard Print Strappy Harness Bra Three-Piece Bodysuit Lingerie Hot Erotic",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "b13a6731-760a-4e12-a07a-9efe2a48e2eb",
+      "slug": "sexy-erotic-breathable-chain-bodysuit-lingerie-womens-transparent-underwear-pan",
+      "title": "Sexy Erotic Breathable Chain Bodysuit Lingerie Women's Transparent Underwear Pan",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "441fa29f-4a48-4076-8b58-8adf44237215",
+      "slug": "european-and-american-style-sexy-mesh-see-through-lingerie-set-sexy-pajamas",
+      "title": "European and American Style Sexy Mesh See-Through Lingerie Set, Sexy Pajamas",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "0b253681-6c57-4290-8bb5-7c41578f63d0",
+      "slug": "european-and-american-see-through-mesh-dress-tight-fitting-suspenders-sexy-and",
+      "title": "European and American See-Through Mesh Dress, Tight-Fitting Suspenders, Sexy and",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "a6068b51-62ae-4f2f-8829-e1472509fbbe",
+      "slug": "womens-sexy-strap-shorts-satin-loungewear-color-block-two-piece-pajama-set-with",
+      "title": "Women's Sexy Strap Shorts Satin Loungewear Color-Block Two-Piece Pajama Set with",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "10ce3f90-a3c2-4190-867f-c08ba2c98905",
+      "slug": "european-and-american-new-sexy-red-heart-mesh-hollow-backless-suspender-sexy",
+      "title": "European and American New Sexy Red Heart Mesh Hollow Backless Suspender Sexy",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "22c55dcf-f27e-48bd-943e-8feead019e33",
+      "slug": "european-and-american-new-sexy-lingerie-amazon-sexy-transparent-lace",
+      "title": "European and American new sexy lingerie Amazon sexy transparent lace",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "b8070c59-30fe-47d1-b95a-b40453bb1ec9",
+      "slug": "sexy-lingerie-sexy-mesh-see-through-pajamas-lace-embroidery-suspenders-nightdres",
+      "title": "sexy lingerie sexy mesh see-through pajamas lace embroidery suspenders nightdres",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "40849385-6ee6-467c-8d39-34bd886e2893",
+      "slug": "hollow-sexy-mesh-see-through-tight-hip-skirt-sexy-one-shoulder-one-piece-pajamas",
+      "title": "Hollow Sexy Mesh, See-Through Tight Hip Skirt, Sexy One-Shoulder One-Piece Pajamas",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "b910eceb-cb41-446b-a930-8bbc982a2840",
+      "slug": "pure-desire-lace-temptation-open-crotch-uniform-maid-outfit-camisole-sheer-teasi",
+      "title": "Pure Desire Lace Temptation Open-Crotch Uniform Maid Outfit Camisole Sheer Teasi",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "76d62a52-da5c-47fc-85ed-534608031ffd",
+      "slug": "deep-v-neck-sling-top-backless-hip-hugging-butt-exposure-sexy-skert",
+      "title": "Deep V-neck Sling Top Backless Hip-hugging Butt Exposure Sexy Skert",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "80d8aa2c-ad3f-4a64-a36d-18de761db522",
+      "slug": "lace-spice-sling-bow-mesh-perspective-wave-point-no-steel-ring-nightgown",
+      "title": "Lace Spice Sling Bow Mesh Perspective Wave Point No Steel Ring Nightgown",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "53e7cd8d-0064-4c0b-bebd-4204dabdbbec",
+      "slug": "sexy-and-sensual-lace-chiffon-heart-butterfly-hanging-neck-suspender-dress-hot",
+      "title": "Sexy and Sensual Lace Chiffon Heart Butterfly Hanging Neck Suspender Dress, Hot",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "9fde84b1-d953-4c88-9721-fd20d16c2726",
+      "slug": "lace-sexy-womens-bikini-see-through-three-piece-seductive-set-dropshipping",
+      "title": "Lace Sexy Women's Bikini, See-Through Three-Piece Seductive Set, Dropshipping",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "5727df94-69d6-4ea1-bc89-70237b6eb356",
+      "slug": "sexy-butterfly-bellyband-lace-up-large-size-hot-and-tempting-uniform-no-take",
+      "title": "Sexy Butterfly Bellyband, Lace-Up, Large Size, Hot and Tempting Uniform, No-Take",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "67cc0928-fc5f-47e7-9abe-5ef2462a2251",
+      "slug": "sexy-seductive-bondage-tight-fitting-strappy-lingerie-three-point-open-crotch-bra-set",
+      "title": "Sexy Seductive Bondage Tight-Fitting Strappy Lingerie Three-Point Open-Crotch Bra Set",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "9cc41202-463f-4624-a98b-6b305b9157a6",
+      "slug": "leopard-print-uniform-hollow-three-point-neck-strap-passion-free-womens",
+      "title": "Leopard Print Uniform Hollow Three-point Neck Strap Passion Free Women's",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "f76c967f-c9eb-4f2e-a22f-766e0dc6e568",
+      "slug": "women-attractive-sexy-fancy-bra-panty-set-sexy-grils-bra-set-push-up-bra-with-underwear-set",
+      "title": "Women Attractive Sexy Fancy Bra Panty Set Sexy-Grils-Bra-Set Push up Bra With Underwear Set",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "ab73c230-7ec6-48d4-b7ff-f6a0e9670df8",
+      "slug": "handcuffs-sexy-lace-bell-bracelet-foot-ring-abstinence-couple-bell-footcuffs-sex",
+      "title": "Handcuffs Sexy Lace Bell Bracelet Foot Ring Abstinence Couple Bell Footcuffs Sex",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "94f338f2-e7de-4070-b857-9cff01bce078",
+      "slug": "exotic-style-transparent-tulle-halter-straps-pure-lust-style-sexy-underwear",
+      "title": "Exotic Style, Transparent Tulle Halter Straps, Pure Lust Style Sexy Underwear",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "29f011e9-7b38-4a0c-8d2a-cb83734cbc82",
+      "slug": "womens-thongs-japanese-style-transparent-see-through-lace-open-crotch-panties",
+      "title": "women's thongs, Japanese style, transparent see-through lace open crotch panties",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "7d40bbd5-8c1f-431c-b3ed-79237a36e8ed",
+      "slug": "sexy-lace-lace-pearl-three-point-bikini-sweet-girl-heart-butterfly",
+      "title": "Sexy Lace Lace Pearl Three Point Bikini Sweet Girl Heart Butterfly",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "8a9626ad-1a64-4824-a3e2-3376aba02dae",
+      "slug": "european-and-american-style-mesh-nightdress-sexy-push-up-underwire",
+      "title": "European and American Style Mesh Nightdress Sexy Push-Up Underwire",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "ba89131a-d70c-4d78-a279-16a773813cb1",
+      "slug": "deep-v-lace-sheer-mesh-bodysuit-babydoll-teddy-underwear",
+      "title": "Deep V Lace Sheer Mesh Bodysuit | Babydoll Teddy Underwear",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "2b1440df-e8b7-4c0d-a4f4-319f1cf0b7f5",
+      "slug": "women-sexy-lingerie-cosplay-bunny-uniform-body-suit-open-crotch-full-stockings-s",
+      "title": "Women Sexy Lingerie Cosplay Bunny Uniform Body Suit Open Crotch Full Stockings S",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "9f6df3f3-9b1d-4b56-ad83-c4aaea8d13e7",
+      "slug": "women-sexy-lingerie-cosplay-bunny-uniform-body-suit-open-crotch-full-stockings-s-2",
+      "title": "Women Sexy Lingerie Cosplay Bunny Uniform Body Suit Open Crotch Full Stockings",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "541ae923-0941-4811-aea0-ee160861ec79",
+      "slug": "one-piece-net-clothing-sexy-bag-hip-net-stockings-sexy-underwear-hollow-perspect",
+      "title": "One-piece Net Clothing Sexy Bag Hip Net Stockings Sexy Underwear Hollow Perspect",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "6d37f313-f989-456b-9690-abe81609986f",
+      "slug": "deep-v-neck-plunge-gradient-print-dress-thin-bodycon-silhouette-for-sex-underwea",
+      "title": "Deep V-Neck Plunge Gradient Print Dress Thin Bodycon Silhouette for Sex Underwea",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "3f525316-45f3-4797-8c44-eb207c40ebb3",
+      "slug": "sexy-lace-see-through-underwire-push-up-nightgown",
+      "title": "Sexy Lace See-Through Underwire Push-Up Nightgown",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "faeb792a-8265-44b3-8523-8e046c251fd7",
+      "slug": "metal-fitting-bra-and-g-string-thong-beach-and-pool-ready-swimwear-bikini-set",
+      "title": "Metal Fitting Bra & G-String Thong – Beach & Pool Ready Swimwear Bikini Set",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "778bee3f-6b59-469d-9c70-3d10a45c8a5b",
+      "slug": "womens-sexy-lingerie-set-with-flower-embroidery",
+      "title": "Women’s Sexy Lingerie Set with Flower Embroidery",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "da8caba6-be2d-41be-a501-b073b5611403",
+      "slug": "european-and-american-pajamas-womens-sexy-v-neck-lace",
+      "title": "European and American pajamas women's sexy V-neck lace",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "d808683e-611c-4cde-b14a-a24c944ac175",
+      "slug": "amazon-european-and-american-new-hot-womens-fashion-sexy-floral-lace-v-neck-hip",
+      "title": "Amazon European and American New Hot Women's Fashion Sexy Floral Lace V Neck Hip",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "b3726eb3-9601-4982-ba7b-4e3bd54aa06a",
+      "slug": "jacquard-sexy-lingerie-open-crotch-one-piece-fishnet-stockings-hollow-tights-who",
+      "title": "jacquard sexy lingerie open crotch one-piece fishnet stockings hollow tights who",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "300bc8a4-7009-46fb-b90a-2ba733aadaea",
+      "slug": "sexy-mesh-water-soluble-embroidery-floral-open-front-nightgown-set-strapless",
+      "title": "Sexy Mesh Water-Soluble Embroidery Floral Open-Front Nightgown Set, Strapless",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "942a0d93-d9bd-4c6e-a549-59b0775c86ba",
+      "slug": "2-piece-suspender-skirt-long-skirt-sexy-pajamas-for-women-with-slits",
+      "title": "2-Piece Suspender Skirt Long Skirt Sexy Pajamas for Women with Slits",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "19a6e186-9861-4db0-b955-573c76bc8b85",
+      "slug": "womens-sexy-chubby-girl-plus-large-size-ice-silk-two-piece-lace",
+      "title": "Women's Sexy chubby girl Plus Large Size Ice Silk Two-piece Lace",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "d907dcef-3a56-484d-b83b-c460c54bb063",
+      "slug": "breathable-sexy-halter-nightgown-dress-european-american-french-style-backless",
+      "title": "Breathable Sexy Halter Nightgown Dress European American French Style Backless",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "7f05c01a-b169-4870-a361-d8136eba4bbd",
+      "slug": "luxury-sheer-babydoll-set-adjustable-halter-neck-tie-up-crotchless-mesh-lingeri",
+      "title": "Luxury Sheer Babydoll Set-Adjustable Halter Neck Tie-Up, Crotchless Mesh Lingeri",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "cb345d2f-128a-4ff0-b1d6-d49973193f18",
+      "slug": "sexy-lingerie-plus-size-nightdress-uniform-pajamas-sexy-provocative-lace-extreme",
+      "title": "Sexy lingerie plus size nightdress uniform pajamas sexy provocative lace extreme",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "b412de05-d020-4f5a-8ed4-7e8913345089",
+      "slug": "padded-bra-with-steel-rims-fashionable-womens-sexy-big-breasts-appear",
+      "title": "Padded Bra with Steel Rims, Fashionable Women's Sexy Big Breasts Appear",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "5fab663b-adb0-4675-8cca-8d0392cd91f3",
+      "slug": "sexy-womens-passion-temptation-pure-desire-large-size-cheongsam-ancient-style",
+      "title": "sexy women's passion temptation pure desire large size cheongsam ancient style",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "efe5a074-26c9-4288-91b1-a4aea1a3b120",
+      "slug": "european-size-sexy-lingerie-sexy-pajamas-mesh-slit-splicing-suspender-nightdress",
+      "title": "European size sexy lingerie sexy pajamas mesh slit splicing suspender nightdress",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "5f250e90-add7-4fba-9da6-625da9b2e8a1",
+      "slug": "7pcs-leather-bdsm-kits-bondage-set-slave-handcuffs-neck-collar-gag-whip-sm-sex-t",
+      "title": "7pcs Leather BDSM Kits Bondage Set Slave Handcuffs Neck Collar Gag Whip SM Sex T",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "5fdf68f2-535c-4134-bbe8-3ad8b5a385e1",
+      "slug": "10-pcs-fetish-kits-bed-restraints-bondage-plush-pu-sexy-flirting-alternative-toy",
+      "title": "10 PCS Fetish Kits Bed Restraints Bondage Plush PU Sexy Flirting Alternative Toy",
+      "description": "<p>বিস্তারিত 🔥 ১০ পিসের ফুল সেট ফেটিশ বন্ডেজ কিট – সাহসী মোমেন্টের জন্য পারফেক্ট চয়েজ! 🔥নতুন রোমাঞ্চ আর এক্সপেরিমেন্ট পছন্দ করেন? তাহলে আপনার জন্যই এই 10 PCS Fetish Bed Restraints & Bondage Kit – যা আপনার ইনটিমেট সময়কে করে তুলবে আরও উত্তেজনাপূর্ণ! 😍🖤 কী থাকছে এই সেটে:  ✅ হ্যান্ডকাফস  ✅ লেগ কাফস  ✅ কলার উইথ লিশ  ✅ আই মাস্ক  ✅ রোপ  ✅ ফ্লগার  ✅ ফেদার টিকলার  ✅ বল গ্যাগ  ✅ বেড রেস্ট্রেইন্ট  ✅ আনুষঙ্গিক ফ্লার্টিং টুলস🌟 স্পেশাল ফিচারসঃ  ✨ প্লাশ PU ম্যাটেরিয়াল – কোমল ও আরামদায়ক  ✨ সেফ ও সিকিউর ডিজাইন – স্কিনে হারশন ফিল না করে  ✨ একদম প্রাইভেট প্যাকেজিং – কেউ বুঝবে না ভিতরে কী আছে  ✨ পারফেক্ট গিফট ফর কাপলস 💑**📦 হোম ডেলিভারি সহ – পুরোপুরি গোপন প্যাকেজে!  🚫 নাম বা ছবি কিছুই থাকবেনা বাইরে!**</p>",
+      "specification": null
+    },
+    {
+      "id": "2d9da33f-0041-4839-9b75-65ed503d701b",
+      "slug": "women-lace-stockings-thigh-high-stockings-for-ladies-over-s2-stocking",
+      "title": "Women Lace Stockings Thigh High Stockings For Ladies Over (S2 Stocking)",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "146c7b0d-e6c0-4a41-beec-0f4ab95a9a7e",
+      "slug": "women-stockings-mesh-sexy-socks-fishnet-thigh-high-lace-w1-stocking",
+      "title": "Women Stockings Mesh Sexy Socks Fishnet Thigh High Lace (W1 Stocking)",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "37348856-832e-429f-81c7-ad2ec342614b",
+      "slug": "girls-thigh-high-stockings-women-sexy-lingerie-knee-high-socks-stockings",
+      "title": "Girls Thigh High Stockings Women Sexy Lingerie Knee High Socks Stockings",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "d7befc88-6da4-4165-92d3-60741092c509",
+      "slug": "bodysuit-womens-open-crotch-sexy-pajamas-hollow-hot-long-skirt-uniform",
+      "title": "bodysuit women's open crotch sexy pajamas hollow hot long skirt uniform",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "5f077bf0-25fe-42b9-be3b-df45c7df266c",
+      "slug": "high-quality-sexy-strap-underwire-underwear-set-hollowed-out-punk-style-uniform",
+      "title": "High Quality Sexy Strap Underwire Underwear Set Hollowed Out Punk Style Uniform",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "e690fb2f-e455-447d-9f85-5183110f1d2c",
+      "slug": "t-panties-female-underwear-lace-seamless-thongs-womens-pants-sexy-pearl-erotic",
+      "title": "T Panties Female Underwear Lace Seamless Thongs Women's Pants Sexy Pearl Erotic",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "4ce4f219-2462-40a6-a463-8ba3e7673f2f",
+      "slug": "sexy-french-embroidered-lingerie-lace-panties-8",
+      "title": "Sexy French Embroidered Lingerie Lace Panties ( 8 )",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "b3a1370e-e91b-4436-a7b1-480fdb62b8ca",
+      "slug": "sexy-french-embroidered-lingerie-lace-panties-11",
+      "title": "Sexy French Embroidered Lingerie Lace Panties ( 11 )",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "39db1195-5641-46b1-aa02-9599d7875554",
+      "slug": "sexy-lingerie-sexy-open-crotch-free-pajamas-revealing-breasts-big-bow-lace-night",
+      "title": "sexy lingerie sexy open crotch free pajamas revealing breasts big bow lace night",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "1b5a1864-79db-4902-bb4f-5ab279b84660",
+      "slug": "sexy-lingerie-hot-lace-open-crotch-bodysuit-tight-fitting-bodysuit-set",
+      "title": "Sexy lingerie, hot lace open-crotch bodysuit, tight-fitting bodysuit set",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "4e84b976-1da1-423b-8094-576dd9c768d6",
+      "slug": "embroidered-crochet-crop-top-bra-sexy-and-trendy-bra",
+      "title": "Embroidered Crochet Crop Top Bra, sexy and trendy Bra",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "2cf1c8a8-6e82-4b3f-ae12-310f8129238d",
+      "slug": "european-and-american-adult-sexy-lingerie-suspenders-slit-nightdress-rose-embroi",
+      "title": "European and American adult sexy lingerie suspenders slit nightdress rose embroi",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "ca39e177-51b7-4604-b4b5-2eedd778215e",
+      "slug": "sexy-lingerie-nightclub-queen-lace-suit-hollow-eye-mask-princess-cat",
+      "title": "Sexy lingerie nightclub queen lace suit hollow eye mask princess cat",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "cdcb88f0-0fb5-4eb4-9cd5-73ce1088d457",
+      "slug": "erotic-lingerie-pure-desire-style-suspender-nightdress-women-",
+      "title": "Erotic lingerie pure desire style suspender nightdress women",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "27917c1f-834f-477a-ab6f-379a0b164a4c",
+      "slug": "domila-sexy-tassel-lingerie-new-hollow-free-to-take-off-bow-design-semi-transpar",
+      "title": "Domila sexy tassel lingerie new hollow free-to-take-off bow design semi-transpar",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "9f2d12a1-c5b6-4190-b7c4-5439fa6b4f8d",
+      "slug": "european-and-american-new-sexy-lace-lingerie-set-mesh-dress-batch",
+      "title": "European and American new sexy lace lingerie set mesh dress batch",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "1a868149-b51c-46bd-9084-df9156dc139e",
+      "slug": "sexy-lingerie-see-through-mesh-suspenders-american-sexy-lingerie",
+      "title": "sexy lingerie see-through mesh suspenders American sexy lingerie",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "0478448f-b6f2-4256-a664-74263669280c",
+      "slug": "sexy-pajamas-for-girls-with-small-chest-sweet-style",
+      "title": "Sexy pajamas for girls with small chest, sweet style",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "4ee06408-905f-4624-99a1-d34aa04044cb",
+      "slug": "butterfly-temptation-underwear-two-piece-set",
+      "title": "butterfly temptation underwear two-piece set",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "93f11101-c94a-4526-867b-784a45860172",
+      "slug": "black-silk-open-crotch-stockings-womens-sexy-no-take-thin-erotic-sexy-lingerie",
+      "title": "Black silk open crotch stockings women's sexy no-take thin erotic sexy lingerie",
+      "description": "<p>বিস্তারিত Color: Black</p>",
+      "specification": null
+    },
+    {
+      "id": "2114d4e7-72a4-4ef2-9927-40a7e434968f",
+      "slug": "nightdress-three-piece-set-pure-desire-style-pajamas-temptation-women",
+      "title": "nightdress three-piece set pure desire style pajamas temptation women",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "590c4532-4045-46a5-98d7-05ac9e80ca4d",
+      "slug": "night-spring-breeze-sexy-lingerie-pure-desire-sexy-sling-hip-skirt-female-hot",
+      "title": "Night spring breeze sexy lingerie pure desire sexy sling hip skirt female hot",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "74d153eb-d448-45e4-8d55-cb59c5f5b691",
+      "slug": "sexy-lingerie-womens-plus-size-boyfriend-shirt-sexy-perspective-cute-2288",
+      "title": "sexy lingerie women's plus size boyfriend shirt sexy perspective cute (2288)",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "d24be1c4-242b-49c1-8511-a8559a421b93",
+      "slug": "sexy-lady-honeymoon-nighty-sleepwear-night-dress-women-nightwear",
+      "title": "Sexy Lady Honeymoon Nighty Sleepwear Night Dress Women Nightwear",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "f29c17a2-1615-4309-949b-513fe59be649",
+      "slug": "sexy-mesh-bellyband-erotic-lingerie-bathrobe-set-lace-hot-passion-pure-desire-fr",
+      "title": "Sexy mesh bellyband erotic lingerie bathrobe set lace hot passion pure desire fr",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "ffcac1f9-c109-425f-b16d-b6d8b82c5803",
+      "slug": "sexy-lingerie-lace-sexy-nightgown",
+      "title": "sexy lingerie lace sexy nightgown",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "7ccadecb-6751-44f8-9d2f-0ed47ff780d6",
+      "slug": "triangular-cup-sponge-pad-bra-wrapped-bra-without-rims-straps-palm-rest-bra",
+      "title": "triangular cup sponge pad bra-wrapped bra without rims straps palm rest bra",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "35ffd785-ea3d-420f-a52f-848b7983bdfc",
+      "slug": "5-pieces-padded-babydoll-nighty-suit-for-women-lace-design-padded-set",
+      "title": "5 Pieces Padded Babydoll Nighty Suit for Women –Lace Design Padded Set",
+      "description": "<p>প্যাকেজ অন্তর্ভুক্ত:1 x পায়জামা</p><p>2 x পোষাক</p><p>1 x শর্টস</p><p>1 x লম্বা প্যান্ট</p>",
+      "specification": null
+    },
+    {
+      "id": "e35d3e51-7a22-4f77-8ba5-5d9171ac4899",
+      "slug": "big-size-fat-girl-gospel-pure-desire-hot-and-exciting-sexy-lingerie-sexy-lace-three-point-suit",
+      "title": "big size fat girl gospel pure desire hot and exciting sexy lingerie sexy lace three-point suit",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "321d38bf-c546-478f-848e-87fda7a6426f",
+      "slug": "sexy-lady-honeymoon-nighty-sleepwear-night-dress",
+      "title": "Sexy Lady Honeymoon Nighty Sleepwear Night Dress",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "e010a386-297d-4daa-a114-bb06a72415c5",
+      "slug": "sexy-lingerie-new-sexy-uniform-enticing-suit-dating-battle-robe-non-strippin",
+      "title": "Sexy Lingerie, New Sexy Uniform, Enticing Suit, Dating Battle Robe, Non Strippin",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "2f4ab3c3-1a91-4fec-84cf-8f26fc981f09",
+      "slug": "womens-fun-tight-fit-free-secretary-uniform-sexy-beauty-deep-v-hip-hot-backless",
+      "title": "Women's Fun Tight-Fit-Free Secretary Uniform Sexy Beauty Deep V Hip Hot Backless",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "4d8087b6-08b7-45e9-8828-cd79ec8e2016",
+      "slug": "red-sex-lingerie-sm-taught-womens-utensils-sexy-bundle-queen",
+      "title": "Red Sex Lingerie sm Taught Women's Utensils Sexy Bundle Queen",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "232edb62-8378-4b66-8825-eb5f027f4565",
+      "slug": "female-lace-transparent-bohemian-style-sling-hollow-pajamas-nightdress-8586",
+      "title": "female lace transparent Bohemian style sling hollow pajamas nightdress (8586)",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "95e2617a-6068-41ba-8970-2e7ea6d21acd",
+      "slug": "sexy-large-size-two-piece-suspender-nightdress-sexy-lingerie-robe-fat-mm-hot-lac",
+      "title": "sexy large size two-piece suspender nightdress sexy lingerie robe fat MM hot lac",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "29aabf7e-59d0-4bf1-9f56-c8f2c14867c5",
+      "slug": "little-dolphin-vibrator-mini-jumping-egg-g-spot-sex-massager-female-masturbator",
+      "title": "Little Dolphin Vibrator Mini Jumping Egg G-spot Sex Massager Female Masturbator",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "31ee6408-e07c-4c7b-b64c-2556963f86c3",
+      "slug": "transparent-underwear-romantic-underwear-couple-fun-breast-exposure",
+      "title": "transparent underwear romantic underwear couple fun breast exposure",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "d695642f-ae2e-4965-b474-948156874c57",
+      "slug": "adult-sex-toys-leather-plush-handcuffs-alternative-toys-tied-teasing-restraint",
+      "title": "Adult sex toys leather plush handcuffs alternative toys tied teasing restraint",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "82dcff31-7447-4b05-932c-fae31b39dfcc",
+      "slug": "3-piece-set-silk-robes-thin-loose-loungwear-nighty-pajamas-for-women-lace-ladies",
+      "title": "3 Piece Set Silk Robes Thin Loose LoungWear Nighty Pajamas for Women Lace Ladies",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "7d03bcc2-3195-4b22-b804-d8e7e75d8d16",
+      "slug": "belly-tightening-small-belly-small-waist-belt",
+      "title": "Belly tightening small belly small waist belt",
+      "description": "<p></p>",
+      "specification": null
+    },
+    {
+      "id": "d8ff253e-9a33-4011-8be9-c262134aebcc",
+      "slug": "womens-lace-tube-top-bra-backless-adjustable-strap-light-support-bra",
+      "title": "Women’s Lace Tube Top Bra – Backless Adjustable Strap Light Support Bra",
+      "description": "<p>স্টাইলিশ lace pattern এবং modern tube-top design-এর সুন্দর সমন্বয়ে তৈরি এই <strong>Women’s Lace Tube Top Bra</strong>। Backless design এবং adjustable shoulder straps থাকায় এটি নিজের পছন্দ অনুযায়ী fit করতে সহজ। Lightweight construction এটিকে দৈনন্দিন ব্যবহার, casual outfits এবং special occasions-এর জন্য একটি versatile choice করে তোলে।</p>",
+      "specification": null
+    },
+    {
+      "id": "408a6f59-71bc-4ac5-ac27-8d87d8e57c6d",
+      "slug": "womens-stretchy-open-crotch-shorts-seductive-hollow-out-lace-underwear",
+      "title": "Women's Stretchy Open-Crotch Shorts – Seductive Hollow-Out Lace Underwear",
+      "description": "<ol><li><p>স্টাইলিশ ও আকর্ষণীয় ডিজাইনের এই <strong>Women's Stretchy Open-Crotch Shorts</strong> আপনার intimate wardrobe-এ যোগ করতে পারে একটি আলাদা touch। </p></li><li><p>Stretchable fabric, comfortable fit এবং unique hollow-out design একসাথে এটিকে করে তুলেছে আধুনিক ও eye-catching lingerie choice।</p></li></ol><p></p>",
+      "specification": null
+    },
+    {
+      "id": "c8fd1359-c143-45ae-b602-2c1c46845a29",
+      "slug": "three-point-one-piece-women-s-sexy-lingerie-bikini",
+      "title": "Three-point One-piece Women's Sexy Lingerie Bikini",
+      "description": "<p></p><p>স্টাইলিশ lace pattern এবং modern tube-top design-এর সুন্দর সমন্বয়ে তৈরি এই <strong>Women’s Lace Tube Top Bra</strong>। Backless design এবং adjustable shoulder straps থাকায় এটি নিজের পছন্দ অনুযায়ী fit করতে সহজ। Lightweight construction এটিকে দৈনন্দিন ব্যবহার, casual outfits এবং special occasions-এর জন্য একটি versatile choice করে তোলে।</p><h3><strong>✨ Key Features</strong></h3><ul><li><p>Elegant lace pattern design</p></li><li><p>Stylish tube-top inspired silhouette</p></li><li><p>Adjustable shoulder straps</p></li><li><p>Backless design for a modern look</p></li><li><p>Lightweight and comfortable</p></li><li><p>Flexible fit for better movement</p></li><li><p>Designed to stay comfortably in place</p></li><li><p>Suitable for everyday and special-occasion styling</p></li></ul><h3><strong>📋 Product Details</strong></h3><ul><li><p><strong>Product Type:</strong> Women’s Bra / Tube Top Bra</p></li><li><p><strong>Design:</strong> Lace Pattern</p></li><li><p><strong>Style:</strong> Backless</p></li><li><p><strong>Straps:</strong> Adjustable Shoulder Straps</p></li><li><p><strong>Fit:</strong> Comfortable &amp; Flexible</p></li><li><p><strong>Material:</strong> Lightweight Lace Fabric</p></li><li><p><strong>Gender:</strong> Women</p></li></ul><h3><strong>💖 Why You’ll Love It</strong></h3><p>✔ Beautiful lace detailing<br>✔ Adjustable straps for a personalized fit<br>✔ Lightweight feel for comfortable wear<br>✔ Modern backless design<br>✔ Easy to pair with different outfits<br>✔ Perfect addition to your lingerie collection</p>",
+      "specification": "<p><img src=\"/uploads/products/1790485201947-t0b63o.jpg\"></p><p>স্টাইলিশ lace pattern এবং modern tube-top design-এর সুন্দর সমন্বয়ে তৈরি এই <strong>Women’s Lace Tube Top Bra</strong>। Backless design এবং adjustable shoulder straps থাকায় এটি নিজের পছন্দ অনুযায়ী fit করতে সহজ। Lightweight construction এটিকে দৈনন্দিন ব্যবহার, casual outfits এবং special occasions-এর জন্য একটি versatile choice করে তোলে।</p><h3><strong>✨ Key Features</strong></h3><ul><li><p>Elegant lace pattern design</p></li><li><p>Stylish tube-top inspired silhouette</p></li><li><p>Adjustable shoulder straps</p></li><li><p>Backless design for a modern look</p></li><li><p>Lightweight and comfortable</p></li><li><p>Flexible fit for better movement</p></li><li><p>Designed to stay comfortably in place</p></li><li><p>Suitable for everyday and special-occasion styling</p></li></ul><h3><strong>📋 Product Details</strong></h3><ul><li><p><strong>Product Type:</strong> Women’s Bra / Tube Top Bra</p></li><li><p><strong>Design:</strong> Lace Pattern</p></li><li><p><strong>Style:</strong> Backless</p></li><li><p><strong>Straps:</strong> Adjustable Shoulder Straps</p></li><li><p><strong>Fit:</strong> Comfortable &amp; Flexible</p></li><li><p><strong>Material:</strong> Lightweight Lace Fabric</p></li><li><p><strong>Gender:</strong> Women</p></li></ul><h3><strong>💖 Why You’ll Love It</strong></h3><p>✔ Beautiful lace detailing<br>✔ Adjustable straps for a personalized fit<br>✔ Lightweight feel for comfortable wear<br>✔ Modern backless design<br>✔ Easy to pair with different outfits<br>✔ Perfect addition to your lingerie collection</p>"
+    }
+  ]
+}

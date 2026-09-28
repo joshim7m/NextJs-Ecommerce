@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { loadCart, clearCart } from '../../../src/lib/cartStorage';
 import { pushDataLayer } from '../../../src/lib/gtm';
 import useDeviceFingerprint from '../../../src/hooks/useDeviceFingerprint';
+import FrequentlyBoughtTogether from '../../../src/components/storefront/FrequentlyBoughtTogether';
 
 const MOBILE_REGEX = /^(013|014|015|016|017|018|019)\d{8}$/;
 
@@ -58,6 +59,15 @@ export default function CheckoutPage() {
   useEffect(() => {
     setCart(loadCart());
     setHydrated(true);
+  }, []);
+
+  // An item added from the bundle must appear in the summary, update the totals
+  // and reach the submitted order — handleSubmit posts this `cart` state, so
+  // reading the cart only on mount would silently drop it.
+  useEffect(() => {
+    const handler = () => setCart(loadCart());
+    window.addEventListener('cart-updated', handler);
+    return () => window.removeEventListener('cart-updated', handler);
   }, []);
 
   useEffect(() => {
@@ -293,9 +303,13 @@ export default function CheckoutPage() {
             ))}
           </div>
 
+          {/* Under the trust stats rather than inside the Order Summary: a 3-item
+              bundle plus the summary outgrows the 420px sticky rail. */}
+          <FrequentlyBoughtTogether density="compact" surface limit={3} dismissible hideWhenInCart />
+
         </div>
 
-        <aside className="mt-6 rounded-2xl border border-violet-200/70 bg-white shadow-sm lg:mt-0 dark:border-slate-700 dark:bg-slate-800">
+        <aside className="mt-6 max-h-[calc(100vh-3rem)] overflow-y-auto rounded-2xl border border-violet-200/70 bg-white shadow-sm lg:mt-0 dark:border-slate-700 dark:bg-slate-800">
           <div className="rounded-t-2xl bg-brand-gradient dark:bg-slate-700/50 px-4 py-3 shadow-sm sm:px-6 sm:py-4">
             <h2 className="text-sm font-semibold text-white dark:text-slate-100">Order Summary</h2>
           </div>

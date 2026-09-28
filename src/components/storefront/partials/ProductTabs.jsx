@@ -1,24 +1,69 @@
 'use client';
 
 import { useState } from 'react';
+import { hasVisibleContent } from '@/src/lib/richText';
 
 const TABS = ['Description', 'Specifications', 'Reviews'];
+
+// Styling for the HTML an admin pastes into the description/specification editors. It arrives
+// as real-world markup — headings, lists, tables, images — so it needs an explicit contract
+// rather than whatever the browser defaults happen to be. `overflow-x-auto` (not `hidden`)
+// because a wide size chart has to stay reachable on a phone instead of being clipped.
+const RICH_TEXT_CLASSES = [
+  'prose prose-sm max-w-none overflow-x-auto',
+  'text-slate-600 dark:text-slate-300',
+  '[&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-lg',
+  // Tables: full width, visible cell borders, readable header row.
+  '[&_table]:w-full [&_table]:border-collapse',
+  '[&_td]:border [&_td]:border-slate-200 [&_td]:px-2.5 [&_td]:py-2 [&_td]:align-top',
+  '[&_th]:border [&_th]:border-slate-200 [&_th]:bg-slate-50 [&_th]:px-2.5 [&_th]:py-2 [&_th]:text-left',
+  'dark:[&_td]:border-slate-700 dark:[&_th]:border-slate-700 dark:[&_th]:bg-slate-800/60',
+  // A table nested in prose picks up the paragraph spacing; flatten it.
+  '[&_table]:my-4 [&_table_p]:my-0',
+  // Pasted lists arrive as <li><p>text</p></li>, which doubles the gap between items
+  // because the inner paragraph adds its own margin. Flatten it the same way.
+  '[&_li_p]:my-0',
+  // A description photo sits in a paragraph of its own, so it inherits that paragraph's
+  // text alignment — full width it still looks fine, but a narrower one needs centring.
+  // Inline emoji (WordPress pastes them as <img> too) are unaffected: they are not the
+  // paragraph's only child, so the selector does not match.
+  '[&_p:has(>img:only-child)]:text-center',
+].join(' ');
+
+const Empty = ({ children }) => (
+  <p className="text-slate-400 italic dark:text-slate-500">{children}</p>
+);
 
 export default function ProductTabs({ product, selectedVariant }) {
   const [active, setActive] = useState('Description');
 
+  // An untouched TipTap editor serialises to `<p></p>`, so a truthiness check would render a
+  // blank panel. Rows written before that was normalised still hold it, hence the check here
+  // as well as on write.
+  const hasDescription = hasVisibleContent(product.description);
+  const hasSpecification = hasVisibleContent(product.specification);
+
   const tabs = {
     Description: (
-      <div className="prose prose-sm max-w-none text-slate-600 dark:text-slate-300 ">
-        {product.description ? (
-          <p className='overflow-x-hidden'>{product.description}</p>
+      <div className={RICH_TEXT_CLASSES}>
+        {hasDescription ? (
+          <div dangerouslySetInnerHTML={{ __html: product.description }} />
         ) : (
-          <p className="text-slate-400 italic dark:text-slate-500">No description available.</p>
+          <Empty>No description available.</Empty>
         )}
       </div>
     ),
     Specifications: (
       <div className="space-y-3 text-sm">
+        {hasSpecification ? (
+          <div
+            className={`${RICH_TEXT_CLASSES} [&_p]:mb-2`}
+            dangerouslySetInnerHTML={{ __html: product.specification }}
+          />
+        ) : null}
+        {hasSpecification || selectedVariant?.sku || product.variants?.length ? null : (
+          <Empty>No specifications available.</Empty>
+        )}
         {selectedVariant?.sku ? (
           <div className="flex items-center justify-between border-b border-slate-100 pb-2 dark:border-slate-700">
             <span className="text-slate-500 dark:text-slate-400">SKU</span>

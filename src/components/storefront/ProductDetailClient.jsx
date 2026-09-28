@@ -5,6 +5,7 @@ import ImageGallery from './partials/ImageGallery';
 import ProductInfo from './partials/ProductInfo';
 import ProductTabs from './partials/ProductTabs';
 import RelatedProducts from './partials/RelatedProducts';
+import { PdpBundle } from './FrequentlyBoughtTogether';
 
 export default function ProductDetailClient({ product, related, whatsappNumber }) {
   const [variantIndex, setVariantIndex] = useState(0);
@@ -20,13 +21,18 @@ export default function ProductDetailClient({ product, related, whatsappNumber }
     <>
       <div className="grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
         <ImageGallery images={product.images} videoUrl={product.videoUrl} title={product.title} variantImageIndex={variantImageIndex} />
-        <ProductInfo
-          product={product}
-          selectedVariant={selectedVariant}
-          variantIndex={variantIndex}
-          onVariantChange={setVariantIndex}
-          whatsappNumber={whatsappNumber}
-        />
+        <div>
+          <ProductInfo
+            product={product}
+            selectedVariant={selectedVariant}
+            variantIndex={variantIndex}
+            onVariantChange={setVariantIndex}
+            whatsappNumber={whatsappNumber}
+          />
+          {/* Under the buy box, inside the right column. A full-width section here
+              would be a second product grid competing with Related Products. */}
+          <PdpBundle product={product} selectedVariant={selectedVariant} />
+        </div>
       </div>
 
       <div className="mt-10 rounded-xl border border-violet-200/70 bg-white p-5 shadow-sm sm:p-8 dark:border-slate-700 dark:bg-slate-800">

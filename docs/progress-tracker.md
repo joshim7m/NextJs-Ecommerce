@@ -2,7 +2,53 @@
 
 A living document tracking the status of all project tasks for the Radiant Picks ecommerce application.
 
-**Last Updated:** 2026-09-23 (Light-mode pastel makeover)
+**Last Updated:** 2026-09-27 (storefront rich-text display + empty-description fix)
+
+## Session 2026-09-27 — Storefront display of descriptions with images
+Follow-up to the fidelity work below, from "the description isn't showing properly on the product page". Investigating one product (`three-point-one-piece-women-s-sexy-lingerie-bikini`) turned up three separate problems, only one of which was the visible one.
+
+- **Symptom:** the pasted photo never appeared. It was in `Product.specification`, not `description` — the two forms are wired to the right fields (checked both), so it was an accidental paste into the Specifications editor. The Description tab is the default view, so the photo was invisible, and it only appeared behind the Specifications tab, immediately above a verbatim duplicate of the description. Moved the image into the description and cleared the duplicate, guarded by an assertion that the specification really was the description plus that image (it was, once the description's stray `<p></p>` was normalised away) so the script would abort rather than delete real content
+- **Root cause of a much bigger problem: `<p></p>`.** An untouched TipTap editor serialises to `<p></p>` — a non-empty *string* holding an empty *document*. `description` was written raw, and every write path used a truthiness test, so **95 of 101 products** had `<p></p>` in `description` and rendered as a blank panel on the storefront instead of "No description available.", while also defeating the admin "Empty" pill. Fixed at the source, not patched in the view
+- **New `src/lib/richText.js`** — `hasVisibleContent` (text **or** a media/table tag, so an image-only description still counts), `normalizeRichText` (`null` for an empty document, plus trimming empty paragraphs from both ends), `trimEmptyBlocks`, and the `stripHtml` that used to be inlined in the product page (now imported). Empty = `null` in the database, so the storefront fallback, the SEO fallback and the admin pill can no longer disagree. Interior empty paragraphs are kept — sometimes they are deliberate spacing; only the ends are reliably junk
+- **All four write paths normalised:** `createProduct`/`updateProduct` (server actions), `POST`/`PUT /api/admin/products` (REST — previously raw, and the reason a REST client could reintroduce the problem), and the catalogue import. `Category.description` deliberately left alone
+- **Legacy data cleaned** to `null` by `prisma/cleanEmptyRichText.js` (idempotent, only clears values with neither text nor media). Backup: `prisma/backups/product-richtext-*.json` via `prisma/backupProductRichText.js`. 95 cleared, 6 with real content untouched. Both scripts `require`d the ESM helper via dynamic `import()` to keep the rule in one place
+- **Storefront CSS:** `[&_li_p]:my-0` — pasted lists arrive as `<li><p>text</p></li>`, and the inner paragraph's margin doubled the gap between every item; and `[&_p:has(>img:only-child)]:text-center` so a description photo inherits the paragraph's alignment. `>img:only-child` rather than `>img` so inline emoji (WordPress pastes those as `<img>` too) are unaffected
+- **Bug caught by a test I wrote against the helper:** the first implementation trimmed empty paragraphs with one global `String.replace`, which evaluates every match against the *original* string — so in `<p></p><p></p>text` only the first was removed and a stray paragraph survived. Replaced with an anchored loop. All 11 cases pass
+- **Verified:** image present in the server-rendered DOM and served `200 image/jpeg 235876b`; "No description available." now renders for cleaned products; meta description falls back to generated text instead of empty. `npx next build` passes and Tailwind emits both new variants
+- **Also folded in:** `stripHtml` moved to the shared helper, so the product page no longer carries its own copy
+
+## Session 2026-09-27 — Rich-text fidelity: tables, inline images, re-hosted images
+Resolves the two "lesser issues" left open in the pasted-image session below, after auditing a real supplier description (khanexpressbd.com `product-show/308`) against the editor's actual TipTap schema.
+
+- **Table support.** `StarterKit` v3 ships no table nodes, so a pasted `<table>` had nowhere to go and collapsed into one run-on paragraph — `ঢাকা সিটির বাহির150 টাকাঢাকা সিটির ভিতর80 টাকা`. Delivery charges, size charts and spec tables are exactly this shape. Added `@tiptap/extension-table` + `-row`/`-cell`/`-header`, pinned to `3.27.3` to match the rest of the tree (the registry's `3.31.3` demands `@tiptap/pm@3.31.3` and fails to resolve). Toolbar gained Table / +Row / +Col / −Row / −Col / Hdr / Del, greyed out unless the cursor is in a table
+- **Inline images.** `Image.configure({ inline: false })` made images block nodes, so a WordPress emoji `<img>` inside a heading was hoisted out and split `### ✨ Versatile Usage` into an empty `h3` + a block image + a stray paragraph. Now `inline: true`. Verified this is a strict improvement: a block-level `<img>` between paragraphs is still lifted into its own block by the parser, so product photos are unchanged
+- **Remote image re-hosting.** Pasted CDN images are no longer stored as third-party URLs. New `src/lib/uploads/remoteImage.js` downloads them server-side (a browser fetch would be blocked by CORS) and new `app/api/admin/upload/remote` persists them. The editor sends one batched request and rewrites each `<img>`; images already on our own origin are left alone, and a failed download drops that one image rather than the paste
+- **SSRF hardening** (this endpoint fetches attacker-supplied URLs, so it is guarded at every hop): scheme allow-list, credentials rejected, DNS-resolved addresses checked against private/loopback/CGNAT/link-local/multicast/reserved ranges for **all** A/AAAA answers, `::ffff:`/`::`-embedded IPv4 unwrapped and re-checked, `redirect: 'manual'` with ≤3 hops each re-validated, 15s timeout, 5MB streaming cap, content-type allow-list **plus** magic-byte sniffing (content-type is attacker-controlled and SVG can carry script). Route is gated by `requireAdmin` and returns 401 unauthenticated. 25/25 cases pass, including `169.254.169.254` and `[::ffff:127.0.0.1]`
+- **Storefront:** `ProductTabs` extracts a shared `RICH_TEXT_CLASSES` (table borders/header shading/width, dark mode) and switches `overflow-x-hidden` → `overflow-x-auto`; a wide size chart was previously clipped with no way to reach it
+- **Verified** by replaying the reference page's real HTML through the shipped extension list (jsdom + ProseMirror `DOMParser`): table → `table/tableRow/tableCell` tree, emoji stays inside its heading, block photo unchanged, headings/bold/bullets/strikethrough unchanged. Also end-to-end over HTTP: 401 unauthenticated, real PNG + WP emoji SVG re-hosted and served back as `image/png` / `image/svg+xml`, 404 and metadata-IP rejected per-item
+- `npm run build` passes. New `src/lib/uploads/storeImage.js` holds the shared write; the older `/api/admin/upload` route was intentionally left untouched
+- **Open, pre-existing, not addressed here:** most `/api/admin/*` routes have no auth of their own and `proxy.js`'s `matcher: ['/admin/:path*']` never matches `/api/...`, so `isAdminApiRoute` is dead code — `GET /api/admin/products` returns data with no cookie (verified live)
+
+## Session 2026-09-27 — Pasted Image Fix (follow-up to rich text)
+- **Bug:** pasting a description copied from another store silently dropped its images. TipTap's `Image` node has `allowBase64: false`, so its parse rule is `img[src]:not([src^="data:"])` and any `data:image/...;base64` src is discarded. Stores like eghuri.com inline the whole product picture as one base64 URI (~314KB of base64 → 235KB JPEG)
+- **Fix:** `TipTapEditor` gained `editorProps.handlePaste`. Pasted data-URI images are decoded in the browser (4MB cap), POSTed to `/api/admin/upload`, and the clipboard HTML is rewritten to the returned `/uploads/<folder>/…` URL before insertion. A real image file on the clipboard (screenshot / "Copy image") takes the same route, since ProseMirror's fallback would inline it as base64. Remote `http(s)` images are left untouched. Progress/errors surface in a status strip under the toolbar
+- New `uploadFolder` prop (default `products`; blog create/edit pass `blog`)
+- **Verified** with jsdom + ProseMirror's real DOMParser, replaying the actual clipboard HTML: eghuri 0 images before → 1 re-hosted image after, served byte-identical from `app/uploads/[...path]`; no base64 left in the document
+- **Not a bug:** khanexpressbd.com descriptions use plain remote `<img src>` and were never dropped (4 images before and after). Two lesser issues remain there and were left as-is pending a decision: `style="width:918px"` is not preserved, and the paste hotlinks a competitor CDN plus two `s.w.org` emoji SVGs — **both resolved in the session above**; only the inline `width` style is still dropped
+- `npm run build` passes
+
+## Session 2026-09-27 — Product Description & Specification (Rich Text)
+- `Product.specification` added via migration `20260927041319_add_product_specification` (`TEXT`, nullable)
+- New `src/components/admin/RichEditorSection.jsx` — collapsible rich-text section, collapsed by default, open state in `localStorage` `productEditor:<field>`, plain-text preview when collapsed, children lazily mounted
+- `TipTapEditor` now uses `StarterKit.configure({ link: false, underline: false })` — removes the duplicate-extension console warning that also affected the blog editor
+- Product create/edit forms: the description `<textarea>` is replaced by two collapsible editors (Description, Specifications)
+- `description` content format changed from plain text to TipTap HTML
+- Storefront `ProductTabs`: Description tab renders HTML via `dangerouslySetInnerHTML` inside a `prose` wrapper; Specifications tab gained the specification block above the SKU/variant cards
+- SEO: added `stripHtml` (since moved to the shared `src/lib/richText.js`) in `app/(storefront)/products/[slug]/page.jsx` so `<meta name="description">` and the JSON-LD `Product.description` never contain tags
+- Legacy REST routes (`/api/admin/products`) now accept `specification`; they wrote `description` raw at this point — **since normalised too**, see the session above
+- Catalogue export/import carry a new `Specification` column
+- **Backfill decision: Option B** — legacy plain-text descriptions wrapped in `<p>` (2 rows). Backup: `prisma/backups/product-description-pre-html-*.json`; scripts `prisma/backupProductDescriptions.js` + `prisma/backfillProductDescriptions.js` (idempotent). Rows that already contained HTML were left untouched
+- `npm run build` passes
 
 ## Session 2026-09-23 — Colorful Light Mode ("Romantic Pastel")
 - Doc first: added "Light Mode Palette — Romantic Pastel" tokens & rules to `ui-context.md`
@@ -33,8 +79,8 @@ Inventory sync, fulfillment workflows, customer accounts, reviews.
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Prisma schema (17 models) | ✅ Done | See `schema.prisma`; documented in `data-model.md`. `Product.isFeatured` added via migration `20260920133728_add_product_is_featured` |
-| Database migrations | ✅ Done | 14 migrations under `prisma/migrations/` |
+| Prisma schema (17 models) | ✅ Done | See `schema.prisma`; documented in `data-model.md`. `Product.isFeatured` added via migration `20260920133728_add_product_is_featured`; `Product.specification` via `20260927041319_add_product_specification` |
+| Database migrations | ✅ Done | 18 migrations under `prisma/migrations/` |
 | Seed pipeline (scraper-based) | ✅ Done | `seed.js` → `seedSettings` + `seedCatalog` + `seedBlog`; see `seeding.md` |
 | Catalog scraper (`fetchCatalog.js`) | ✅ Done | Cheerio scraper for eghuri.com → `catalogData.json` |
 | Bengali content processing | ✅ Done | `processCatalog.js` EN→BN tags/meta; Bengali blog posts in `seedBlog.js` |

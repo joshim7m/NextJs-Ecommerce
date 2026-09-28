@@ -31,6 +31,7 @@ model Product {
   slug              String          @unique
   sku               String          @unique
   description       String?
+  specification     String?
   metaDescription   String?
   videoUrl          String?
   tags              String?
@@ -42,12 +43,30 @@ model Product {
   categories        Category[]      @relation("ProductCategories")
   images            ProductImage[]
   variants          ProductVariant[]
+  upsells           ProductUpsell[] @relation("ProductUpsells")
+  upselledBy        ProductUpsell[] @relation("UpsellProducts")
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
 
   @@index([status, createdAt])
   @@index([title])
   @@index([slug])
+}
+
+// Merchandiser-picked cross-sell pairs. "product" is the page the pick shows on,
+// "upsell" is the product recommended alongside it. Both relations cascade, so
+// deleting a product clears its picks without explicit cleanup.
+model ProductUpsell {
+  id        String   @id @default(cuid())
+  productId String
+  upsellId  String
+  sortOrder Int      @default(0)
+  product   Product  @relation("ProductUpsells", fields: [productId], references: [id], onDelete: Cascade)
+  upsell    Product  @relation("UpsellProducts", fields: [upsellId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([productId, upsellId])
+  @@index([upsellId])
 }
 
 model ProductImage {

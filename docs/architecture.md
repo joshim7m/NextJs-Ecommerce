@@ -91,7 +91,7 @@ docs/                        # Project documentation
 | Endpoint | Method(s) | Purpose |
 |---|---|---|
 | `/api/admin/login` / `logout` / `me` | POST / POST / GET | Session lifecycle |
-| `/api/admin/products` (+`/[id]`) | GET, POST / PUT, DELETE | Product CRUD incl. variant/image diffing |
+| `/api/admin/products` (+`/[id]`) | GET, POST / PUT, DELETE | Product CRUD incl. variant/image diffing. Legacy path — the admin create/edit pages use the `src/actions/products.js` server actions instead. Accepts `specification`, and writes `description` raw (plain text), unlike the TipTap editor |
 | `/api/admin/categories` (+`/[id]`) | GET, POST / PUT, DELETE | Category CRUD |
 | `/api/admin/orders` (+`/[id]`, `/search`) | GET / GET, PUT | Orders read/update |
 | `/api/admin/orders/block` / `unblock` | POST / DELETE | Device blocking |

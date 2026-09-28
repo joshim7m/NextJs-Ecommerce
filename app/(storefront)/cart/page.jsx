@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { loadCart, updateCartItem, removeCartItem } from '../../../src/lib/cartStorage';
 import { pushDataLayer } from '../../../src/lib/gtm';
+import FrequentlyBoughtTogether from '../../../src/components/storefront/FrequentlyBoughtTogether';
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
@@ -13,6 +14,17 @@ export default function CartPage() {
   useEffect(() => {
     setCart(loadCart());
     setHydrated(true);
+  }, []);
+
+  // The bundle adds items to the cart, so this page has to follow those writes
+  // rather than reading the cart only on mount.
+  useEffect(() => {
+    const handler = () => {
+      setCart(loadCart());
+      setRefresh((v) => v + 1);
+    };
+    window.addEventListener('cart-updated', handler);
+    return () => window.removeEventListener('cart-updated', handler);
   }, []);
 
   useEffect(() => {
@@ -125,6 +137,9 @@ export default function CartPage() {
                   </div>
                 </div>
               ))}
+
+              {/* Below the line items, above the Subtotal card: visible after review, before commitment. */}
+              <FrequentlyBoughtTogether density="compact" surface limit={3} dismissible />
 
               <div className="rounded-xl border border-violet-200/70 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
                 <div className="flex flex-wrap items-center justify-between gap-3">

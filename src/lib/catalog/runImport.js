@@ -5,6 +5,7 @@ import { parse } from 'csv-parse';
 import ExcelJS from 'exceljs';
 import AdmZip from 'adm-zip';
 import prisma from '@/src/lib/prisma';
+import { normalizeRichText } from '@/src/lib/richText';
 import { CHUNK_SIZE, VALID_PRODUCT_STATUSES, STATUS_ALIASES } from './constants';
 import { sanitizeFilename, isRemotePath, fetchRemoteImage } from './images';
 
@@ -211,7 +212,8 @@ async function importProducts(filePath, extractedDir, { onProgress } = {}) {
           title,
           slug,
           sku: sku || null,
-          description: clean(row.description),
+          description: normalizeRichText(clean(row.description)),
+          specification: normalizeRichText(clean(row.specification)),
           metaDescription: clean(row.meta_description),
           tags: clean(row.tags),
           unite_price: unitPrice,

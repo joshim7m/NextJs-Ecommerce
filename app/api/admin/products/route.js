@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../src/lib/prisma';
+import { normalizeRichText } from '../../../../src/lib/richText';
 
 export async function GET() {
   const products = await prisma.product.findMany({
@@ -11,7 +12,7 @@ export async function GET() {
 
 export async function POST(request) {
   const body = await request.json();
-  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths } = body;
+  const { title, slug: rawSlug, description, specification, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths } = body;
   const slug = rawSlug?.trim();
 
   if (!title || !slug) {
@@ -22,7 +23,8 @@ export async function POST(request) {
     data: {
       title,
       slug,
-      description,
+      description: normalizeRichText(description),
+      specification: normalizeRichText(specification),
       unite_price: parseFloat(unite_price),
       sale_price: sale_price ? parseFloat(sale_price) : null,
       sku: sku || null,

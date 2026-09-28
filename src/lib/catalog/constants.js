@@ -8,6 +8,7 @@ export const PRODUCT_COLUMNS = [
   'Slug',
   'SKU',
   'Description',
+  'Specification',
   'Meta Description',
   'Tags',
   'Unit Price',

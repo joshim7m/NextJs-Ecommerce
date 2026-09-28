@@ -60,7 +60,8 @@ Rules:
 ### Admin Components (JSX + Tailwind)
 **Implemented:**
 - `ThemeProvider` + `useTheme` — admin dark mode context
-- `TipTapEditor` — rich text editor with toolbar (bold/italic/underline/strike/headings/lists/quote/code/link/image)
+- `TipTapEditor` — rich text editor with toolbar (bold/italic/underline/strike/headings/lists/quote/code/link/image/table); images are **inline** nodes so emoji/badges survive inside headings, tables are resizable, and pasted data-URI or third-party images are re-hosted through `/api/admin/upload` and `/api/admin/upload/remote`
+- `RichEditorSection` — collapsible rich-text field wrapper (collapsed by default, open state in `localStorage` `productEditor:<field>`, plain-text preview when collapsed)
 - `CategoryMultiSelect`, `AdvertisementMultiSelect`
 - Shell: `AdminSidebar`, `AdminHeader`
 

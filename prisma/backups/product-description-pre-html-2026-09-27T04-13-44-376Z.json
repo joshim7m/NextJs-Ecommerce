@@ -1,0 +1,16 @@
+{
+  "takenAt": "2026-09-27T04:13:44.377Z",
+  "note": "Legacy plain-text Product.description rows captured before the HTML backfill. Restore with prisma.product.update({ where: { id }, data: { description } }) using the values below.",
+  "rows": [
+    {
+      "id": "5fdf68f2-535c-4134-bbe8-3ad8b5a385e1",
+      "title": "10 PCS Fetish Kits Bed Restraints Bondage Plush PU Sexy Flirting Alternative Toy",
+      "description": "বিস্তারিত 🔥 ১০ পিসের ফুল সেট ফেটিশ বন্ডেজ কিট – সাহসী মোমেন্টের জন্য পারফেক্ট চয়েজ! 🔥নতুন রোমাঞ্চ আর এক্সপেরিমেন্ট পছন্দ করেন? তাহলে আপনার জন্যই এই 10 PCS Fetish Bed Restraints & Bondage Kit – যা আপনার ইনটিমেট সময়কে করে তুলবে আরও উত্তেজনাপূর্ণ! 😍🖤 কী থাকছে এই সেটে:  ✅ হ্যান্ডকাফস  ✅ লেগ কাফস  ✅ কলার উইথ লিশ  ✅ আই মাস্ক  ✅ রোপ  ✅ ফ্লগার  ✅ ফেদার টিকলার  ✅ বল গ্যাগ  ✅ বেড রেস্ট্রেইন্ট  ✅ আনুষঙ্গিক ফ্লার্টিং টুলস🌟 স্পেশাল ফিচারসঃ  ✨ প্লাশ PU ম্যাটেরিয়াল – কোমল ও আরামদায়ক  ✨ সেফ ও সিকিউর ডিজাইন – স্কিনে হারশন ফিল না করে  ✨ একদম প্রাইভেট প্যাকেজিং – কেউ বুঝবে না ভিতরে কী আছে  ✨ পারফেক্ট গিফট ফর কাপলস 💑**📦 হোম ডেলিভারি সহ – পুরোপুরি গোপন প্যাকেজে!  🚫 নাম বা ছবি কিছুই থাকবেনা বাইরে!**"
+    },
+    {
+      "id": "93f11101-c94a-4526-867b-784a45860172",
+      "title": "Black silk open crotch stockings women's sexy no-take thin erotic sexy lingerie",
+      "description": "বিস্তারিত Color: Black"
+    }
+  ]
+}

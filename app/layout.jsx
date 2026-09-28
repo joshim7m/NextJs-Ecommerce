@@ -45,6 +45,12 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap"
           rel="stylesheet"
         />
+        {/* Material Symbols: the storefront bundle's heading / CTA icons are
+            ligature spans; without the font they render as raw text words. */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          rel="stylesheet"
+        />
       </head>
       <body suppressHydrationWarning>
         <ThemeInit />

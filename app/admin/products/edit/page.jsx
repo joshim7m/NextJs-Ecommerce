@@ -3,16 +3,17 @@
 import { Suspense, useEffect, useState, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { getProduct, getCategories, updateProduct } from '../../../../src/actions/products';
+import { getProduct, getCategories, getPublishedProductsLite, updateProduct } from '../../../../src/actions/products';
 import ProductInfo from './partials/product-info';
 import VariantGenerator from './partials/variant-generator';
 import ManageVariant from './partials/manage-variant';
+import UpsellPicker from './partials/upsell-picker';
 import { getYouTubeId } from '../../../../src/components/storefront/partials/ImageGallery';
 
 const isValidYouTubeUrl = (url) => !url || Boolean(getYouTubeId(url));
 
 const emptyForm = {
-  title: '', slug: '', description: '', metaDescription: '', tags: '', unite_price: '', sale_price: '', sku: '',
+  title: '', slug: '', description: '', specification: '', metaDescription: '', tags: '', unite_price: '', sale_price: '', sku: '',
   quantity: '', status: 'draft',
 };
 
@@ -34,6 +35,8 @@ function EditProductForm() {
   const [variants, setVariants] = useState([]);
   const [optionLabels, setOptionLabels] = useState([]);
   const [removedVariantIds, setRemovedVariantIds] = useState([]);
+  const [upsellOptions, setUpsellOptions] = useState([]);
+  const [upsells, setUpsells] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -45,7 +48,7 @@ function EditProductForm() {
       setLoading(false);
       return;
     }
-    Promise.all([getProduct(id), getCategories()]).then(([product, cats]) => {
+    Promise.all([getProduct(id), getCategories(), getPublishedProductsLite()]).then(([product, cats, published]) => {
       if (!product) {
         setNotFound(true);
         setLoading(false);
@@ -55,6 +58,7 @@ function EditProductForm() {
         title: product.title,
         slug: product.slug,
         description: product.description || '',
+        specification: product.specification || '',
         metaDescription: product.metaDescription || '',
         videoUrl: product.videoUrl || '',
         tags: product.tags || '',
@@ -89,6 +93,12 @@ function EditProductForm() {
 
       setVariants(loaded);
       setHasVariants(loaded.length > 0);
+
+      // The picker's options are the light projection; the saved picks come back
+      // with the product, already in sortOrder.
+      setUpsellOptions(published || []);
+      setUpsells((product.upsells || []).map((entry) => entry.upsell).filter(Boolean));
+
       setLoading(false);
     });
   }, [id]);
@@ -230,6 +240,7 @@ function EditProductForm() {
         removeImageIds,
         variants: variantPayload,
         removedVariantIds,
+        upsellIds: upsells.map((u) => u.id),
       });
       setToast({ type: 'success', message: 'Product saved successfully.' });
       router.refresh();
@@ -340,6 +351,16 @@ function EditProductForm() {
             />
           </div>
         )}
+      </div>
+
+      {/* Upsell section */}
+      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+        <UpsellPicker
+          products={upsellOptions}
+          selected={upsells}
+          onChange={setUpsells}
+          excludeId={id}
+        />
       </div>
 
       <div className="flex gap-3">

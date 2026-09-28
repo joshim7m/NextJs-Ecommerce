@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../../src/lib/prisma';
+import { normalizeRichText } from '../../../../../src/lib/richText';
 
 export async function PUT(request, { params }) {
   const { id } = await params;
   const body = await request.json();
-  const { title, slug: rawSlug, description, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths, removeImageIds, variants } = body;
+  const { title, slug: rawSlug, description, specification, unite_price, sale_price, sku, quantity, status, categoryIds, imagePaths, removeImageIds, variants } = body;
   const slug = rawSlug?.trim();
 
   try {
@@ -58,7 +59,8 @@ export async function PUT(request, { params }) {
       data: {
         title,
         slug,
-        description,
+        description: normalizeRichText(description),
+        specification: normalizeRichText(specification),
         unite_price: parseFloat(unite_price),
         sale_price: sale_price ? parseFloat(sale_price) : null,
         sku: sku || null,

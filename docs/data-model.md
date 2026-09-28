@@ -13,7 +13,9 @@ Hierarchical product categories (self-referential).
 
 ### Product
 - `id` (UUID), `title`, `slug` (unique), `sku` (unique)
-- `description?`, `metaDescription?` (SEO), `tags?`
+- `description?` — rich-text HTML (TipTap), rendered via `dangerouslySetInnerHTML` on the storefront
+- `specification?` — rich-text HTML (TipTap), free-form spec block shown above the structured variant data
+- `metaDescription?` (SEO), `tags?`
 - `unite_price` (Decimal, required) — base price used when product has no variants
 - `sale_price` (Decimal?) — base sale price used when no variants
 - `quantity` (Int?) — base inventory for non-variant products

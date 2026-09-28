@@ -98,10 +98,14 @@ app/admin/settings/catalog-import-export/page.jsx
 export const CHUNK_SIZE = 50;
 
 export const PRODUCT_COLUMNS = [
-  'Title', 'Slug', 'SKU', 'Description', 'Meta Description', 'Tags',
+  'Title', 'Slug', 'SKU', 'Description', 'Specification', 'Meta Description', 'Tags',
   'Unit Price', 'Sale Price', 'Quantity', 'Status', 'Categories', 'Images',
 ];
 ```
+
+Columns are matched by name on import (normalized: lowercased, non-alphanumerics → `_`), so files
+without the `Specification` column still import fine — that field is simply left `null`. `Description`
+and `Specification` are rich-text HTML and round-trip verbatim.
 
 `paths.js` — everything runs out of the OS temp dir and is cleaned up after each request:
 

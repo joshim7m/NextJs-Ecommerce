@@ -54,6 +54,7 @@ export async function buildCatalogZip({ workDir = exportWorkDir(), zipPath, onPr
           product.slug,
           product.sku,
           product.description,
+          product.specification,
           product.metaDescription,
           product.tags,
           product.unite_price != null ? String(product.unite_price) : '',
