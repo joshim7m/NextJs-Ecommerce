@@ -1,19 +1,29 @@
 import { ImageResponse } from 'next/og';
+import { getSiteUrl } from '@/src/lib/siteSettings';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const title = searchParams.get('title') || 'Radiant Picks';
+  const title = searchParams.get('title') || '';
   const subtitle = searchParams.get('subtitle') || "Bangladesh's Trusted Online Lingerie & Women's Intimates Store";
+  const siteName = searchParams.get('siteName') || '';
   const type = searchParams.get('type') || 'website'; // website | product | category
   const price = searchParams.get('price') || '';
+
+  // Brand text + badge letter come from the `siteName` param (or the title) —
+  // never a hardcoded brand. Host is derived from the configured site URL.
+  const brand = siteName || title;
+  const brandLetter = brand ? brand.charAt(0).toUpperCase() : 'S';
+  const siteHost = new URL(await getSiteUrl()).host;
 
   const bgColor = type === 'product' ? '#faf5ff' : '#f8fafc';
   const accentColor = '#6d28d9';
   const tagColor = type === 'product' ? '#7c3aed' : type === 'category' ? '#2563eb' : '#6d28d9';
 
   const tagLabel = type === 'product' ? 'PRODUCT' : type === 'category' ? 'CATEGORY' : 'SHOP NOW';
+
+  const heading = title || brand || 'Shop Online in Bangladesh';
 
   return new ImageResponse(
     (
@@ -75,10 +85,10 @@ export async function GET(request) {
                 justifyContent: 'center',
               }}
             >
-              <span style={{ color: 'white', fontSize: '22px', fontWeight: '800' }}>R</span>
+              <span style={{ color: 'white', fontSize: '22px', fontWeight: '800' }}>{brandLetter}</span>
             </div>
             <span style={{ fontSize: '22px', fontWeight: '700', color: '#1e293b' }}>
-              Radiant Picks
+              {brand}
             </span>
           </div>
           <div
@@ -109,7 +119,7 @@ export async function GET(request) {
         >
           <h1
             style={{
-              fontSize: title.length > 60 ? '40px' : title.length > 40 ? '48px' : '56px',
+              fontSize: heading.length > 60 ? '40px' : heading.length > 40 ? '48px' : '56px',
               fontWeight: '800',
               color: '#0f172a',
               lineHeight: '1.15',
@@ -118,7 +128,7 @@ export async function GET(request) {
               textWrap: 'wrap',
             }}
           >
-            {title}
+            {heading}
           </h1>
           <p
             style={{
@@ -155,7 +165,7 @@ export async function GET(request) {
           }}
         >
           <span style={{ fontSize: '16px', color: '#94a3b8' }}>
-            radiantpicks.com
+            {siteHost}
           </span>
           <span style={{ fontSize: '14px', color: '#94a3b8' }}>
             Cash on Delivery • Nationwide Shipping

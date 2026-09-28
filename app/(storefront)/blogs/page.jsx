@@ -2,25 +2,33 @@ import Link from 'next/link';
 import prisma from '../../../src/lib/prisma';
 import BlogCard from '../../../src/components/storefront/BlogCard';
 import LoadMorePosts from '../../../src/components/storefront/LoadMorePosts';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteSettings, siteNameOf, buildTitle, getSiteUrl } from '@/src/lib/siteSettings';
 
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams;
   const categorySlug = params?.category || null;
+
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
 
   let category = null;
   if (categorySlug) {
     category = await prisma.blogCategory.findUnique({ where: { slug: categorySlug } });
   }
 
+  // `{post.title} | {siteName} Blog` carries its own suffix → absolute so the
+  // layout template doesn't append the brand twice.
   const title = category
-    ? `${category.title} Articles | Radiant Picks Blog`
-    : 'Blog | Radiant Picks — Lingerie, Fashion & Style Tips';
+    ? { absolute: `${category.title} Articles | ${siteName} Blog` }
+    : 'Blog — Lingerie, Fashion & Style Tips';
 
   const description = category
-    ? `Read our latest ${category.title} articles at Radiant Picks Bangladesh. Shop online with cash on delivery.`
-    : 'Read our latest articles about lingerie, women\'s fashion, intimate wear tips, and style guides at Radiant Picks Bangladesh. Cash on delivery, discreet packaging.';
+    ? `Read our latest ${category.title} articles${siteName ? ` at ${siteName} Bangladesh` : ''}. Shop online with cash on delivery.`
+    : siteName
+      ? `Read our latest articles about lingerie, women's fashion, intimate wear tips, and style guides at ${siteName} Bangladesh. Cash on delivery, discreet packaging.`
+      : 'Read our latest articles about lingerie, women\'s fashion, intimate wear tips, and style guides. Cash on delivery, discreet packaging.';
+
+  const SITE_URL = await getSiteUrl();
 
   return {
     title,
@@ -30,14 +38,14 @@ export async function generateMetadata({ searchParams }) {
     },
     openGraph: {
       type: 'website',
-      title,
+      title: category ? `${category.title} Articles | ${siteName} Blog` : buildTitle('Blog', settings),
       description,
       url: `${SITE_URL}${category ? `/blogs?category=${category.slug}` : '/blogs'}`,
-      siteName: 'Radiant Picks',
+      siteName: siteName || undefined,
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: category ? `${category.title} Articles | ${siteName} Blog` : buildTitle('Blog', settings),
       description,
     },
   };
@@ -87,6 +95,9 @@ async function getInitialData(searchParams) {
 
 export default async function BlogListingPage({ searchParams }) {
   const { posts, total, categories, recentPosts, activeCategory, categoryId } = await getInitialData(searchParams);
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -100,7 +111,7 @@ export default async function BlogListingPage({ searchParams }) {
   const blogJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
-    name: 'Radiant Picks Blog',
+    name: siteName ? `${siteName} Blog` : 'Blog',
     description: 'Tips, guides, and inspiration for lingerie, women\'s fashion, and intimate wear.',
     url: `${SITE_URL}/blogs`,
     blogPost: posts.slice(0, 10).map((p) => ({

@@ -1,16 +1,25 @@
 import Link from 'next/link';
 import WebPageJsonLd from '../../../src/components/storefront/WebPageJsonLd';
+import { getSiteSettings, siteNameOf, buildTitle } from '@/src/lib/siteSettings';
 
-export const metadata = {
-  title: 'Terms of Service | Radiant Picks',
-  description: 'Terms of Service for Radiant Picks. Read our terms and conditions for using our website and services.',
-  alternates: { canonical: '/terms' },
-};
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  return {
+    title: 'Terms of Service',
+    description: siteNameOf(settings)
+      ? `Terms of Service for ${siteNameOf(settings)}. Read our terms and conditions for using our website and services.`
+      : 'Terms of Service. Read our terms and conditions for using our website and services.',
+    alternates: { canonical: '/terms' },
+  };
+}
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+
   return (
     <>
-      <WebPageJsonLd path="/terms" name="Terms of Service | Radiant Picks" />
+      <WebPageJsonLd path="/terms" name={buildTitle('Terms of Service', settings) || 'Terms of Service'} />
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
       {/* Breadcrumb */}
       <nav className="mb-8 hidden sm:flex items-center gap-2 text-xs text-slate-400" aria-label="Breadcrumb">
@@ -25,7 +34,7 @@ export default function TermsPage() {
       <div className="prose prose-slate mt-8 max-w-none prose-headings:text-slate-900 prose-a:text-[#2f0f6b] prose-p:leading-relaxed sm:prose-lg dark:prose-invert dark:prose-headings:text-white dark:prose-a:text-[#a78bfa]">
         <h2>1. Acceptance of Terms</h2>
         <p>
-          By accessing and using the Radiant Picks website, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website.
+          By accessing and using {siteName || 'our'} website, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website.
         </p>
 
         <h2>2. Products and Orders</h2>
@@ -56,7 +65,7 @@ export default function TermsPage() {
 
         <h2>6. Intellectual Property</h2>
         <p>
-          All content on this website, including text, graphics, logos, images, and software, is the property of Radiant Picks and is protected by copyright laws. You may not reproduce, distribute, or create derivative works without our express written permission.
+          All content on this website, including text, graphics, logos, images, and software, is the property of {siteName || 'the website owner'} and is protected by copyright laws. You may not reproduce, distribute, or create derivative works without our express written permission.
         </p>
 
         <h2>7. User Accounts</h2>
@@ -66,7 +75,7 @@ export default function TermsPage() {
 
         <h2>8. Limitation of Liability</h2>
         <p>
-          Radiant Picks shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use our website or products.
+          {siteName || 'We'} shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use our website or products.
         </p>
 
         <h2>9. Changes to Terms</h2>

@@ -17,6 +17,7 @@ const pageTitles = {
   '/admin/reports/sales': 'Sales Report',
   '/admin/settings/home': 'Home Setting',
   '/admin/settings/site': 'Site Setting',
+  '/admin/settings/site-config': 'Site Config',
   '/admin/settings/hero-sliders': 'Hero Sliders',
   '/admin/settings/social': 'Social Media',
   '/admin/settings/catalog-import-export': 'Catalog Import / Export',

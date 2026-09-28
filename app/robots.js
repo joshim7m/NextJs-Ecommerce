@@ -1,6 +1,7 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteUrl } from '../src/lib/siteSettings';
 
-export default function robots() {
+export default async function robots() {
+  const SITE_URL = await getSiteUrl();
   return {
     rules: [
       {

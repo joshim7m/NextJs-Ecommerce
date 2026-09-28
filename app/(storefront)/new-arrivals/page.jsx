@@ -1,15 +1,21 @@
 import prisma from '../../../src/lib/prisma';
 import ProductGrid from '../(home)/_partials/ProductGrid';
 import Link from 'next/link';
+import { getSiteSettings, siteNameOf } from '@/src/lib/siteSettings';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
-  title: 'New Arrivals — Fresh Styles Just In | Radiant Picks',
-  description:
-    'Browse the latest arrivals at Radiant Picks — the newest lingerie, bras, panties & nightwear fresh from our collection, with cash on delivery across Bangladesh.',
-  alternates: { canonical: '/new-arrivals' },
-};
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  return {
+    title: 'New Arrivals — Fresh Styles Just In',
+    description:
+      (siteName ? `Browse the latest arrivals at ${siteName} — ` : 'Browse the latest arrivals — ') +
+      'the newest lingerie, bras, panties & nightwear fresh from our collection, with cash on delivery across Bangladesh.',
+    alternates: { canonical: '/new-arrivals' },
+  };
+}
 
 export default async function NewArrivalsPage() {
   const products = await prisma.product.findMany({

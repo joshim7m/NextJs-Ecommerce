@@ -17,7 +17,7 @@ const platforms = {
 
 export default function Footer({ siteName, mobile, email, address, copyrightText, socialLinks }) {
   const currentYear = new Date().getFullYear();
-  const brandName = siteName || 'Cabinet & Closet';
+  const brandName = siteName || 'Store';
 
   return (
     <footer className="bg-slate-900 text-slate-100 dark:bg-[#1a0a3e] dark:text-slate-300">

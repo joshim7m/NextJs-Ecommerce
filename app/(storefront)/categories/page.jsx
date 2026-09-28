@@ -1,15 +1,20 @@
 import prisma from '../../../src/lib/prisma';
 import Link from 'next/link';
+import { getSiteSettings, siteNameOf, getSiteUrl } from '@/src/lib/siteSettings';
 
 export const dynamic = 'force-dynamic';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
-
 export async function generateMetadata() {
-  const title = 'All Categories — Shop Lingerie, Bras, Panties & Nightwear | Radiant Picks Bangladesh';
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
+
+  const title = 'All Categories — Shop Lingerie, Bras, Panties & Nightwear';
   const description =
-    'Browse all product categories at Radiant Picks — lingerie, bras, panties, nightwear, stockings, health & beauty, watches, and more. ' +
+    (siteName ? `Browse all product categories at ${siteName} — ` : 'Browse all product categories — ') +
+    'lingerie, bras, panties, nightwear, stockings, health & beauty, watches, and more. ' +
     'Shop online with cash on delivery across Bangladesh.';
+  const ogImage = `${SITE_URL}/api/og?title=${encodeURIComponent('All Categories')}&subtitle=${encodeURIComponent('Shop Lingerie, Bras, Panties & Nightwear')}&type=category`;
 
   return {
     title,
@@ -19,23 +24,30 @@ export async function generateMetadata() {
       title,
       description,
       url: `${SITE_URL}/categories`,
-      images: [{ url: `${SITE_URL}/api/og?title=${encodeURIComponent('All Categories')}&subtitle=${encodeURIComponent('Shop Lingerie, Bras, Panties & Nightwear')}&type=category`, width: 1200, height: 630, alt: 'Radiant Picks Categories' }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: siteName ? `${siteName} Categories` : 'All Categories' }],
     },
-    twitter: { title, description, images: [`${SITE_URL}/api/og?title=${encodeURIComponent('All Categories')}&subtitle=${encodeURIComponent('Shop Lingerie, Bras, Panties & Nightwear')}&type=category`] },
+    twitter: { title, description, images: [ogImage] },
   };
 }
 
 export default async function CategoryListingPage() {
-  const categories = await prisma.category.findMany({
-    orderBy: { name: 'asc' },
-    include: { _count: { select: { products: true } } },
-  });
+  const [categories, settings] = await Promise.all([
+    prisma.category.findMany({
+      orderBy: { name: 'asc' },
+      include: { _count: { select: { products: true } } },
+    }),
+    getSiteSettings(),
+  ]);
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
   const collectionJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'All Categories — Radiant Picks Bangladesh',
-    description: 'Browse all product categories at Radiant Picks — lingerie, bras, panties, nightwear, and more.',
+    name: siteName ? `All Categories — ${siteName} Bangladesh` : 'All Categories',
+    description: siteName
+      ? `Browse all product categories at ${siteName} — lingerie, bras, panties, nightwear, and more.`
+      : 'Browse all product categories — lingerie, bras, panties, nightwear, and more.',
     url: `${SITE_URL}/categories`,
     hasPart: categories.map((c) => ({
       '@type': 'CollectionPage',

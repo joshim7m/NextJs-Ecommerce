@@ -1,23 +1,20 @@
 import Link from 'next/link';
-import prisma from '../../../src/lib/prisma';
 import WebPageJsonLd from '../../../src/components/storefront/WebPageJsonLd';
+import { getSiteSettings, siteNameOf, buildTitle } from '@/src/lib/siteSettings';
 
-export const metadata = {
-  title: 'About Us | Radiant Picks',
-  description: 'Learn about Radiant Picks — Bangladesh\'s favourite online destination for lingerie, sleepwear, beauty, kitchen essentials, and lifestyle products.',
-  alternates: { canonical: '/about' },
-};
-
-async function getSettings() {
-  try {
-    const settings = await prisma.siteSetting.findFirst();
-    return JSON.parse(JSON.stringify(settings || {}));
-  } catch {
-    return {};
-  }
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  return {
+    // Short title — the layout template appends the brand.
+    title: 'About Us',
+    description: siteNameOf(settings)
+      ? `Learn about ${siteNameOf(settings)} — Bangladesh's favourite online destination for lingerie, sleepwear, beauty, kitchen essentials, and lifestyle products.`
+      : "Learn about our store — Bangladesh's favourite online destination for lingerie, sleepwear, beauty, kitchen essentials, and lifestyle products.",
+    alternates: { canonical: '/about' },
+  };
 }
 
-const fallbackAbout = `Welcome to Radiant Picks — Bangladesh's favourite online destination for lingerie, sleepwear, beauty, kitchen essentials, and lifestyle products.
+const fallbackAbout = `Welcome to our store — Bangladesh's favourite online destination for lingerie, sleepwear, beauty, kitchen essentials, and lifestyle products.
 
 ## Our Mission
 
@@ -33,7 +30,7 @@ We believe every customer deserves access to comfortable, high-quality products 
 
 ## Our Story
 
-Radiant Picks was born from a simple idea: everyone should have access to quality lifestyle products without the hassle of traditional shopping. We started as a small online store and have grown into one of Bangladesh's most trusted e-commerce destinations.
+Our store was born from a simple idea: everyone should have access to quality lifestyle products without the hassle of traditional shopping. We started as a small online store and have grown into one of Bangladesh's most trusted e-commerce destinations.
 
 Our team works tirelessly to bring you the latest trends, daily essentials, and everything in between — from lingerie and sleepwear to beauty products and kitchen gadgets.
 
@@ -100,9 +97,10 @@ function renderAbout(text) {
 }
 
 export default async function AboutPage({ searchParams }) {
-  const settings = await getSettings();
+  const settings = await getSiteSettings();
   const params = await searchParams;
   const lang = params?.lang === 'bn' ? 'bn' : 'en';
+  const siteName = siteNameOf(settings);
 
   const aboutEn = settings.aboutCompany || fallbackAbout;
   const aboutBn = settings.aboutCompanyBn || fallbackAboutBn;
@@ -110,7 +108,7 @@ export default async function AboutPage({ searchParams }) {
 
   return (
     <>
-      <WebPageJsonLd path="/about" name="About Us | Radiant Picks" />
+      <WebPageJsonLd path="/about" name={buildTitle('About Us', settings) || 'About Us'} />
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
       <nav className="mb-8 hidden sm:flex items-center gap-2 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-[#2f0f6b] dark:hover:text-[#a78bfa] transition-colors">Home</Link>
@@ -119,7 +117,7 @@ export default async function AboutPage({ searchParams }) {
       </nav>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{lang === 'bn' ? 'রেডিয়্যান্ট পিকস সম্পর্কে' : 'About Radiant Picks'}</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{lang === 'bn' ? `রেডিয়্যান্ট পিকস সম্পর্কে` : siteName ? `About ${siteName}` : 'About Us'}</h1>
         <div className="flex gap-1 rounded-lg border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
           <Link href="/about" className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${lang === 'en' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}>English</Link>
           <Link href="/about?lang=bn" className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${lang === 'bn' ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'}`}>বাংলা</Link>

@@ -1,28 +1,23 @@
 import Link from 'next/link';
-import prisma from '../../../src/lib/prisma';
 import WebPageJsonLd from '../../../src/components/storefront/WebPageJsonLd';
+import { getSiteSettings, siteNameOf, getSiteUrl } from '@/src/lib/siteSettings';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
-
-export const metadata = {
-  title: 'Contact Us | Radiant Picks',
-  description: 'Get in touch with Radiant Picks. Contact us for orders, inquiries, or support. We\'re here to help across Bangladesh.',
-  alternates: { canonical: '/contact' },
-};
-
-async function getSettings() {
-  try {
-    const settings = await prisma.siteSetting.findFirst();
-    return JSON.parse(JSON.stringify(settings || {}));
-  } catch {
-    return {};
-  }
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  return {
+    title: 'Contact Us',
+    description: siteNameOf(settings)
+      ? `Get in touch with ${siteNameOf(settings)}. Contact us for orders, inquiries, or support. We're here to help across Bangladesh.`
+      : 'Get in touch with us. Contact us for orders, inquiries, or support. We\'re here to help across Bangladesh.',
+    alternates: { canonical: '/contact' },
+  };
 }
 
 export default async function ContactPage() {
-  const settings = await getSettings();
+  const settings = await getSiteSettings();
+  const SITE_URL = await getSiteUrl();
 
-  const businessName = settings?.siteName || 'Radiant Picks';
+  const businessName = siteNameOf(settings);
   const businessAddress =
     settings?.address || '6/C, Unite-2, Confidence Center, Shahjadpur, Gulshan, Dhaka-1212';
 
@@ -30,7 +25,7 @@ export default async function ContactPage() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${SITE_URL}/#localbusiness`,
-    name: businessName,
+    name: businessName || undefined,
     url: `${SITE_URL}/contact`,
     description: 'Online store in Bangladesh, cash on delivery nationwide.',
     address: {

@@ -1,126 +1,56 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-function Toast({ toast }) {
-  if (!toast) return null;
-  const isSuccess = toast.type === 'success';
-  return (
-    <div className="fixed left-4 right-4 top-20 z-50 animate-fade-in sm:left-auto sm:right-6">
-      <div
-        className={`flex items-center gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur-md sm:px-5 sm:py-3.5 ${
-          isSuccess
-            ? 'border-emerald-200 bg-emerald-50/95 text-emerald-800'
-            : 'border-red-200 bg-red-50/95 text-red-800'
-        }`}
-      >
-        {isSuccess ? (
-          <svg className="h-5 w-5 shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        ) : (
-          <svg className="h-5 w-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        )}
-        <p className="flex-1 text-sm font-medium">{toast.message}</p>
-      </div>
-    </div>
-  );
-}
+import {
+  CharCount,
+  ImageUpload,
+  InputField,
+  KeywordCount,
+  META_DESC_MAX,
+  META_TITLE_MAX,
+  SaveBar,
+  SectionCard,
+  SECTION_ICONS,
+  SeoPreview,
+  SettingsHeader,
+  SettingsSkeleton,
+  Toast,
+  useSettingsForm,
+} from '../_components/settings-ui';
 
-function Skeleton() {
-  return (
-    <div className="mx-auto max-w-3xl animate-pulse space-y-6 px-4 sm:space-y-8 sm:px-0">
-      <div>
-        <div className="mb-2 h-7 w-48 rounded-lg bg-slate-200 dark:bg-slate-700" />
-        <div className="h-4 w-72 rounded-lg bg-slate-100 dark:bg-slate-700/50" />
-      </div>
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-        <div className="mb-4 h-4 w-24 rounded bg-slate-200 dark:bg-slate-700" />
-        <div className="space-y-4">
-          <div className="h-10 w-full rounded-lg bg-slate-100 dark:bg-slate-700/50" />
-          <div className="h-10 w-full rounded-lg bg-slate-100 dark:bg-slate-700/50" />
-        </div>
-      </div>
-      <div className="h-10 w-36 rounded-lg bg-slate-200 dark:bg-slate-700" />
-    </div>
-  );
-}
+const EMPTY_FORM = {
+  // read-only, used by the live preview only
+  siteName: '',
+  // SEO & sharing
+  siteUrl: '',
+  metaTitle: '',
+  metaDescription: '',
+  metaKeywords: '',
+  ogImage: '',
+  // integrations
+  telegramBotToken: '',
+  telegramChatId: '',
+  gtmId: '',
+  whatsappNumber: '',
+};
 
-function InputField({ label, type = 'text', value, onChange, placeholder, hint }) {
-  const baseCls =
-    'w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-[#2f0f6b] focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/15 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-[#a78bfa] dark:focus:ring-[#a78bfa]';
+export default function SiteConfigPage() {
+  const {
+    form,
+    set,
+    dirty,
+    saving,
+    loading,
+    save,
+    discard,
+    toast,
+    setToast,
+    handleUpload,
+    handleRemove,
+  } = useSettingsForm('/api/admin/settings/site-config', EMPTY_FORM);
 
-  return (
-    <div>
-      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</label>
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} className={baseCls} />
-      {hint && <p className="mt-1.5 text-xs text-slate-400 dark:text-slate-500">{hint}</p>}
-    </div>
-  );
-}
-
-function SectionCard({ title, description, children }) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md dark:border-slate-700 dark:bg-slate-800">
-      <div className="border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4 dark:border-slate-700">
-        <h3 className="text-base font-semibold text-slate-900 dark:text-white">{title}</h3>
-        {description && <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{description}</p>}
-      </div>
-      <div className="space-y-4 px-4 py-4 sm:space-y-5 sm:px-6 sm:py-5">{children}</div>
-    </div>
-  );
-}
-
-export default function NotificationSettingsPage() {
-  const [form, setForm] = useState({ telegramBotToken: '', telegramChatId: '', gtmId: '', whatsappNumber: '' });
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [toast, setToast] = useState(null);
-
-  useEffect(() => {
-    fetch('/api/admin/settings/site-config')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.error) return;
-        setForm({
-          telegramBotToken: data.telegramBotToken || '',
-          telegramChatId: data.telegramChatId || '',
-          gtmId: data.gtmId || '',
-          whatsappNumber: data.whatsappNumber || '',
-        });
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 3500);
-    return () => clearTimeout(t);
-  }, [toast]);
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      const res = await fetch('/api/admin/settings/site-config', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setToast({ type: 'success', message: 'Settings saved successfully.' });
-      } else {
-        setToast({ type: 'error', message: 'Failed to save settings.' });
-      }
-    } catch {
-      setToast({ type: 'error', message: 'Failed to save settings.' });
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const handleTest = async () => {
     setTesting(true);
@@ -139,118 +69,154 @@ export default function NotificationSettingsPage() {
     }
   };
 
-  if (loading) return <Skeleton />;
+  if (loading) return <SettingsSkeleton sections={4} />;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 sm:px-0">
-      <Toast toast={toast} />
+    <div className="mx-auto max-w-4xl">
+      <Toast toast={toast} onClose={() => setToast(null)} />
 
-      <div className="mb-6 sm:mb-8">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-[#2f0f6b]/10 dark:bg-[#a78bfa]/20 sm:h-10 sm:w-10">
-            <svg className="h-4 w-4 text-[#2f0f6b] dark:text-[#a78bfa] sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">Site Config</h1>
-            <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">Configure Telegram order alerts and Google Tag Manager.</p>
-          </div>
-        </div>
-      </div>
+      <SettingsHeader
+        icon="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+        title="Site Config"
+        subtitle="Search engine defaults, social sharing and your integrations."
+        dirty={dirty}
+      />
 
       <div className="space-y-4 sm:space-y-6">
         <SectionCard
-          title="Telegram Alerts"
-          description="Receive a push notification on Telegram every time a new order arrives. Values left blank fall back to the server environment variables."
+          title="SEO & Sharing"
+          description="Defaults for search results, social previews and your public site address."
+          icon={SECTION_ICONS.seo}
         >
           <InputField
-            label="Bot Token"
-            type="password"
-            value={form.telegramBotToken}
-            onChange={(e) => setForm((prev) => ({ ...prev, telegramBotToken: e.target.value }))}
-            placeholder="123456789:AA..."
-            hint="Get this from @BotFather when you create your bot."
+            label="Site URL"
+            value={form.siteUrl}
+            onChange={set('siteUrl')}
+            placeholder="https://example.com"
+            hint="Drives canonical links, Open Graph URLs, sitemap.xml, robots.txt and the RSS feed. Leave empty to use NEXT_PUBLIC_SITE_URL."
           />
+
+          <div className="grid gap-5 lg:grid-cols-2">
+            <InputField
+              label="Meta Title"
+              value={form.metaTitle}
+              onChange={set('metaTitle')}
+              placeholder="Your Company Name"
+              footer={<CharCount value={form.metaTitle} max={META_TITLE_MAX} />}
+              hint="Defaults to the company name. Appended to every page title."
+            />
+            <InputField
+              label="Meta Keywords"
+              value={form.metaKeywords}
+              onChange={set('metaKeywords')}
+              placeholder="lingerie Bangladesh, bra shop online BD, nightwear"
+              footer={<KeywordCount value={form.metaKeywords} />}
+              hint="Comma-separated."
+            />
+          </div>
+
           <InputField
-            label="Chat ID"
-            value={form.telegramChatId}
-            onChange={(e) => setForm((prev) => ({ ...prev, telegramChatId: e.target.value }))}
-            placeholder="1234567890"
-            hint="Your Telegram user id, or the group/channel id. Message @userinfobot to find your id."
+            label="Meta Description"
+            value={form.metaDescription}
+            onChange={set('metaDescription')}
+            placeholder="Shop premium lingerie, bras, panties & nightwear online in Bangladesh…"
+            rows={3}
+            footer={<CharCount value={form.metaDescription} max={META_DESC_MAX} />}
           />
-          <button
-            type="button"
-            onClick={handleTest}
-            disabled={testing}
-            className="inline-flex items-center gap-2 rounded-xl border border-[#2f0f6b]/20 bg-[#2f0f6b]/5 px-4 py-2.5 text-sm font-semibold text-[#2f0f6b] transition hover:bg-[#2f0f6b]/10 disabled:opacity-50 dark:border-[#a78bfa]/30 dark:bg-[#a78bfa]/10 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa]/20"
+
+          <ImageUpload
+            label="Default Share Image (OG)"
+            field="ogImage"
+            value={form.ogImage}
+            onUpload={handleUpload}
+            onRemove={handleRemove}
+          />
+
+          <SeoPreview form={form} />
+        </SectionCard>
+
+        <SectionCard
+          title="Telegram Alerts"
+          description="Receive a push notification on Telegram every time a new order arrives. Values left blank fall back to the server environment variables."
+          icon={SECTION_ICONS.notifications}
+        >
+          <div className="grid gap-5 lg:grid-cols-2">
+            <InputField
+              label="Bot Token"
+              type="password"
+              value={form.telegramBotToken}
+              onChange={set('telegramBotToken')}
+              placeholder="123456789:AA..."
+              hint="Get this from @BotFather when you create your bot."
+            />
+            <InputField
+              label="Chat ID"
+              value={form.telegramChatId}
+              onChange={set('telegramChatId')}
+              placeholder="1234567890"
+              hint="Your Telegram user id, or the group/channel id. Message @userinfobot to find your id."
+            />
+          </div>
+
+          <div>
+            <button
+              type="button"
+              onClick={handleTest}
+              disabled={testing}
+              className="inline-flex items-center gap-2 rounded-xl border border-[#2f0f6b]/20 bg-[#2f0f6b]/5 px-4 py-2.5 text-sm font-semibold text-[#2f0f6b] transition hover:bg-[#2f0f6b]/10 disabled:opacity-50 dark:border-[#a78bfa]/30 dark:bg-[#a78bfa]/10 dark:text-[#a78bfa] dark:hover:bg-[#a78bfa]/20"
+            >
+              {testing ? (
+                <>
+                  <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 9l5-5v3a8 8 0 015 5h-3l5 5H2l3-3 3 3 2-2" />
+                  </svg>
+                  Send Test Notification
+                </>
+              )}
+            </button>
+          </div>
+        </SectionCard>
+
+        <div className="grid gap-4 sm:space-y-6 lg:grid-cols-2 lg:gap-6">
+          <SectionCard
+            title="Google Tag Manager"
+            description="Your GTM container id, used to load analytics and tracking scripts across the storefront."
+            icon={SECTION_ICONS.analytics}
           >
-            {testing ? (
-              <>
-                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Sending...
-              </>
-            ) : (
-              <>
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 9l5-5v3a8 8 0 015 5h-3l5 5H2l3-3 3 3 2-2" />
-                </svg>
-                Send Test Notification
-              </>
-            )}
-          </button>
-        </SectionCard>
+            <InputField
+              label="GTM Container ID"
+              value={form.gtmId}
+              onChange={set('gtmId')}
+              placeholder="GTM-XXXXXXX"
+              hint="Found in the GTM dashboard when you set up your container."
+            />
+          </SectionCard>
 
-        <SectionCard title="Google Tag Manager" description="Your GTM container id. Used to load analytics and tracking scripts across the storefront.">
-          <InputField
-            label="GTM Container ID"
-            value={form.gtmId}
-            onChange={(e) => setForm((prev) => ({ ...prev, gtmId: e.target.value }))}
-            placeholder="GTM-XXXXXXX"
-            hint="Found in the GTM dashboard when you set up your container."
-          />
-        </SectionCard>
-
-        <SectionCard title="WhatsApp" description="Phone number customers will message to place orders via the 'Order on WhatsApp' button on product pages.">
-          <InputField
-            label="WhatsApp Number"
-            value={form.whatsappNumber}
-            onChange={(e) => setForm((prev) => ({ ...prev, whatsappNumber: e.target.value }))}
-            placeholder="8801XXXXXXXXX"
-            hint="Include country code without + sign, e.g. 8801945090085"
-          />
-        </SectionCard>
-
-        <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white px-4 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
-          <p className="text-xs text-slate-400 dark:text-slate-500">All changes are saved immediately to your site.</p>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2f0f6b] px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2f0f6b]/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#2f0f6b]/30 dark:bg-[#a78bfa] dark:text-slate-900 dark:hover:bg-[#a78bfa]/90 disabled:opacity-50 sm:w-auto"
+          <SectionCard
+            title="WhatsApp"
+            description="Number customers message to place an order from product pages."
+            icon={SECTION_ICONS.whatsapp}
           >
-            {saving ? (
-              <>
-                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Saving...
-              </>
-            ) : (
-              <>
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Save Settings
-              </>
-            )}
-          </button>
+            <InputField
+              label="WhatsApp Number"
+              value={form.whatsappNumber}
+              onChange={set('whatsappNumber')}
+              placeholder="8801XXXXXXXXX"
+              hint="Include country code without + sign, e.g. 8801945090085"
+            />
+          </SectionCard>
         </div>
       </div>
+
+      <SaveBar dirty={dirty} saving={saving} onSave={save} onDiscard={discard} />
     </div>
   );
 }

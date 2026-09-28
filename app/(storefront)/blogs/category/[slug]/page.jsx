@@ -2,20 +2,24 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import prisma from '../../../../../src/lib/prisma';
 import LoadMorePosts from '../../../../../src/components/storefront/LoadMorePosts';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteSettings, siteNameOf, getSiteUrl } from '@/src/lib/siteSettings';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const category = await prisma.blogCategory.findUnique({ where: { slug } });
+  const [category, settings] = await Promise.all([
+    prisma.blogCategory.findUnique({ where: { slug } }),
+    getSiteSettings(),
+  ]);
 
   if (!category || category.status !== 'publish') return {};
 
-  const title = `${category.title} Articles | Radiant Picks Blog`;
-  const description = `Read our latest ${category.title} articles at Radiant Picks Bangladesh. Shop online with cash on delivery across Bangladesh.`;
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
+  const title = `${category.title} Articles | ${siteName} Blog`;
+  const description = `Read our latest ${category.title} articles${siteName ? ` at ${siteName} Bangladesh` : ''}. Shop online with cash on delivery across Bangladesh.`;
 
   return {
-    title,
+    title: { absolute: title }, // own brand suffix → bypass the layout template
     description,
     alternates: { canonical: `/blogs/category/${category.slug}` },
     robots: { index: true, follow: true },
@@ -24,7 +28,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       url: `${SITE_URL}/blogs/category/${category.slug}`,
-      siteName: 'Radiant Picks',
+      siteName: siteName || undefined,
       images: category.image ? [{ url: category.image, width: 1200, height: 630, alt: category.title }] : undefined,
     },
     twitter: {
@@ -84,6 +88,9 @@ export default async function BlogCategoryPage({ params }) {
   if (!data) return notFound();
 
   const { category, posts, total, categories, recentPosts } = data;
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -99,7 +106,7 @@ export default async function BlogCategoryPage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: `${category.title} Articles`,
-    description: `Read our latest ${category.title} articles at Radiant Picks Bangladesh.`,
+    description: `Read our latest ${category.title} articles${siteName ? ` at ${siteName} Bangladesh` : ''}.`,
     url: `${SITE_URL}/blogs/category/${category.slug}`,
     mainEntity: {
       '@type': 'ItemList',

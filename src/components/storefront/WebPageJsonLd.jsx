@@ -1,8 +1,9 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteUrl } from '@/src/lib/siteSettings';
 
 // Renders schema.org WebPage (+ optional overrides) structured data for a
 // static storefront page. Server component — no interactivity.
-export default function WebPageJsonLd({ path, name, description, extra = null }) {
+export default async function WebPageJsonLd({ path, name, description, extra = null }) {
+  const SITE_URL = await getSiteUrl();
   const url = `${SITE_URL}${path}`;
 
   const page = {

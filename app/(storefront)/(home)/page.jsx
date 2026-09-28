@@ -4,8 +4,7 @@ import FilterSidebar from './_partials/FilterSidebar';
 import MobileCategoryChips from './_partials/MobileCategoryChips';
 import ProductGrid from './_partials/ProductGrid';
 import SortBar from './_partials/SortBar';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteSettings, siteNameOf, buildTitle, ogImageUrl, getSiteUrl } from '@/src/lib/siteSettings';
 
 const SORT_MAP = {
   latest: { createdAt: 'desc' },
@@ -23,28 +22,44 @@ export async function generateMetadata({ searchParams }) {
     category = await prisma.category.findUnique({ where: { slug: categorySlug } });
   }
 
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+
   const title = category
-    ? `${category.name} — Shop Online at Radiant Picks Bangladesh`
-    : "Radiant Picks — Shop Lingerie, Bras, Panties & Nightwear Online in Bangladesh";
+    ? `${category.name} — Shop Online in Bangladesh`
+    : siteName
+      ? `${siteName} — Shop Lingerie, Bras, Panties & Nightwear Online in Bangladesh`
+      : 'Shop Lingerie, Bras, Panties & Nightwear Online in Bangladesh';
 
   const description = category
-    ? `Browse our collection of ${category.name} at Radiant Picks. ` +
-      `Shop online with cash on delivery across Bangladesh — Dhaka, Chittagong, Sylhet & nationwide. ` +
-      `Premium quality, discreet packaging, and sizes that fit every body.`
-    : "Discover Radiant Picks — Bangladesh's favourite online destination for lingerie, bras, panties, nightwear, and women's intimate apparel. " +
+    ? `Browse our collection of ${category.name} online with cash on delivery across Bangladesh — Dhaka, Chittagong, Sylhet & nationwide. ` +
+      `Premium quality, discreet packaging, and sizes that fit every body${siteName ? ` — only at ${siteName}` : ''}.`
+    : siteName
+      ? `Discover ${siteName} — Bangladesh's favourite online destination for lingerie, bras, panties, nightwear, and women's intimate apparel. `
+      : "Discover Bangladesh's favourite online destination for lingerie, bras, panties, nightwear, and women's intimate apparel. " +
       "Cash on delivery, discreet packaging, and free shipping options available across Dhaka, Chittagong, Sylhet, and all of Bangladesh.";
 
+  // The no-category home title already carries the brand prefix → absolute,
+  // so the layout template doesn't append the brand a second time.
+  const SITE_URL = await getSiteUrl();
+  const ogTitle = category ? buildTitle(title, settings) : title;
+  const ogImage = await ogImageUrl(settings, {
+    title: category ? category.name : siteName,
+    subtitle: description.slice(0, 120),
+    type: category ? 'category' : 'website',
+  });
+
   return {
-    title,
+    title: category ? title : { absolute: title },
     description,
     alternates: { canonical: category ? `/categories/${category.slug}` : '/' },
     openGraph: {
-      title,
+      title: ogTitle,
       description,
       url: category ? `${SITE_URL}/categories/${category.slug}` : SITE_URL,
-      images: [{ url: `${SITE_URL}/api/og?title=${encodeURIComponent(category ? category.name : 'Radiant Picks')}&subtitle=${encodeURIComponent(description.slice(0, 120))}&type=${category ? 'category' : 'website'}`, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: ogTitle }],
     },
-    twitter: { title, description, images: [`${SITE_URL}/api/og?title=${encodeURIComponent(category ? category.name : 'Radiant Picks')}&subtitle=${encodeURIComponent(description.slice(0, 120))}&type=${category ? 'category' : 'website'}`] },
+    twitter: { title: ogTitle, description, images: [ogImage] },
   };
 }
 
@@ -53,6 +68,9 @@ export default async function HomePage({ searchParams }) {
   const categorySlug = params.category || null;
   const maxPrice = params.maxPrice ? Number(params.maxPrice) : null;
   const sort = SORT_MAP[params.sort] || SORT_MAP.latest;
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
   const [categories, heroSlides] = await Promise.all([
     prisma.category.findMany({
@@ -87,8 +105,10 @@ export default async function HomePage({ searchParams }) {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: categorySlug
-      ? `${category?.name || 'Category'} Products — Radiant Picks`
-      : 'Radiant Picks — Lingerie, Bras, Panties & Nightwear Online Bangladesh',
+      ? buildTitle(`${category?.name || 'Category'} Products`, settings)
+      : siteName
+        ? `${siteName} — Lingerie, Bras, Panties & Nightwear Online Bangladesh`
+        : 'Lingerie, Bras, Panties & Nightwear Online Bangladesh',
     numberOfItems: products.length,
     itemListElement: products.slice(0, 20).map((p, i) => ({
       '@type': 'ListItem',

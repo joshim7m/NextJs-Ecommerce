@@ -1,26 +1,35 @@
 import Link from 'next/link';
 import prisma from '../../../../src/lib/prisma';
+import { getSiteSettings, siteNameOf, buildTitle, getSiteUrl } from '@/src/lib/siteSettings';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
-export const metadata = {
-  title: 'Blog Categories | Radiant Picks — Browse All Topics',
-  description: 'Browse all blog categories at Radiant Picks Bangladesh. Find articles about lingerie, fashion, styling tips, nightwear, and more.',
-  alternates: { canonical: '/blogs/categories' },
-  robots: { index: true, follow: true },
-  openGraph: {
-    type: 'website',
-    title: 'Blog Categories | Radiant Picks',
-    description: 'Browse all blog categories at Radiant Picks Bangladesh. Find articles about lingerie, fashion, styling tips, and more.',
-    url: `${SITE_URL}/blogs/categories`,
-    siteName: 'Radiant Picks',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Blog Categories | Radiant Picks',
-    description: 'Browse all blog categories at Radiant Picks Bangladesh. Find articles about lingerie, fashion, styling tips, and more.',
-  },
-};
+  const description = siteName
+    ? `Browse all blog categories at ${siteName} Bangladesh. Find articles about lingerie, fashion, styling tips, nightwear, and more.`
+    : 'Browse all blog categories. Find articles about lingerie, fashion, styling tips, nightwear, and more.';
+
+  return {
+    title: 'Blog Categories — Browse All Topics',
+    description,
+    alternates: { canonical: '/blogs/categories' },
+    robots: { index: true, follow: true },
+    openGraph: {
+      type: 'website',
+      title: buildTitle('Blog Categories', settings),
+      description,
+      url: `${SITE_URL}/blogs/categories`,
+      siteName: siteName || undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: buildTitle('Blog Categories', settings),
+      description,
+    },
+  };
+}
 
 async function getCategories() {
   const categories = await prisma.blogCategory.findMany({
@@ -41,7 +50,9 @@ async function getCategories() {
 }
 
 export default async function BlogCategoriesPage() {
-  const categories = await getCategories();
+  const [categories, settings] = await Promise.all([getCategories(), getSiteSettings()]);
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
@@ -57,7 +68,9 @@ export default async function BlogCategoriesPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Blog Categories',
-    description: 'Browse all blog categories at Radiant Picks Bangladesh.',
+    description: siteName
+      ? `Browse all blog categories at ${siteName} Bangladesh.`
+      : 'Browse all blog categories.',
     url: `${SITE_URL}/blogs/categories`,
     mainEntity: {
       '@type': 'ItemList',

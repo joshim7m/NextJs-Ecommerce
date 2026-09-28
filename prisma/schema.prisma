@@ -178,6 +178,12 @@ model SiteSetting {
   announcementText String?
   aboutCompany  String?
   aboutCompanyBn String? @map("aboutCompany_bn")
+  metaTitle     String?
+  metaDescription String?
+  metaKeywords  String?
+  ogImage       String?
+  siteUrl       String?
+  jwtSecret     String?
   telegramBotToken String?
   telegramChatId   String?
   gtmId            String?

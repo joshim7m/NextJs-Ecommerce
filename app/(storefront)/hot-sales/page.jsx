@@ -1,15 +1,21 @@
 import prisma from '../../../src/lib/prisma';
 import ProductGrid from '../(home)/_partials/ProductGrid';
 import Link from 'next/link';
+import { getSiteSettings, siteNameOf } from '@/src/lib/siteSettings';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
-  title: 'Hot Sales — Featured Products | Radiant Picks',
-  description:
-    'Shop our hot-selling featured products at Radiant Picks — the most-loved lingerie, bras, panties & nightwear picked by our customers, with cash on delivery across Bangladesh.',
-  alternates: { canonical: '/hot-sales' },
-};
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  return {
+    title: 'Hot Sales — Featured Products',
+    description:
+      (siteName ? `Shop our hot-selling featured products at ${siteName} — ` : 'Shop our hot-selling featured products — ') +
+      'the most-loved lingerie, bras, panties & nightwear picked by our customers, with cash on delivery across Bangladesh.',
+    alternates: { canonical: '/hot-sales' },
+  };
+}
 
 export default async function HotSalesPage() {
   const products = await prisma.product.findMany({

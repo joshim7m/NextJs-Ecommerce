@@ -4,22 +4,32 @@ import Footer from '@/src/components/storefront/Footer';
 import GoogleTagManager from '@/src/components/storefront/GoogleTagManager';
 import PageViewTracker from '@/src/components/storefront/PageViewTracker';
 import prisma from '@/src/lib/prisma';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import {
+  getSiteSettings,
+  siteNameOf,
+  brandOf,
+  keywordsOf,
+  ogImageUrl,
+  getSiteUrl,
+  getMetadataBase,
+} from '@/src/lib/siteSettings';
 
 export async function generateMetadata() {
-  let settings = {};
-  try {
-    settings = await prisma.siteSetting.findUnique({ where: { id: 'singleton' } }) || {};
-  } catch {}
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const brand = brandOf(settings);
 
-  const siteName = settings.siteName || 'Radiant Picks';
-  const title = `${siteName} — Bangladesh's Trusted Online Lingerie & Women's Intimates Store`;
+  const title = siteName
+    ? `${siteName} — Bangladesh's Trusted Online Lingerie & Women's Intimates Store`
+    : "Bangladesh's Trusted Online Lingerie & Women's Intimates Store";
   const description =
-    'Shop premium lingerie, bras, panties, nightwear, and women\'s intimate apparel at Radiant Picks. ' +
+    settings.metaDescription ||
+    (siteName
+      ? `Shop premium lingerie, bras, panties, nightwear, and women's intimate apparel at ${siteName}. `
+      : 'Shop premium lingerie, bras, panties, nightwear, and women\'s intimate apparel online. ') +
     'We offer discreet packaging, cash on delivery across Bangladesh, and sizes that fit every body. ' +
     'From everyday comfort to something a little special — delivered right to your doorstep in Dhaka, Chittagong, Sylhet, and everywhere in between.';
-  const keywords = [
+  const keywords = keywordsOf(settings, [
     'lingerie Bangladesh',
     'bra shop online BD',
     'panty buy Bangladesh',
@@ -30,21 +40,27 @@ export async function generateMetadata() {
     'night dress women',
     'intimate apparel Bangladesh',
     'women underwear online shopping',
-    'Secret clothing Bangladesh',
-    'radiant picks',
-  ];
+  ]);
+
+  const SITE_URL = await getSiteUrl();
+  const ogImage = await ogImageUrl(settings, {
+    title: siteName,
+    subtitle: description.slice(0, 120),
+  });
 
   return {
     title: {
-      default: title,
-      template: `%s | ${siteName}`,
+      // `absolute` keeps parent templates from appending the brand to the default.
+      absolute: title,
+      // Global suffix brand: admin metaTitle first, then siteName.
+      ...(brand ? { template: `%s | ${brand}` } : {}),
     },
     description,
     keywords,
-    authors: [{ name: siteName }],
-    creator: siteName,
-    publisher: siteName,
-    metadataBase: new URL(SITE_URL),
+    authors: siteName ? [{ name: siteName }] : undefined,
+    creator: siteName || undefined,
+    publisher: siteName || undefined,
+    metadataBase: await getMetadataBase(),
     alternates: {
       canonical: '/',
     },
@@ -52,24 +68,19 @@ export async function generateMetadata() {
       type: 'website',
       locale: 'en_BD',
       url: SITE_URL,
-      siteName,
+      siteName: siteName || undefined,
       title,
       description,
-      images: [
-        {
-          url: `${SITE_URL}/api/og?title=${encodeURIComponent(siteName)}&subtitle=${encodeURIComponent(description.slice(0, 120))}`,
-          width: 1200,
-          height: 630,
-          alt: `${siteName} — Online Lingerie & Women's Intimates Store in Bangladesh`,
-        },
-      ],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [`${SITE_URL}/api/og?title=${encodeURIComponent(siteName)}&subtitle=${encodeURIComponent(description.slice(0, 120))}`],
-      creator: `@${siteName.replace(/\s+/g, '').toLowerCase()}`,
+      images: [ogImage],
+      ...(siteName
+        ? { creator: `@${siteName.replace(/\s+/g, '').toLowerCase()}` }
+        : {}),
     },
     robots: {
       index: true,
@@ -90,15 +101,6 @@ export async function generateMetadata() {
   };
 }
 
-async function getSiteSettings() {
-  try {
-    const settings = await prisma.siteSetting.findUnique({ where: { id: 'singleton' } });
-    return settings || {};
-  } catch {
-    return {};
-  }
-}
-
 export default async function StorefrontLayout({ children }) {
   const [settings, socialLinks] = await Promise.all([
     getSiteSettings(),
@@ -108,14 +110,15 @@ export default async function StorefrontLayout({ children }) {
     }).catch(() => []),
   ]);
 
-  const siteName = settings.siteName || 'Radiant Picks';
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: siteName,
+    name: siteName || undefined,
     url: SITE_URL,
-    logo: settings.logo || `${SITE_URL}/api/og?title=${encodeURIComponent(siteName)}&type=website`,
+    logo: settings.logo || (await ogImageUrl(settings, { title: siteName, type: 'website' })),
     description:
       'Bangladesh\'s trusted online store for premium lingerie, bras, panties, nightwear, and women\'s intimate apparel with discreet delivery nationwide.',
     areaServed: {
@@ -128,7 +131,7 @@ export default async function StorefrontLayout({ children }) {
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: siteName,
+    name: siteName || undefined,
     url: SITE_URL,
     potentialAction: {
       '@type': 'SearchAction',

@@ -1,27 +1,25 @@
 import './globals.css';
-import prisma from '@/src/lib/prisma';
 import ThemeInit from '@/src/components/ThemeInit';
-
-async function getSiteSettings() {
-  try {
-    const settings = await prisma.siteSetting.findUnique({ where: { id: 'singleton' } });
-    return settings || {};
-  } catch {
-    return {};
-  }
-}
+import { getSiteSettings, brandOf, keywordsOf } from '@/src/lib/siteSettings';
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
-  const siteName = settings.siteName || 'Radiant Picks';
+  const brand = brandOf(settings);
+  // Brand is composed from settings only — never hardcoded — so a rename in
+  // the admin panel updates every surface live.
   return {
     title: {
-      default: `${siteName} — Online Lingerie & Women's Intimates Store in Bangladesh`,
-      template: `%s | ${siteName}`,
+      default: brand
+        ? `${brand} — Online Lingerie & Women's Intimates Store in Bangladesh`
+        : "Online Lingerie & Women's Intimates Store in Bangladesh",
+      ...(brand ? { template: `%s | ${brand}` } : {}),
     },
     description:
-      'Shop premium lingerie, bras, panties, nightwear, and women\'s intimate apparel at Radiant Picks. ' +
-      'Discreet packaging, cash on delivery, and free shipping options across Bangladesh.',
+      settings.metaDescription ||
+      settings.aboutCompany?.slice(0, 160) ||
+      "Shop premium lingerie, bras, panties, nightwear, and women's intimate apparel online in Bangladesh. " +
+      'Discreet packaging, cash on delivery, and free shipping options across the country.',
+    keywords: keywordsOf(settings),
     icons: settings.favicon ? { icon: settings.favicon } : undefined,
   };
 }

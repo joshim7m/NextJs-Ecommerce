@@ -1,16 +1,25 @@
 import Link from 'next/link';
 import WebPageJsonLd from '../../../src/components/storefront/WebPageJsonLd';
+import { getSiteSettings, siteNameOf, buildTitle } from '@/src/lib/siteSettings';
 
-export const metadata = {
-  title: 'Privacy Policy | Radiant Picks',
-  description: 'Privacy Policy for Radiant Picks. Learn how we collect, use, and protect your personal information.',
-  alternates: { canonical: '/privacy' },
-};
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  return {
+    title: 'Privacy Policy',
+    description: siteNameOf(settings)
+      ? `Privacy Policy for ${siteNameOf(settings)}. Learn how we collect, use, and protect your personal information.`
+      : 'Privacy Policy. Learn how we collect, use, and protect your personal information.',
+    alternates: { canonical: '/privacy' },
+  };
+}
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+
   return (
     <>
-      <WebPageJsonLd path="/privacy" name="Privacy Policy | Radiant Picks" />
+      <WebPageJsonLd path="/privacy" name={buildTitle('Privacy Policy', settings) || 'Privacy Policy'} />
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 sm:py-16">
       {/* Breadcrumb */}
       <nav className="mb-8 hidden sm:flex items-center gap-2 text-xs text-slate-400" aria-label="Breadcrumb">
@@ -25,7 +34,7 @@ export default function PrivacyPage() {
       <div className="prose prose-slate mt-8 max-w-none prose-headings:text-slate-900 prose-a:text-[#2f0f6b] prose-p:leading-relaxed sm:prose-lg dark:prose-invert dark:prose-headings:text-white dark:prose-a:text-[#a78bfa]">
         <h2>1. Information We Collect</h2>
         <p>
-          When you visit Radiant Picks, we may collect certain information about your device, your interaction with the website, and information necessary to process your purchases. We may also collect additional information if you contact us for customer support.
+          When you visit {siteName || 'our store'}, we may collect certain information about your device, your interaction with the website, and information necessary to process your purchases. We may also collect additional information if you contact us for customer support.
         </p>
         <p>
           <strong>Personal Information:</strong> Name, email address, shipping address, phone number, and payment information when you place an order.

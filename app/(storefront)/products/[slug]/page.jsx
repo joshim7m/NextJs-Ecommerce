@@ -6,8 +6,7 @@ import { getAutoRelated } from '../../../../src/lib/recommendations';
 // Product.description is rich-text HTML from the admin editor. Meta tags and JSON-LD
 // need plain text, otherwise tags leak into search snippets and structured data.
 import { stripHtml } from '@/src/lib/richText';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteSettings, siteNameOf, buildTitle, getSiteUrl } from '@/src/lib/siteSettings';
 
 async function getProduct(slug) {
   return prisma.product.findUnique({
@@ -16,35 +15,30 @@ async function getProduct(slug) {
   });
 }
 
-async function getSiteSettings() {
-  try {
-    return await prisma.siteSetting.findUnique({ where: { id: 'singleton' } }) || {};
-  } catch {
-    return {};
-  }
-}
-
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const [product, settings] = await Promise.all([getProduct(slug), getSiteSettings()]);
   if (!product) return {};
 
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
   const category = product.categories?.[0]?.name || '';
   const price = Number(product.sale_price || product.unite_price).toLocaleString();
   const title = product.title;
   const description =
     product.metaDescription ||
-    ((stripHtml(product.description) || `Buy ${product.title} online at Radiant Picks.`) +
+    ((stripHtml(product.description) || `Buy ${product.title} online${siteName ? ` at ${siteName}` : ''}.`) +
     ` ৳${price} — Shop now with cash on delivery across Bangladesh. ${category ? `Category: ${category}.` : ''}`);
 
   const keywords = product.tags
     ? product.tags.split(',').map(k => k.trim()).filter(Boolean)
-    : [product.title, category, 'lingerie Bangladesh', 'buy online BD', 'radiant picks'].filter(Boolean);
+    : [product.title, category, 'lingerie Bangladesh', 'buy online BD'].filter(Boolean);
 
-  const imageUrl = product.images?.[0]?.image_path || `${SITE_URL}/api/og?title=${encodeURIComponent(product.title)}&subtitle=${encodeURIComponent(`৳${price} — Shop now at Radiant Picks`)}&type=product&price=${encodeURIComponent(price)}`;
+  const imageUrl = product.images?.[0]?.image_path || `${SITE_URL}/api/og?title=${encodeURIComponent(product.title)}&subtitle=${encodeURIComponent(`৳${price} — Shop now${siteName ? ` at ${siteName}` : ''}`)}&type=product&price=${encodeURIComponent(price)}`;
+  const ogTitle = buildTitle(title, settings);
 
   return {
-    title,
+    title, // layout template appends the brand → `{title} | {brand}`
     description,
     keywords,
     alternates: {
@@ -54,8 +48,8 @@ export async function generateMetadata({ params }) {
       type: 'website',
       locale: 'en_BD',
       url: `${SITE_URL}/products/${slug}`,
-      siteName: 'Radiant Picks',
-      title: `${product.title} — Radiant Picks`,
+      siteName: siteName || undefined,
+      title: ogTitle,
       description,
       images: [
         {
@@ -68,7 +62,7 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${product.title} — Radiant Picks`,
+      title: ogTitle,
       description,
       images: [imageUrl],
     },
@@ -81,6 +75,8 @@ export default async function ProductPage({ params }) {
 
   if (!product) return notFound();
 
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
   const category = product.categories?.[0] || null;
   const RELATED_COUNT = 6;
 
@@ -96,12 +92,12 @@ export default async function ProductPage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.title,
-    description: stripHtml(product.description) || `Buy ${product.title} at Radiant Picks`,
+    description: stripHtml(product.description) || `Buy ${product.title}${siteName ? ` at ${siteName}` : ''}`,
     image: imageUrl,
     sku: product.sku,
     brand: {
       '@type': 'Brand',
-      name: 'Radiant Picks',
+      name: siteName || undefined,
     },
     offers: {
       '@type': 'Offer',
@@ -115,7 +111,7 @@ export default async function ProductPage({ params }) {
           : 'https://schema.org/OutOfStock',
       seller: {
         '@type': 'Organization',
-        name: 'Radiant Picks',
+        name: siteName || undefined,
       },
     },
     category: category?.name || undefined,

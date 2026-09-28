@@ -3,8 +3,7 @@ import Link from 'next/link';
 import prisma from '../../../../src/lib/prisma';
 import { injectAdsIntoContent } from '../../../../src/lib/blog-ads';
 import AdCard from '../../../../src/components/storefront/AdCard';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteSettings, siteNameOf, getSiteUrl } from '@/src/lib/siteSettings';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -13,17 +12,18 @@ export async function generateMetadata({ params }) {
       where: { slug },
       include: { category: true },
     }),
-    prisma.siteSetting.findUnique({ where: { id: 'singleton' } }).catch(() => null),
+    getSiteSettings(),
   ]);
 
   if (!post || post.status !== 'publish') return {};
 
-  const siteName = settings?.siteName || 'Radiant Picks';
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
   const description = post.metaDescription || post.content.replace(/<[^>]+>/g, '').slice(0, 160);
   const imageUrl = post.bannerImage || `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}&type=website`;
 
   return {
-    title: `${post.title} | ${siteName} Blog`,
+    title: { absolute: `${post.title} | ${siteName} Blog` },
     description,
     keywords: post.tags || undefined,
     alternates: { canonical: `/blogs/${post.slug}` },
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }) {
       title: post.title,
       description,
       url: `${SITE_URL}/blogs/${post.slug}`,
-      siteName,
+      siteName: siteName || undefined,
       publishedTime: post.createdAt.toISOString(),
       modifiedTime: post.updatedAt.toISOString(),
       authors: post.category?.authorName ? [post.category.authorName] : undefined,
@@ -46,7 +46,9 @@ export async function generateMetadata({ params }) {
       title: post.title,
       description,
       images: [imageUrl],
-      creator: '@radiantpicks',
+      ...(siteName
+        ? { creator: `@${siteName.replace(/\s+/g, '').toLowerCase()}` }
+        : {}),
     },
   };
 }
@@ -101,9 +103,9 @@ export default async function BlogPostPage({ params }) {
   if (!data) return notFound();
 
   const { post, related, ads, contentWithAds, readingTime, wordCount } = data;
-  const settings = await prisma.siteSetting
-    .findUnique({ where: { id: 'singleton' } })
-    .catch(() => null);
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
   const date = new Date(post.createdAt).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
@@ -125,7 +127,7 @@ export default async function BlogPostPage({ params }) {
     } : undefined,
     publisher: {
       '@type': 'Organization',
-      name: settings?.siteName || 'Radiant Picks',
+      name: siteName || undefined,
       logo: { '@type': 'ImageObject', url: settings?.logo || `${SITE_URL}/logo.png` },
     },
     mainEntityOfPage: {

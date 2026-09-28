@@ -1,7 +1,8 @@
 import prisma from '../src/lib/prisma';
+import { getSiteUrl } from '../src/lib/siteSettings';
 
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+  const baseUrl = await getSiteUrl();
 
   const staticPages = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },

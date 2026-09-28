@@ -16,10 +16,18 @@ const iconColors = {
   notifications: { bg: 'bg-teal-100', text: 'text-teal-600', darkBg: 'dark:bg-teal-900/30', darkText: 'dark:text-teal-400' },
   database: { bg: 'bg-cyan-100', text: 'text-cyan-600', darkBg: 'dark:bg-cyan-900/30', darkText: 'dark:text-cyan-400' },
   transfer: { bg: 'bg-violet-100', text: 'text-violet-600', darkBg: 'dark:bg-violet-900/30', darkText: 'dark:text-violet-400' },
+  user: { bg: 'bg-pink-100', text: 'text-pink-600', darkBg: 'dark:bg-pink-900/30', darkText: 'dark:text-pink-400' },
+  banner: { bg: 'bg-orange-100', text: 'text-orange-600', darkBg: 'dark:bg-orange-900/30', darkText: 'dark:text-orange-400' },
+  blog: { bg: 'bg-lime-100', text: 'text-lime-600', darkBg: 'dark:bg-lime-900/30', darkText: 'dark:text-lime-400' },
+  website: { bg: 'bg-stone-100', text: 'text-stone-600', darkBg: 'dark:bg-stone-800', darkText: 'dark:text-stone-300' },
 };
+
 
 const navItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: 'dashboard' },
+];
+
+const catalogSubItems = [
   { label: 'Categories', href: '/admin/categories', icon: 'categories' },
   { label: 'Products', href: '/admin/products', icon: 'products' },
   { label: 'Orders', href: '/admin/orders', icon: 'orders' },
@@ -32,14 +40,37 @@ const blogSubItems = [
   { label: 'Advertisements', href: '/admin/blog/advertisements', icon: 'site' },
 ];
 
-const settingsSubItems = [
+const usersSubItems = [
+  { label: 'All Users', href: '/admin/users', icon: 'user' },
+];
+
+const websiteSubItems = [
   { label: 'Site Setting', href: '/admin/settings/site', icon: 'site' },
-  { label: 'Site Config', href: '/admin/settings/site-config', icon: 'notifications' },
   { label: 'Hero Sliders', href: '/admin/settings/hero-sliders', icon: 'sliders' },
+  { label: 'Promo Banner', href: '/admin/settings/promo-banner', icon: 'banner' },
   { label: 'Social Media', href: '/admin/settings/social', icon: 'social' },
+];
+
+const settingsSubItems = [
+  { label: 'Site Config', href: '/admin/settings/site-config', icon: 'notifications' },
   { label: 'Catalog I/O', href: '/admin/settings/catalog-import-export', icon: 'transfer' },
   { label: 'Backup DB', href: '/admin/settings/backup-db', icon: 'database' },
 ];
+
+/**
+ * Sections between the top-level links and the footer, in sidebar order.
+ * `collapsible: true` groups render as a toggle with nested links; the rest
+ * render as a flat titled list.
+ */
+const navSections = [
+  { title: 'Catalog', dot: 'bg-blue-400', items: catalogSubItems },
+  { key: 'blog', title: 'Blog', icon: 'blog', items: blogSubItems, collapsible: true },
+  { title: 'Users', dot: 'bg-pink-400', items: usersSubItems },
+  { key: 'website', title: 'Website', icon: 'website', items: websiteSubItems, collapsible: true },
+  { key: 'settings', title: 'Settings', icon: 'home', items: settingsSubItems, collapsible: true },
+];
+
+const collapsibleSections = navSections.filter((s) => s.collapsible);
 
 function NavIcon({ icon }) {
   const cls = `h-4 w-4`;
@@ -117,6 +148,30 @@ function NavIcon({ icon }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
         </svg>
       );
+    case 'user':
+      return (
+        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+      );
+    case 'banner':
+      return (
+        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46" />
+        </svg>
+      );
+    case 'blog':
+      return (
+        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+        </svg>
+      );
+    case 'website':
+      return (
+        <svg className={cls} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 21a9 9 0 100-18 9 9 0 000 18z M3.6 9h16.8M3.6 15h16.8M12 3c2.5 2.4 3.75 5.4 3.75 9S14.5 18.6 12 21c-2.5-2.4-3.75-5.4-3.75-9S9.5 5.4 12 3z" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -131,8 +186,16 @@ function ColorIcon({ icon }) {
   );
 }
 
+/**
+ * Segment-aware active check. A plain `startsWith` would light up
+ * `/admin/settings/site` while you are on `/admin/settings/site-config`.
+ */
+function isActive(pathname, href) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 function NavLink({ item, pathname, onClose }) {
-  const active = pathname === item.href || (item.href !== '/admin/dashboard' && pathname.startsWith(item.href));
+  const active = isActive(pathname, item.href);
   return (
     <Link
       href={item.href}
@@ -150,11 +213,127 @@ function NavLink({ item, pathname, onClose }) {
   );
 }
 
+/** A titled group of links, separated by a hairline rule. */
+function NavSection({ title, dot, items, pathname, onClose }) {
+  return (
+    <>
+      <div className="my-3 border-t border-slate-100 dark:border-slate-800" />
+      <div className="mb-1.5 flex items-center gap-2 px-3">
+        <div className={`h-1 w-1 rounded-full ${dot}`} />
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{title}</p>
+      </div>
+      {items.map((item) => (
+        <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
+      ))}
+    </>
+  );
+}
+
+function SubNavLink({ item, pathname, onClose }) {
+  const active = isActive(pathname, item.href);
+  const c = iconColors[item.icon] || iconColors.home;
+  return (
+    <Link
+      href={item.href}
+      onClick={onClose}
+      aria-current={active ? 'page' : undefined}
+      className={`group flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+        active
+          ? 'bg-[#2f0f6b]/5 text-[#2f0f6b] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
+          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+      }`}
+    >
+      <div
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${c.bg} ${c.text} ${c.darkBg} ${c.darkText}`}
+      >
+        <NavIcon icon={item.icon} />
+      </div>
+      {item.label}
+    </Link>
+  );
+}
+
+/**
+ * Toggleable group of nested links. Highlighted when any of its own items is
+ * the active page — the Website and Settings groups both live under
+ * /admin/settings, so a prefix check on the section would light up both.
+ */
+function CollapsibleSection({ section, pathname, open, onToggle, onClose }) {
+  const active = section.items.some((item) => isActive(pathname, item.href));
+  const panelId = `nav-panel-${section.key}`;
+
+  return (
+    <>
+      <div className="my-3 border-t border-slate-100 dark:border-slate-800" />
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+          active
+            ? 'bg-[#2f0f6b]/5 text-[#2f0f6b] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+        }`}
+      >
+        {active && (
+          <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b] dark:bg-[#a78bfa]" />
+        )}
+        <ColorIcon icon={section.icon} />
+        <span className="flex-1 text-left">{section.title}</span>
+        <svg
+          className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <div
+        id={panelId}
+        className={`overflow-hidden transition-all duration-200 ${open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-100 pl-3 dark:border-slate-700">
+          {section.items.map((item) => (
+            <SubNavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout, loggingOut }) {
   const [settings, setSettings] = useState({ logo: '', siteName: '' });
-  const [settingsOpen, setSettingsOpen] = useState(
-    pathname.startsWith('/admin/settings')
-  );
+  // One open/closed flag per collapsible group, seeded from the current route.
+  const [openGroups, setOpenGroups] = useState(() => {
+    const initial = {};
+    for (const section of collapsibleSections) {
+      initial[section.key] = section.items.some((item) => isActive(pathname, item.href));
+    }
+    return initial;
+  });
+
+  // Open the group that owns the current page, so deep links / refreshes never
+  // land on a hidden item.
+  useEffect(() => {
+    setOpenGroups((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      for (const section of collapsibleSections) {
+        if (!next[section.key] && section.items.some((item) => isActive(pathname, item.href))) {
+          next[section.key] = true;
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [pathname]);
+
+  const toggleGroup = (key) =>
+    setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
 
   useEffect(() => {
     fetch('/api/admin/settings/site')
@@ -192,74 +371,27 @@ export default function AdminSidebar({ sidebarOpen, onClose, pathname, onLogout,
             <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
           ))}
 
-          <div className="my-3 border-t border-slate-100 dark:border-slate-800" />
-
-          <div className="mb-1.5 flex items-center gap-2 px-3">
-            <div className="h-1 w-1 rounded-full bg-rose-400" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Blog</p>
-          </div>
-
-          {blogSubItems.map((item) => (
-            <NavLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
-          ))}
-
-          <div className="my-3 border-t border-slate-100 dark:border-slate-800" />
-
-          <div className="mb-1.5 flex items-center gap-2 px-3">
-            <div className="h-1 w-1 rounded-full bg-slate-400" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Settings</p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setSettingsOpen(!settingsOpen)}
-            className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
-              pathname.startsWith('/admin/settings')
-                ? 'bg-[#2f0f6b]/5 text-[#2f0f6b] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
-                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            {pathname.startsWith('/admin/settings') && <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#2f0f6b] dark:bg-[#a78bfa]" />}
-            <ColorIcon icon="home" />
-            <span className="flex-1 text-left">Settings</span>
-            <svg
-              className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${settingsOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <div
-            className={`overflow-hidden transition-all duration-200 ${
-              settingsOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-            }`}
-          >
-            <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-100 pl-3 dark:border-slate-700">
-              {settingsSubItems.map((item) => {
-                const active = pathname.startsWith(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={onClose}
-                    className={`group flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
-                      active
-                        ? 'bg-[#2f0f6b]/5 text-[#2f0f6b] dark:bg-[#a78bfa]/10 dark:text-[#a78bfa]'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200'
-                    }`}
-                  >
-                    <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${iconColors[item.icon]?.bg || 'bg-slate-100'} ${iconColors[item.icon]?.text || 'text-slate-500'} ${iconColors[item.icon]?.darkBg || 'dark:bg-slate-800'} ${iconColors[item.icon]?.darkText || 'dark:text-slate-400'}`}>
-                      <NavIcon icon={item.icon} />
-                    </div>
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+          {navSections.map((section) =>
+            section.collapsible ? (
+              <CollapsibleSection
+                key={section.key}
+                section={section}
+                pathname={pathname}
+                open={!!openGroups[section.key]}
+                onToggle={() => toggleGroup(section.key)}
+                onClose={onClose}
+              />
+            ) : (
+              <NavSection
+                key={section.title}
+                title={section.title}
+                dot={section.dot}
+                items={section.items}
+                pathname={pathname}
+                onClose={onClose}
+              />
+            )
+          )}
         </nav>
 
         <div className="border-t border-slate-100 px-3 py-2 dark:border-slate-800">

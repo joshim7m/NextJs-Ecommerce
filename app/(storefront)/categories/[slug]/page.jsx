@@ -3,19 +3,24 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import FilterSidebar from '../../(home)/_partials/FilterSidebar';
 import ProductGrid from '../../(home)/_partials/ProductGrid';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteSettings, siteNameOf, getSiteUrl } from '@/src/lib/siteSettings';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const category = await prisma.category.findUnique({ where: { slug } });
+  const [category, settings] = await Promise.all([
+    prisma.category.findUnique({ where: { slug } }),
+    getSiteSettings(),
+  ]);
   if (!category) return {};
 
-  const title = `${category.name} — Buy Online in Bangladesh | Radiant Picks`;
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
+  const title = `${category.name} — Buy Online in Bangladesh`; // template appends the brand
   const description =
-    (category.description || `Shop our collection of ${category.name} at Radiant Picks.`) +
+    (category.description || `Shop our collection of ${category.name}.`) +
     ` Browse ${category.name} online with cash on delivery across Bangladesh — Dhaka, Chittagong, Sylhet & nationwide. ` +
     'Premium quality, discreet packaging, and sizes that fit every body.';
+  const ogImage = `${SITE_URL}/api/og?title=${encodeURIComponent(category.name)}&subtitle=${encodeURIComponent(siteName ? `Browse at ${siteName} — Cash on Delivery Bangladesh` : 'Cash on Delivery Bangladesh')}&type=category`;
 
   return {
     title,
@@ -25,9 +30,9 @@ export async function generateMetadata({ params }) {
       title,
       description,
       url: `${SITE_URL}/categories/${slug}`,
-      images: [{ url: `${SITE_URL}/api/og?title=${encodeURIComponent(category.name)}&subtitle=${encodeURIComponent('Browse at Radiant Picks — Cash on Delivery Bangladesh')}&type=category`, width: 1200, height: 630, alt: category.name }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: category.name }],
     },
-    twitter: { title, description, images: [`${SITE_URL}/api/og?title=${encodeURIComponent(category.name)}&subtitle=${encodeURIComponent('Browse at Radiant Picks — Cash on Delivery Bangladesh')}&type=category`] },
+    twitter: { title, description, images: [ogImage] },
   };
 }
 
@@ -35,6 +40,9 @@ export default async function CategoryProductsPage({ params, searchParams }) {
   const { slug } = await params;
   const sp = await searchParams;
   const maxPrice = sp.maxPrice ? Number(sp.maxPrice) : null;
+  const settings = await getSiteSettings();
+  const siteName = siteNameOf(settings);
+  const SITE_URL = await getSiteUrl();
 
   const category = await prisma.category.findUnique({
     where: { slug },
@@ -63,8 +71,8 @@ export default async function CategoryProductsPage({ params, searchParams }) {
   const collectionJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${category.name} — Radiant Picks Bangladesh`,
-    description: category.description || `Browse ${category.name} at Radiant Picks — shop online with cash on delivery across Bangladesh.`,
+    name: siteName ? `${category.name} — ${siteName} Bangladesh` : `${category.name} — Collection`,
+    description: category.description || `Browse ${category.name} — shop online with cash on delivery across Bangladesh.`,
     url: `${SITE_URL}/categories/${slug}`,
     numberOfItems: products.length,
     hasPart: products.slice(0, 20).map((p) => ({

@@ -1,6 +1,5 @@
 import prisma from '../../src/lib/prisma';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://radiantpicks.com';
+import { getSiteUrl } from '../../src/lib/siteSettings';
 
 function escapeXml(value) {
   return String(value ?? '')
@@ -12,8 +11,9 @@ function escapeXml(value) {
 }
 
 export async function GET() {
+  const SITE_URL = await getSiteUrl();
   let posts = [];
-  let siteName = 'Radiant Picks';
+  let siteName = '';
   let siteDescription = '';
 
   try {
@@ -53,7 +53,7 @@ export async function GET() {
   <channel>
     <title>${escapeXml(`${siteName} Blog`)}</title>
     <link>${SITE_URL}/blogs</link>
-    <description>${escapeXml(siteDescription || `Articles from ${siteName}`)}</description>
+    <description>${escapeXml(siteDescription || (siteName ? `Articles from ${siteName}` : 'Articles'))}</description>
     <language>en-bd</language>
     <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml" />
 ${items}
